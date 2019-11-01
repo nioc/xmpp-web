@@ -1,0 +1,69 @@
+@charset "utf-8";
+
+@import "~bulma/sass/utilities/initial-variables";
+@import "~buefy/src/scss/utils/_variables";
+@import "~bulma/sass/utilities/_all";
+
+// $primary: #42b983;
+$navbar-item-img-max-height: unset;
+$menu-item-active-background-color: $info;
+
+$sizes: (
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+  7
+);
+$positions: (
+	"top",
+	"left",
+	"bottom",
+	"right"
+);
+$bulmaSizes: (
+	$size-1,
+	$size-2,
+	$size-3,
+	$size-4,
+	$size-5,
+	$size-6,
+	$size-7
+);
+$i: 1;
+@each $size in $sizes {
+	$sizee: nth($bulmaSizes, $i);
+	$i: $i+1;
+	.has-margin-#{$size} {
+		margin: $sizee !important;
+	}
+	.has-negative-margin-#{$size} {
+		margin: -$sizee !important;
+	}
+	.has-padding-#{$size} {
+		padding: $sizee !important;
+	}
+	@each $position in $positions {
+		.has-margin-#{$position}-#{$size} {
+			margin-#{$position}: $sizee !important;
+		}
+		.has-padding-#{$position}-#{$size} {
+			padding-#{$position}: $sizee !important;
+		}
+		.has-negative-margin-#{$position}-#{$size} {
+			margin-#{$position}: -$sizee !important;
+		}
+	}
+}
+
+@import "~bulma/bulma.sass";
+@import "~buefy/src/scss/buefy";
+
+html, body {
+	overflow-y: hidden;
+}
+.is-growing {
+  flex-grow: 1;
+}
