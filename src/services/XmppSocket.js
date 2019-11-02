@@ -27,7 +27,7 @@ export default {
         jid,
         password,
         resource: resource || 'Web XMPP',
-        transports: transports || { websocket: true, bosh: true }
+        transports: transports || {websocket: true, bosh: true},
       })
 
       // debug stanza on dev mode
@@ -87,13 +87,13 @@ export default {
     function storeMessage (xmppSocket, type, message) {
       xmppSocket.context.$store.commit('storeMessage', {
         type,
-        message:{
+        message: {
           id: message.id,
           from: message.from ? XMPP.JID.parse(message.from) : xmppSocket.fullJid,
           to: XMPP.JID.parse(message.to),
           body: message.body,
-          delay: (message.delay && message.delay.timestamp) ? message.delay.timestamp : new Date().toISOString()
-        }
+          delay: (message.delay && message.delay.timestamp) ? message.delay.timestamp : new Date().toISOString(),
+        },
       })
     }
 
@@ -149,7 +149,7 @@ export default {
         let occupantJid = XMPP.JID.parse(receivedMUCPresence.from)
         // @TODO better handle nick
         if (occupantJid.resource === this.fullJid.local) {
-          this.context.$store.commit('setJoinedRoom', { jid: occupantJid.bare })
+          this.context.$store.commit('setJoinedRoom', {jid: occupantJid.bare})
         }
       })
 
@@ -166,7 +166,7 @@ export default {
       this.client.on('chat:state', message => {
         this.context.$bus.$emit('chatState', {
           jid: XMPP.JID.parse(message.from).bare,
-          chatState: message.chatState
+          chatState: message.chatState,
         })
       })
 
@@ -204,7 +204,7 @@ export default {
       from: this.fullJid.full,
       to,
       body,
-      type: isMuc ? 'groupchat' : 'chat'
+      type: isMuc ? 'groupchat' : 'chat',
     })
   },
 
@@ -218,7 +218,7 @@ export default {
       isPasswordProtected: null,
       isMembersOnly: null,
       isAnonymous: null,
-      isModerated: null
+      isModerated: null,
     }
     // public or hidden
     if (mucDiscoInfoResult.features.includes('muc_public')) {
@@ -324,7 +324,7 @@ export default {
             delay: item.item.delay.timestamp,
             from: XMPP.JID.parse(item.item.message.from),
             to: XMPP.JID.parse(item.item.message.to),
-            body: item.item.message.body || null
+            body: item.item.message.body || null,
           }
           messages.push(message)
         })
@@ -423,6 +423,6 @@ export default {
       })
       .catch((error) => reject(error))
     })
-  }
+  },
 
 }

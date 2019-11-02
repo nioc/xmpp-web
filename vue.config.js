@@ -9,7 +9,7 @@ module.exports = {
       favicon16: 'img/icons/favicon-16x16.png',
       appleTouchIcon: 'img/icons/apple-touch-icon.png',
       maskIcon: 'img/icons/safari-pinned-tab.svg',
-      msTileImage: 'img/icons/mstile-150x150.png'
-    }
-  }
+      msTileImage: 'img/icons/mstile-150x150.png',
+    },
+  },
 }

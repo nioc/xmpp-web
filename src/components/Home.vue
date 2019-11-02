@@ -1,6 +1,6 @@
 <template>
   <div class="main-container is-block-mobile">
-    <aside class="contacts-list is-block-mobile has-background-white-bis" :class="{'is-hidden-mobile' : !displayContact}">
+    <aside class="contacts-list is-block-mobile has-background-white-bis" :class="{'is-hidden-mobile': !displayContact}">
       <contacts />
     </aside>
     <router-view />
@@ -13,7 +13,7 @@ import contacts from '@/components/Contacts'
 export default {
   name: 'Home',
   components: {
-    contacts
+    contacts,
   },
   computed: {
     displayContact () {
@@ -28,13 +28,13 @@ export default {
     if (this.userJid === null) {
       // user not connected, return to login page
       localStorage.removeItem('auth')
-      this.$router.replace({name: 'login', query: { redirect: this.$route.fullPath }})
+      this.$router.replace({name: 'login', query: {redirect: this.$route.fullPath}})
     }
     // disconnect before leaving page
     window.addEventListener('beforeunload', () => {
       this.$xmpp.disconnect()
     })
-  }
+  },
 }
 </script>
 

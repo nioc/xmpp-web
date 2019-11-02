@@ -14,12 +14,12 @@ export default {
   props: {
     presence: {
       type: String,
-      required: true
+      required: true,
     },
     displayLabel: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   computed: {
     backgroundClass () {
@@ -54,7 +54,7 @@ export default {
         default:
           return 'Available'
       }
-    }
-  }
+    },
+  },
 }
 </script>

@@ -13,10 +13,10 @@
           <contact :jid="room.jid" :room="room" :is-room="true" :unread-count="room.unreadCount" />
         </li>
         <li>
-          <router-link class="button is-primary is-light" :to="{ name: 'public muc' }" title="Join a room"><i class="fa fa-sign-in fa-fw has-margin-right-7" />Join a room</router-link>
+          <router-link class="button is-primary is-light" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw has-margin-right-7" />Join a room</router-link>
         </li>
         <li>
-          <a class="button is-primary is-light" @click="alert()" title="Create a room"><i class="fa fa-plus-square-o fa-fw has-margin-right-7" />Create a room</a>
+          <a class="button is-primary is-light" title="Create a room" @click="alert()"><i class="fa fa-plus-square-o fa-fw has-margin-right-7" />Create a room</a>
         </li>
       </ul>
     </div>
@@ -25,7 +25,7 @@
 
 <script>
 import contact from '@/components/Contact'
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
   name: 'Contacts',

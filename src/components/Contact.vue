@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name: isRoom ? 'groupchat' : 'chat', params: { jid } }" class="has-unread" :title="jid" exact exact-active-class="is-active">
+  <router-link :to="{name: isRoom ? 'groupchat' : 'chat', params: {jid}}" class="has-unread" :title="jid" exact exact-active-class="is-active">
     <span v-if="isRoom">
       <i class="fa fa-star has-text-warning has-margin-right-7" />
       <span>{{ room.name }}</span>
@@ -21,6 +21,9 @@ import avatar from '@/components/Avatar'
 
 export default {
   name: 'Contact',
+  components: {
+    avatar,
+  },
   props: {
     jid: {
       type: String,
@@ -42,9 +45,6 @@ export default {
       type: Object,
       default: () => {},
     },
-  },
-  components: {
-    avatar,
   },
 }
 </script>

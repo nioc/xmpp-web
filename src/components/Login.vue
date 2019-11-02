@@ -9,7 +9,7 @@
               <p class="subtitle has-text-grey">Login</p>
               <div class="field">
                 <div class="control has-icons-left">
-                  <input class="input is-medium" type="text" name="jid" placeholder="username@domain.ltd" v-model="credentials.jid">
+                  <input v-model="credentials.jid" class="input is-medium" type="text" name="jid" placeholder="username@domain.ltd">
                   <span class="icon is-small is-left">
                     <i class="fa fa-user" />
                   </span>
@@ -17,21 +17,21 @@
               </div>
               <div class="field">
                 <div class="control has-icons-left">
-                  <input class="input is-medium" type="password" name="password" placeholder="Password" v-model="credentials.password">
+                  <input v-model="credentials.password" class="input is-medium" type="password" name="password" placeholder="Password">
                   <span class="icon is-small is-left">
                     <i class="fa fa-lock" />
                   </span>
                 </div>
               </div>
               <div class="field has-text-left has-padding-left-7">
-                <b-checkbox v-model="credentials.remember" type="is-danger" :class="{'has-text-danger' : credentials.remember}">
+                <b-checkbox v-model="credentials.remember" type="is-danger" :class="{'has-text-danger': credentials.remember}">
                   {{ rememberLabel }}
                 </b-checkbox>
               </div>
               <div class="field">
-                <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{ 'is-loading': isLoading }" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw has-margin-right-7" aria-hidden="true" />Login</button>
+                <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{'is-loading': isLoading}" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw has-margin-right-7" aria-hidden="true" />Login</button>
               </div>
-              <div class="message is-danger" v-if="error">
+              <div v-if="error" class="message is-danger">
                 <div class="message-body">{{ error }}</div>
               </div>
             </form>
@@ -50,11 +50,11 @@ export default {
       credentials: {
         jid: '',
         password: '',
-        remember: false
+        remember: false,
       },
       isLoading: false,
       error: '',
-    };
+    }
   },
   computed: {
     isDisabled () {
@@ -62,6 +62,22 @@ export default {
     },
     rememberLabel () {
       return this.credentials.remember ? 'Store my password in browser, I accept the risk' : 'Do not store my password'
+    },
+  },
+  mounted() {
+    // remove navbar spacing
+    document.body.classList.remove('has-navbar-fixed-top')
+    // get stored credentials
+    let jid = localStorage.getItem('jid')
+    if (jid) {
+      this.credentials.jid = jid
+    }
+    let password = localStorage.getItem('p')
+    if (password) {
+      // auto login
+      let reverse = (value) => value.split('').reverse().join('')
+      this.credentials.password = reverse(atob(reverse(password)))
+      this.login()
     }
   },
   methods: {
@@ -79,7 +95,7 @@ export default {
         if (this.credentials.remember) {
           localStorage.setItem('p', reverse(btoa(reverse(this.credentials.password))))
         }
-        if(this.$route.query.redirect != null){
+        if(this.$route.query.redirect !== null){
           return this.$router.push(this.$route.query.redirect)
         }
         this.$router.push('/')
@@ -92,23 +108,7 @@ export default {
         // remove loading status
         this.isLoading = false
       })
-    }
-  },
-  mounted() {
-    // remove navbar spacing
-    document.body.classList.remove('has-navbar-fixed-top')
-    // get stored credentials
-    let jid = localStorage.getItem('jid')
-    if (jid) {
-      this.credentials.jid = jid
-    }
-    let password = localStorage.getItem('p')
-    if (password) {
-      // auto login
-      let reverse = (value) => value.split('').reverse().join('')
-      this.credentials.password = reverse(atob(reverse(password)))
-      this.login()
-    }
+    },
   },
 }
 </script>

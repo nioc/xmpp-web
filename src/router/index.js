@@ -17,15 +17,15 @@ let router = new Router({
       path: '/',
       components: {
         navbar: Navbar,
-        default: Home
+        default: Home,
       },
       props: {
         default: true,
-        navbar: false
+        navbar: false,
       },
       meta: {
         requiresAuth: true,
-        displayContact: true
+        displayContact: true,
       },
       children: [
         {
@@ -35,8 +35,8 @@ let router = new Router({
           component: Chat,
           props: true,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           // public MUC component
@@ -44,8 +44,8 @@ let router = new Router({
           path: 'rooms/discover',
           component: RoomsList,
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
         {
           // MUC component
@@ -54,26 +54,26 @@ let router = new Router({
           component: Chat,
           props: (route) => ({
             jid: route.params.jid,
-            isRoom: true
+            isRoom: true,
           }),
           meta: {
-            requiresAuth: true
-          }
+            requiresAuth: true,
+          },
         },
-      ]
+      ],
     },
     {
       // login page
       name: 'login',
       path: '/login',
-      component: Login
+      component: Login,
     },
     {
       // redirect unknown path to homepage
       path: '*',
-      redirect: { name: 'home' }
-    }
-  ]
+      redirect: {name: 'home'},
+    },
+  ],
 })
 
 router.beforeEach((to, from, next) => {
@@ -83,7 +83,7 @@ router.beforeEach((to, from, next) => {
       // user is not authenticated, route to login page
       return next({
         name: 'login',
-        query: { redirect: to.fullPath }
+        query: {redirect: to.fullPath},
       })
 
     }

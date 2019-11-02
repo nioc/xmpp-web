@@ -14,20 +14,20 @@ export default {
   props: {
     jid: {
       type: String,
-      required: true
+      required: true,
     },
     displayJid: {
       type: Boolean,
-      default: false
+      default: false,
     },
     presence: {
       type: String,
-      default: null
+      default: null,
     },
     size: {
       type: Number,
-      default: 32
-    }
+      default: 32,
+    },
   },
   data() {
     return {
@@ -45,14 +45,14 @@ export default {
         default:
           return 'has-text-success'
       }
-    }
+    },
   },
   mounted() {
     this.$xmpp.getJidAvatar(this.jid)
     .then((uri) => {
       this.uri = uri
     })
-  }
+  },
 }
 </script>
 

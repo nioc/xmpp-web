@@ -1,16 +1,16 @@
 <template>
   <main class="is-growing chat-container has-background-light">
     <div class="toolbar">
-      <router-link :to="{ name: 'home' }" class="button has-text-primary" :class="{'is-hidden-tablet' : jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left has-margin-right-7" aria-hidden="true" />Contacts</router-link>
+      <router-link :to="{name: 'home'}" class="button has-text-primary" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left has-margin-right-7" aria-hidden="true" />Contacts</router-link>
       <i class="fa fa-2x fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
-      <button class="button has-text-primary" @click="getPreviousMessages()" title="Get previous messages" :class="{ 'is-loading': isLoadingPreviousMessages }"><i class="fa fa-history has-margin-right-7" aria-hidden="true" />Load history</button>
+      <button class="button has-text-primary" title="Get previous messages" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history has-margin-right-7" aria-hidden="true" />Load history</button>
     </div>
-    <div class="messages-container" id="messages-container">
-      <div v-for="message in messagesWithJid" :key="message.id" class="message-container is-flex" :class="{'is-row-reverse': isUser(message.from) }">
+    <div id="messages-container" class="messages-container">
+      <div v-for="message in messagesWithJid" :key="message.id" class="message-container is-flex" :class="{'is-row-reverse': isUser(message.from)}">
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
         <span class="message-text has-margin-left-7 has-margin-right-7" style="">
           <span>{{ message.body }}</span>
-          <div class="content is-italic has-text-weight-light is-small" v-if="message.delay" :title="message.delay | moment()">{{ message.delay | moment("from") }}</div>
+          <div v-if="message.delay" class="content is-italic has-text-weight-light is-small" :title="message.delay | moment()">{{ message.delay | moment("from") }}</div>
         </span>
       </div>
     </div>
@@ -18,7 +18,7 @@
       <form @submit.prevent="sendMessage">
         <div class="field">
           <div class="control">
-            <textarea class="textarea" placeholder="Send message" rows="3" v-model="composingMessage" @keyup.ctrl.enter="sendMessage" />
+            <textarea v-model="composingMessage" class="textarea" placeholder="Send message" rows="3" @keyup.ctrl.enter="sendMessage" />
           </div>
           <button type="submit" class="button has-text-primary"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
         </div>
@@ -29,22 +29,22 @@
 
 <script>
 import avatar from '@/components/Avatar'
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
   name: 'Chat',
   components: {
-    avatar
+    avatar,
   },
   props: {
     jid: {
       type: String,
-      default: null
+      default: null,
     },
     isRoom: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -71,7 +71,22 @@ export default {
           return 'has-text-light'
       }
     },
-    ...mapState(['activeChat', 'messages', 'joinedRooms'])
+    ...mapState(['activeChat', 'messages', 'joinedRooms']),
+  },
+  // watch route param to force component update
+  watch: {
+    jid: 'handleRoute',
+    messagesWithJid: 'scrollToLastMessage',
+  },
+  mounted() {
+    // handle route prop
+    this.handleRoute()
+    // listen for chat states
+    this.$bus.$on('chatState', (data) => {
+      if (data.jid === this.activeChat) {
+        this.chatState = data.chatState
+      }
+    })
   },
   methods: {
     // check if a jid is current user (including MUC nick)
@@ -99,7 +114,7 @@ export default {
     handleRoute () {
       this.$store.commit('setActiveChat', {
         type: this.isRoom ? 'groupchat' : 'chat',
-        activeChat: this.jid
+        activeChat: this.jid,
       })
       this.chatState = ''
       this.firstMessageId = null
@@ -115,23 +130,8 @@ export default {
           messagesContainer.scrollTop = messagesContainer.scrollHeight
         }
       })
-    }
+    },
   },
-  // watch route param to force component update
-  watch: {
-    jid: 'handleRoute',
-    messagesWithJid: 'scrollToLastMessage',
-  },
-  mounted() {
-    // handle route prop
-    this.handleRoute()
-    // listen for chat states
-    this.$bus.$on('chatState', (data) => {
-      if (data.jid === this.activeChat) {
-        this.chatState = data.chatState
-      }
-    })
-  }
 }
 </script>
 

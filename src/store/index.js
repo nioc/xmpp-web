@@ -118,7 +118,7 @@ export default new Vuex.Store({
         from: payload.message.from,
         to: payload.message.to,
         body: payload.message.body,
-        delay: payload.message.delay || null
+        delay: payload.message.delay || null,
       })
 
       // order messages by date
@@ -153,7 +153,7 @@ export default new Vuex.Store({
           state.bookmarkedRooms = addUnreadCount(state.bookmarkedRooms)
           break
       }
-    }
+    },
   },
-  strict: process.env.NODE_ENV !== 'production'
+  strict: process.env.NODE_ENV !== 'production',
 })

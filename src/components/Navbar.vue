@@ -1,22 +1,22 @@
 <template>
   <nav class="navbar is-primary is-fixed-top">
     <div class="navbar-brand">
-      <router-link class="navbar-item" :to="{ name: 'home' }"><h1 class="has-text-weight-bold">Chat</h1></router-link>
-      <a role="button" id="navbar-burger" class="navbar-burger" @click="toggleMenu" aria-label="menu" aria-expanded="false">
+      <router-link class="navbar-item" :to="{name: 'home'}"><h1 class="has-text-weight-bold">Chat</h1></router-link>
+      <a id="navbar-burger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenu">
         <span aria-hidden="true" class="is-primary" />
         <span aria-hidden="true" />
         <span aria-hidden="true" />
       </a>
     </div>
-    <div class="navbar-menu" id="navbar-menu">
+    <div id="navbar-menu" class="navbar-menu">
       <div class="navbar-start">
-        <router-link class="navbar-item" :to="{ name: 'home' }"><i class="fa fa-xmpp fa-fw" />Home</router-link>
+        <router-link class="navbar-item" :to="{name: 'home'}"><i class="fa fa-xmpp fa-fw" />Home</router-link>
       </div>
       <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link is-arrowless is-hidden-mobile"><presence :presence="user.presence" :display-label="false" /></a>
           <div class="navbar-dropdown is-right">
-            <a v-for="presence in ['chat', 'away', 'dnd']" :key="presence" class="navbar-item" @click="setPresence(presence)" :class="{'is-active': presence === user.presence}"><presence :presence="presence" /></a>
+            <a v-for="presence in ['chat', 'away', 'dnd']" :key="presence" class="navbar-item" :class="{'is-active': presence === user.presence}" @click="setPresence(presence)"><presence :presence="presence" /></a>
           </div>
         </div>
         <div class="navbar-item has-dropdown is-hoverable">
@@ -49,9 +49,13 @@ export default {
     return {
       user: {
         jid: localStorage.getItem('jid'),
-        presence: 'chat'
+        presence: 'chat',
       },
     }
+  },
+  mounted() {
+    document.body.classList.add('has-navbar-fixed-top')
+    this.$bus.$on('myPresence', (presence) => this.user.presence = presence)
   },
   methods: {
     toggleMenu (e) {
@@ -66,10 +70,6 @@ export default {
     setPresence(presence) {
       this.$xmpp.sendPresence({show: presence})
     },
-  },
-  mounted() {
-    document.body.classList.add('has-navbar-fixed-top')
-    this.$bus.$on('myPresence', (presence) => this.user.presence = presence)
   },
 }
 </script>
