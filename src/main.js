@@ -7,6 +7,7 @@ import 'fork-awesome/css/fork-awesome.min.css'
 import store from '@/store'
 import xmppSocket from './services/XmppSocket'
 import Moment from 'vue-moment'
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 Vue.use(Buefy)

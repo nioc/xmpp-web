@@ -11,7 +11,8 @@ Lightweight web chat client for XMPP server.
 -   Connect to an XMPP server with WebSocket or [BOSH](https://xmpp.org/about/technology-overview.html#bosh),
 -   Chat and groupchat (MUC),
 -   Retrieve contacts (roster) and bookmarked rooms,
--   Lightweight (350 KB gzipped)
+-   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
+-   Lightweight (350 KB gzipped at the first loading and then less than 10 KB )
 
 ## Credits
 
