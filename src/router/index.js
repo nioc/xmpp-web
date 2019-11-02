@@ -79,7 +79,7 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
   // check if route require authentication
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (localStorage.getItem('jid') === null) {
+    if (localStorage.getItem('auth') === null) {
       // user is not authenticated, route to login page
       return next({
         name: 'login',

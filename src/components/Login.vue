@@ -23,6 +23,11 @@
                   </span>
                 </div>
               </div>
+              <div class="field has-text-left has-padding-left-7">
+                <b-checkbox v-model="credentials.remember" type="is-danger" :class="{'has-text-danger' : credentials.remember}">
+                  {{ rememberLabel }}
+                </b-checkbox>
+              </div>
               <div class="field">
                 <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{ 'is-loading': isLoading }" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw has-margin-right-7" aria-hidden="true" />Login</button>
               </div>
@@ -45,6 +50,7 @@ export default {
       credentials: {
         jid: '',
         password: '',
+        remember: false
       },
       isLoading: false,
       error: '',
@@ -53,10 +59,14 @@ export default {
   computed: {
     isDisabled () {
       return this.isLoading || !this.credentials.jid || !this.credentials.password
+    },
+    rememberLabel () {
+      return this.credentials.remember ? 'Store my password in browser, I accept the risk' : 'Do not store my password'
     }
   },
   methods: {
     login () {
+      let reverse = (value) => value.split('').reverse().join('')
       // check credentials are set
       if (this.credentials.jid === '' || this.credentials.password === '') {
         return
@@ -66,6 +76,9 @@ export default {
       this.$xmpp.connect(this.credentials.jid, this.credentials.password, this)
       .then(() => {
         // authentication succeeded, route to requested page or default
+        if (this.credentials.remember) {
+          localStorage.setItem('p', reverse(btoa(reverse(this.credentials.password))))
+        }
         if(this.$route.query.redirect != null){
           return this.$router.push(this.$route.query.redirect)
         }
@@ -84,6 +97,18 @@ export default {
   mounted() {
     // remove navbar spacing
     document.body.classList.remove('has-navbar-fixed-top')
+    // get stored credentials
+    let jid = localStorage.getItem('jid')
+    if (jid) {
+      this.credentials.jid = jid
+    }
+    let password = localStorage.getItem('p')
+    if (password) {
+      // auto login
+      let reverse = (value) => value.split('').reverse().join('')
+      this.credentials.password = reverse(atob(reverse(password)))
+      this.login()
+    }
   },
 }
 </script>

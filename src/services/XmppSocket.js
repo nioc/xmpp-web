@@ -70,6 +70,7 @@ export default {
         // remove websocket failure listener
         this.client.off('disconnected', retryWithoutWebsocket)
         localStorage.setItem('jid', this.jid)
+        localStorage.setItem('auth', true)
         this.listen()
         .then(() => resolve())
       })

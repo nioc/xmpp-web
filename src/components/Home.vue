@@ -27,7 +27,7 @@ export default {
     // check if user is connected
     if (this.userJid === null) {
       // user not connected, return to login page
-      localStorage.removeItem('jid')
+      localStorage.removeItem('auth')
       this.$router.replace({name: 'login', query: { redirect: this.$route.fullPath }})
     }
     // disconnect before leaving page
