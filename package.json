@@ -13,6 +13,7 @@
     "bulma": "^0.8.0",
     "core-js": "^3.3.6",
     "fork-awesome": "^1.1.7",
+    "mime-types": "^2.1.24",
     "node-sass": "^4.13.0",
     "register-service-worker": "^1.6.2",
     "sass-loader": "^8.0.0",

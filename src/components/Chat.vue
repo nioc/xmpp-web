@@ -10,6 +10,7 @@
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
         <span class="message-text has-margin-left-7 has-margin-right-7" style="">
           <span>{{ message.body }}</span>
+          <message-link v-for="link in message.links" :key="link.url" :url="link.url" />
           <div v-if="message.delay" class="content is-italic has-text-weight-light is-small" :title="message.delay | moment()">{{ message.delay | moment("from") }}</div>
         </span>
       </div>
@@ -29,12 +30,14 @@
 
 <script>
 import avatar from '@/components/Avatar'
+import messageLink from '@/components/MessageLink'
 import {mapState} from 'vuex'
 
 export default {
   name: 'Chat',
   components: {
     avatar,
+    messageLink,
   },
   props: {
     jid: {
@@ -127,7 +130,7 @@ export default {
       this.$nextTick( () => {
         var messagesContainer = document.getElementById("messages-container")
         if (messagesContainer) {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight
+          messagesContainer.scrollTop = messagesContainer.scrollHeight + 1000
         }
       })
     },

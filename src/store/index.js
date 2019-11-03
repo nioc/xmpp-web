@@ -119,6 +119,7 @@ export default new Vuex.Store({
         to: payload.message.to,
         body: payload.message.body,
         delay: payload.message.delay || null,
+        links: payload.message.links || null,
       })
 
       // order messages by date

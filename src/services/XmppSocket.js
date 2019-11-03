@@ -85,6 +85,12 @@ export default {
 
   listen() {
     function storeMessage (xmppSocket, type, message) {
+      // clean body message if it contains only a link
+      if (message.links) {
+        if (message.links.some((link) => link.url === message.body)) {
+          message.body = ''
+        }
+      }      
       xmppSocket.context.$store.commit('storeMessage', {
         type,
         message: {
@@ -93,6 +99,7 @@ export default {
           to: XMPP.JID.parse(message.to),
           body: message.body,
           delay: (message.delay && message.delay.timestamp) ? message.delay.timestamp : new Date().toISOString(),
+          links: message.links || null,
         },
       })
     }
@@ -325,6 +332,13 @@ export default {
             from: XMPP.JID.parse(item.item.message.from),
             to: XMPP.JID.parse(item.item.message.to),
             body: item.item.message.body || null,
+            links: item.item.message.links || null,
+          }
+          // clean body message if it contains only a link
+          if (message.links) {
+            if (message.links.some((link) => link.url === message.body)) {
+              message.body = ''
+            }
           }
           messages.push(message)
         })
