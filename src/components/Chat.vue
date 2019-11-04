@@ -168,7 +168,7 @@ export default {
     },
     postFile(file) {
       // reserve slot
-      this.$xmpp.getUploadSlot('nioc.eu', {
+      this.$xmpp.getUploadSlot(this.userJid.domain, {
         name: file.name,
         size: file.size,
         mediaType: file.type,
