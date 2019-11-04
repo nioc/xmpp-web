@@ -15,9 +15,6 @@
         <li>
           <router-link class="button is-primary is-light" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw has-margin-right-7" />Join a room</router-link>
         </li>
-        <li>
-          <a class="button is-primary is-light" title="Create a room" @click="alert()"><i class="fa fa-plus-square-o fa-fw has-margin-right-7" />Create a room</a>
-        </li>
       </ul>
     </div>
   </aside>

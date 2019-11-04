@@ -11,6 +11,7 @@ export default new Vuex.Store({
     bookmarkedRooms: [],
     joinedRooms: [],
     publicRooms: [],
+    httpFileUploadMaxSize: null,
   },
   mutations: {
     // active chat setter
@@ -154,6 +155,11 @@ export default new Vuex.Store({
           state.bookmarkedRooms = addUnreadCount(state.bookmarkedRooms)
           break
       }
+    },
+
+    // HTTP file upload max size setter (XEP-0363)
+    setHttpFileUploadMaxSize (state, httpFileUploadMaxSize) {
+      state.httpFileUploadMaxSize = httpFileUploadMaxSize
     },
   },
   strict: process.env.NODE_ENV !== 'production',

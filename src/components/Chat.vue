@@ -19,9 +19,24 @@
       <form @submit.prevent="sendMessage">
         <div class="field">
           <div class="control">
-            <textarea v-model="composingMessage" class="textarea" placeholder="Send message" rows="3" @keyup.ctrl.enter="sendMessage" />
+            <textarea v-model="composingMessage" class="textarea" placeholder="Send message" rows="3" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
+            <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
+              <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
+              <i v-if="fileIcon" class="fa fa-5x" :class="fileIcon" />
+              <button class="delete" title="Remove file" @click="removeFile" />
+            </div>
           </div>
-          <button type="submit" class="button has-text-primary"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button fixed-right-button has-text-primary" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+          <div v-else class="file fixed-right-button">
+            <label class="file-label">
+              <input class="file-input" type="file" name="resume" @change="onFileChange">
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fa fa-paperclip has-text-primary" />
+                </span>
+              </span>
+            </label>
+          </div>
         </div>
       </form>
     </div>
@@ -32,6 +47,8 @@
 import avatar from '@/components/Avatar'
 import messageLink from '@/components/MessageLink'
 import {mapState} from 'vuex'
+import axios from 'axios'
+import filesize from 'filesize'
 
 export default {
   name: 'Chat',
@@ -55,6 +72,9 @@ export default {
       firstMessageId: null,
       chatState: '',
       isLoadingPreviousMessages: false,
+      file: null,
+      fileThumbnail: null,
+      fileIcon: null,
     }
   },
   computed: {
@@ -74,7 +94,7 @@ export default {
           return 'has-text-light'
       }
     },
-    ...mapState(['activeChat', 'messages', 'joinedRooms']),
+    ...mapState(['activeChat', 'messages', 'joinedRooms', 'httpFileUploadMaxSize']),
   },
   // watch route param to force component update
   watch: {
@@ -110,8 +130,71 @@ export default {
     },
     // send message
     sendMessage() {
+      if (this.file) {
+        this.postFile(this.file)
+        return
+      }
       this.$xmpp.sendMessage(this.activeChat, this.composingMessage, this.isRoom)
       this.composingMessage = ''
+    },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files
+      if (!files.length) {
+        return
+      }
+      this.file = files[0]
+      // check file size
+      if (this.file.size > this.httpFileUploadMaxSize) {
+        alert(`File is too big (${filesize(this.file.size)}, max is ${filesize(this.httpFileUploadMaxSize)})`)
+        return
+      }
+      // handle thumbnail
+      if (this.file.type.startsWith('image/')) {
+        var reader = new FileReader()
+        var vm = this
+        reader.onload = (e) => {
+            vm.fileThumbnail = e.target.result
+        }
+        reader.readAsDataURL(this.file)
+      } else if (this.file.type.startsWith('audio/')) {
+        this.fileIcon = 'fa-file-audio-o'
+      } else if (this.file.type.startsWith('video/')) {
+        this.fileIcon = 'fa-file-video-o'
+      } else if (this.file.type.includes('pdf')) {
+        this.fileIcon = 'fa-file-pdf-o'
+      } else {
+        this.fileIcon = 'fa-file-o'
+      }
+    },
+    postFile(file) {
+      // reserve slot
+      this.$xmpp.getUploadSlot('nioc.eu', {
+        name: file.name,
+        size: file.size,
+        mediaType: file.type,
+      })
+      .then((httpUploadSlotResult) => {
+        // upload file on returned slot
+        axios.put(httpUploadSlotResult.upload.url, file, {
+            headers: {
+              'Content-Type': file.type,
+            },
+          })
+        .then(() => {
+          // upload is ok, send message
+          this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
+          this.file = null
+          this.fileThumbnail = null
+          this.fileIcon = null
+        })
+        .catch((uploadError) => console.error('uploadError', uploadError))
+      })
+      .catch((httpUploadSlotError) => console.error('httpUploadSlot', httpUploadSlotError))
+    },
+    removeFile() {
+      this.file = null
+      this.fileThumbnail = null
+      this.fileIcon = null
     },
     // handle route on mount (commit active chat, reset chatState and first message, join room if not already)
     handleRoute () {
@@ -121,16 +204,20 @@ export default {
       })
       this.chatState = ''
       this.firstMessageId = null
+      this.file = null
+      this.fileThumbnail = null
+      this.fileIcon = null
       if (this.isRoom && this.joinedRooms.findIndex((joinedRoom) => joinedRoom.jid === this.jid) === -1) {
         this.$xmpp.joinRoom(this.jid)
       }
+      this.scrollToLastMessage()
     },
     // scroll to last message (called when messages changes)
     scrollToLastMessage () {
       this.$nextTick( () => {
         var messagesContainer = document.getElementById("messages-container")
         if (messagesContainer) {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight + 1000
+          messagesContainer.scrollTop = messagesContainer.scrollHeight + 5000
         }
       })
     },
@@ -186,11 +273,37 @@ export default {
   box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
   padding-right: 5em;
 }
-.sendbox .button {
+.sendbox .thumbnail-container {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+}
+.sendbox .thumbnail {
+  max-height: 4.5em;
+}
+.sendbox .delete {
+  margin-left: -7px;
+  margin-top: -13px;
+}
+.sendbox .fixed-right-button {
   position: absolute;
   right: 1.2em;
   top: calc(50% - 1.25em);
-  background-color: transparent !important;
-  border: none;
+  background-color: transparent;
+  border: none !important;
+  font-size: 1.5rem !important;
+}
+.sendbox .fixed-right-button:hover {
+  background-color: #eeeeee;
+}
+.sendbox .fixed-right-button .fa {
+  font-size: 1.5rem !important;
+}
+.sendbox .fixed-right-button .file-cta {
+  background-color: transparent;
+  border: none !important;
+}
+.sendbox .fixed-right-button .file-icon {
+  margin-right: 0;
 }
 </style>

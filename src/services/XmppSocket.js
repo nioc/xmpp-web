@@ -138,6 +138,14 @@ export default {
           })
         })
         .catch((error) => console.error('getBookmarks', error))
+
+        // get HTTP file upload capacity (XEP-0363)
+        this.client.getUploadService()
+        .then((UploadServiceResult) => {
+          if (UploadServiceResult.maxSize) {
+            this.context.$store.commit('setHttpFileUploadMaxSize', UploadServiceResult.maxSize)
+          }
+        })
       })
 
       // listen for contact messages
@@ -204,6 +212,16 @@ export default {
         this.client.disconnect()
       }
     }
+  },
+
+  sendUrl(to, url, isMuc) {
+    this.client.sendMessage({
+      from: this.fullJid.full,
+      to,
+      body: url,
+      type: isMuc ? 'groupchat' : 'chat',
+      links: [{url}],
+    })
   },
 
   sendMessage(to, body, isMuc) {
@@ -318,7 +336,7 @@ export default {
         // get messages
         let messages = []
         data.results.map((item) => {
-          if (!item.item.message || !item.item.message.body) {
+          if (!item.item.message || (!item.item.message.body && !item.item.message.links)) {
             // message de not have text (stanza maybe)
             return
           }
@@ -439,4 +457,15 @@ export default {
     })
   },
 
+  // HTTP upload (XEP-0363)
+  getUploadSlot(uploadService, uploadRequest) {
+    return new Promise((resolve, reject) => {
+      this.client.getUploadSlot(uploadService, uploadRequest)
+      .then((data) => {
+        return resolve(data)
+      })
+      .catch((error) => reject(error))
+    })
+  },
+  
 }
