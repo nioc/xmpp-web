@@ -12,15 +12,14 @@ export default {
   context: null,
   client: null,
 
-  connect(jid, password, context) {
-    return new Promise((resolve, reject) => {
+  // create XMPP client with credentials and context
+  create(jid, password, context) {
       // set default domain if missing
       if (!/\S+@\S+\S+/.test(jid)) {
         jid += '@' + defaultDomain
       }
       this.jid = jid
       this.context = context
-      let _xmppSocket = this
 
       // create Stanza client
       this.client = XMPP.createClient({
@@ -41,8 +40,13 @@ export default {
           console.debug(name, data)
         })
       }
+  },
 
+  // connect client to XMPP server
+  connect() {
+    return new Promise((resolve, reject) => {
       // listen for websocket failure
+      let _xmppSocket = this
       function retryWithoutWebsocket(error) {
         if (!error || error.type !== 'close') {
           return
@@ -50,7 +54,7 @@ export default {
         console.error('socket not work, try bosh', transports)
         _xmppSocket.client.off('disconnected', retryWithoutWebsocket)
         transports.websocket = false
-        _xmppSocket.connect(jid, password, context)
+        _xmppSocket.connect()
         .then(() => resolve())
         .catch((error) => {
           reject(error)
@@ -71,6 +75,7 @@ export default {
         this.client.off('disconnected', retryWithoutWebsocket)
         localStorage.setItem('jid', this.jid)
         localStorage.setItem('auth', true)
+        // resolve when listen is resolved
         this.listen()
         .then(() => resolve())
       })
@@ -83,6 +88,7 @@ export default {
     })
   },
 
+  // logic post connection (listeners)
   listen() {
     function storeMessage (xmppSocket, type, message) {
       // clean body message if it contains only a link
@@ -105,10 +111,21 @@ export default {
     }
 
     return new Promise((resolve) => {
+      // handle reconnection
+      this.client.on('stream:management:resumed', () => {
+        this.context.$store.commit('setOnline', true)
+      })
+
+      // handle session start
       this.client.on('session:started', () => {
         // store full Jid from server
         this.fullJid = XMPP.JID.parse(this.client.jid)
+        this.context.$store.commit('setOnline', true)
         resolve()
+
+        this.client.on('disconnected', () => {
+          this.context.$store.commit('setOnline', false)
+        })
 
         // get contacts (rfc6121)
         this.client.getRoster()

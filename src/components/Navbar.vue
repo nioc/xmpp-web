@@ -14,8 +14,11 @@
       </div>
       <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link is-arrowless is-hidden-mobile"><presence :presence="user.presence" :display-label="false" /></a>
-          <div class="navbar-dropdown is-right">
+          <a class="navbar-link is-arrowless is-hidden-mobile">
+            <presence v-if="isOnline" :presence="user.presence" :display-label="false" />
+            <presence v-else presence="off" :display-label="false" />
+          </a>
+          <div v-if="isOnline" class="navbar-dropdown is-right">
             <a v-for="presence in ['chat', 'away', 'dnd']" :key="presence" class="navbar-item" :class="{'is-active': presence === user.presence}" @click="setPresence(presence)"><presence :presence="presence" /></a>
           </div>
         </div>
@@ -38,6 +41,7 @@
 <script>
 import avatar from '@/components/Avatar'
 import presence from '@/components/Presence'
+import {mapState} from 'vuex'
 
 export default {
   name: 'Navbar',
@@ -52,6 +56,9 @@ export default {
         presence: 'chat',
       },
     }
+  },
+  computed: {
+    ...mapState(['isOnline']),
   },
   mounted() {
     document.body.classList.add('has-navbar-fixed-top')

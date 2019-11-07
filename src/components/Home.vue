@@ -9,6 +9,7 @@
 
 <script>
 import contacts from '@/components/Contacts'
+import {mapState} from 'vuex'
 
 export default {
   name: 'Home',
@@ -22,6 +23,11 @@ export default {
     userJid () {
       return this.$xmpp.fullJid
     },
+    ...mapState(['hasNetwork']),
+  },
+  // watch network status for resuming session
+  watch: {
+    hasNetwork: 'handleNetworkStatus',
   },
   mounted() {
     // check if user is connected
@@ -34,6 +40,14 @@ export default {
     window.addEventListener('beforeunload', () => {
       this.$xmpp.disconnect()
     })
+  },
+  methods: {
+    // try to resume session when network is back
+    handleNetworkStatus(hasNetwork) {
+      if (hasNetwork === true) {
+        this.$xmpp.connect()
+      }
+    },
   },
 }
 </script>

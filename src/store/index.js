@@ -12,8 +12,20 @@ export default new Vuex.Store({
     joinedRooms: [],
     publicRooms: [],
     httpFileUploadMaxSize: null,
+    hasNetwork: null,
+    isOnline: false,
   },
   mutations: {
+    // network status setter
+    setNetworkStatus (state, hasNetwork) {
+      state.hasNetwork = hasNetwork
+    },
+
+    // online client status setter
+    setOnline (state, isOnline) {
+      state.isOnline = isOnline
+    },
+
     // active chat setter
     setActiveChat (state, payload) {
       state.activeChat = payload.activeChat

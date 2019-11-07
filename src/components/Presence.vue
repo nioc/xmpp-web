@@ -29,6 +29,8 @@ export default {
         case 'away':
         case 'xa':
           return 'has-text-warning'
+        case 'off':
+          return 'has-text-grey-light'
         default:
           return 'has-text-success'
       }
@@ -40,6 +42,8 @@ export default {
         case 'away':
         case 'xa':
           return 'fa-moon'
+        case 'off':
+          return 'fa-exclamation'
         default:
           return 'fa-circle'
       }
@@ -51,6 +55,8 @@ export default {
         case 'away':
         case 'xa':
           return 'Away'
+        case 'off':
+          return 'Disconnected'
         default:
           return 'Available'
       }

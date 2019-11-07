@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
   name: 'Login',
   data() {
@@ -58,11 +60,12 @@ export default {
   },
   computed: {
     isDisabled () {
-      return this.isLoading || !this.credentials.jid || !this.credentials.password
+      return this.isLoading || !this.credentials.jid || !this.credentials.password || !this.hasNetwork
     },
     rememberLabel () {
       return this.credentials.remember ? 'Store my password in browser, I accept the risk' : 'Do not store my password'
     },
+    ...mapState(['hasNetwork']),    
   },
   mounted() {
     // remove navbar spacing
@@ -89,7 +92,8 @@ export default {
       }
       // call the auth service
       this.isLoading = true
-      this.$xmpp.connect(this.credentials.jid, this.credentials.password, this)
+      this.$xmpp.create(this.credentials.jid, this.credentials.password, this)
+      this.$xmpp.connect()
       .then(() => {
         // authentication succeeded, route to requested page or default
         if (this.credentials.remember) {
