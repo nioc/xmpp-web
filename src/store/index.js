@@ -109,8 +109,9 @@ export default new Vuex.Store({
     storePreviousMessages (state, newMessages) {
       let messages = state.messages.slice(0)
       messages = messages.concat(newMessages)
+      let vm = this.$app
       messages.sort(function (a, b) {
-        return a.delay > b.delay
+        return vm.$moment(a.delay).isAfter(vm.$moment(b.delay))
       })
       state.messages = messages
     },
@@ -137,8 +138,9 @@ export default new Vuex.Store({
 
       // order messages by date
       let messages = state.messages.slice(0)
+      let vm = this.$app
       messages.sort((a, b) => {
-        return a.delay > b.delay
+        return vm.$moment(a.delay).isAfter(vm.$moment(b.delay))
       })
       state.messages = messages
 
