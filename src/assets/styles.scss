@@ -4,9 +4,60 @@
 @import "~buefy/src/scss/utils/_variables";
 @import "~bulma/sass/utilities/_all";
 
-// $primary: #42b983;
+$primary: #2da192;
+$primary-light: lighten($primary, 10);
+$primary-invert: findColorInvert($primary);
+$shade-1: #3d444b;
+$shade-1-invert: findColorInvert($shade-1);
+$shade-2: #33393f;
+$shade-2-invert: findColorInvert($shade-2);
+$shade-3: #282e33;
+$shade-3-invert: findColorInvert($shade-3);
+$shade-4: #18191d;
+$shade-4-invert: findColorInvert($shade-4);
+
+$text: $shade-3-invert;
+$text-light: lighten($text, 10);
+$text-strong: darken($text, 5);
+$scheme-main: $shade-4;
+$scheme-main-bis: $shade-2;
+$link: $primary;
+$border-hover: $black-bis;
+$border: $black-ter;
+$label-color: $black-ter;
+$input-background-color: $shade-1;
+
+$link-focus: $black;
+
+$border-light: $black;
+$navbar-divider-background-color: $shade-3;
+$navbar-dropdown-item-hover-background-color: $shade-1;
+$navbar-dropdown-item-hover-color: $shade-1-invert;
+
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+
+$menu-item-active-background-color: $primary;
+$menu-item-hover-background-color: $shade-1;
+
+$colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "light": ($light, $light-invert),
+    "dark": ($dark, $dark-invert),
+    "primary": ($primary, $primary-invert),
+    "info": ($info, $info-invert),
+    "success": ($success, $success-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $danger-invert),
+    "shade-1": ($shade-1, $shade-1-invert),
+    "shade-2": ($shade-2, $shade-2-invert),
+    "shade-3": ($shade-3, $shade-3-invert),
+    "shade-4": ($shade-4, $shade-4-invert),
+);
+
 $navbar-item-img-max-height: unset;
-$menu-item-active-background-color: $info;
 
 $sizes: (
 	1,
@@ -58,6 +109,12 @@ $i: 1;
 	}
 }
 
+@each $position in $positions {
+	.has-border-#{$position}-shade-3 {
+		border-#{$position}: 2px solid $shade-3 !important;
+	}
+}
+
 @import "~bulma/bulma.sass";
 @import "~buefy/src/scss/buefy";
 
@@ -66,4 +123,15 @@ html, body {
 }
 .is-growing {
   flex-grow: 1;
+}
+
+.has-no-border {
+	border: none;
+}
+.has-no-border:focus {
+	border: none;
+}
+
+.has-placeholder-shade-1::placeholder {
+	color: $shade-1;
 }

@@ -1,9 +1,9 @@
 <template>
-  <section class="hero is-light is-fullheight">
+  <section class="hero is-fullheight">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
-          <div class="box">
+          <div class="box has-background-shade-3">
             <form @submit.prevent="login">
               <h3 class="title has-text-grey">XMPP webchat</h3>
               <p class="subtitle has-text-grey">Login</p>
@@ -24,7 +24,7 @@
                 </div>
               </div>
               <div class="field has-text-left has-padding-left-7">
-                <b-checkbox v-model="credentials.remember" type="is-danger" :class="{'has-text-danger': credentials.remember}">
+                <b-checkbox v-model="credentials.remember" type="is-danger" :class="[credentials.remember ? 'has-text-danger' : 'has-text-grey-light']">
                   {{ rememberLabel }}
                 </b-checkbox>
               </div>

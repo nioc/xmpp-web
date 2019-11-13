@@ -1,6 +1,6 @@
 <template>
   <div class="main-container is-block-mobile">
-    <aside class="contacts-list is-block-mobile has-background-white-bis" :class="{'is-hidden-mobile': !displayContact}">
+    <aside class="contacts-list is-block-mobile has-background-shade-3" :class="{'is-hidden-mobile': !displayContact}">
       <contacts />
     </aside>
     <router-view />

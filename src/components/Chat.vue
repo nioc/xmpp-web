@@ -1,33 +1,33 @@
 <template>
-  <main class="is-growing chat-container has-background-light">
-    <div class="toolbar">
-      <router-link :to="{name: 'home'}" class="button has-text-primary" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left has-margin-right-7" aria-hidden="true" />Contacts</router-link>
-      <i class="fa fa-2x fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
-      <button class="button has-text-primary" title="Get previous messages" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history has-margin-right-7" aria-hidden="true" />Load history</button>
+  <main class="is-growing chat-container has-background-shade-4">
+    <div class="toolbar has-border-bottom-shade-3">
+      <router-link :to="{name: 'home'}" class="button has-text-primary has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
+      <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
+      <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
     </div>
     <div id="messages-container" class="messages-container">
       <div v-for="message in messagesWithJid" :key="message.id" class="message-container is-flex" :class="{'is-row-reverse': isUser(message.from)}">
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
-        <span class="message-text has-margin-left-7 has-margin-right-7" style="">
+        <span class="message-text has-background-shade-1 has-margin-left-7 has-margin-right-7" style="">
           <span>{{ message.body }}</span>
           <message-link v-for="link in message.links" :key="link.url" :url="link.url" />
           <div v-if="message.delay" class="content is-italic has-text-weight-light is-small" :title="message.delay | moment()">{{ message.delay | moment("from") }}</div>
         </span>
       </div>
     </div>
-    <div class="sendbox">
+    <div class="sendbox has-border-top-shade-3">
       <form @submit.prevent="sendMessage">
         <div class="field">
           <div class="control">
-            <textarea v-model="composingMessage" class="textarea" placeholder="Send message" rows="3" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
+            <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" placeholder="Send message" rows="3" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
             <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
               <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
               <i v-if="fileIcon" class="fa fa-5x" :class="fileIcon" />
-              <button class="delete" title="Remove file" @click="removeFile" />
+              <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
             </div>
           </div>
-          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button fixed-right-button has-text-primary" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
-          <div v-else class="file fixed-right-button">
+          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button fixed-right-button has-text-primary has-no-border is-shadowless" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+          <div v-else class="file fixed-right-button has-no-border" title="Send a file">
             <label class="file-label">
               <input class="file-input" type="file" name="resume" @change="onFileChange">
               <span class="file-cta">
@@ -89,9 +89,9 @@ export default {
         case 'composing':
           return 'has-text-grey-light'
         case 'paused':
-          return 'has-text-grey-lighter'
+          return 'has-text-shade-3'
         default:
-          return 'has-text-light'
+          return 'has-text-shade-4'
       }
     },
     ...mapState(['activeChat', 'messages', 'joinedRooms', 'httpFileUploadMaxSize']),
@@ -240,7 +240,7 @@ export default {
 }
 .toolbar {
   position: relative;
-  margin: 1em;
+  padding: 0.5em 0.3em;
   min-height: 2.5em;
   display: flex;
   align-items: center;
@@ -250,10 +250,8 @@ export default {
   margin: 0.5em 1em;
 }
 .message-text {
-  background-color: #167df0;
   white-space: pre-wrap;
   border-radius: 3px 9px 9px 9px !important;
-  color: #fff;
   padding: 0 0.75em;
   margin: 0 0.75em;
 }
@@ -262,15 +260,13 @@ export default {
 }
 .is-row-reverse .message-text {
   border-radius: 9px 3px 9px 9px !important;
-  background-color: #7096C2;
 }
 .sendbox {
   position: relative;
 }
 .sendbox textarea {
   resize: none;
-  border-color: #dbdbdb;
-  box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
+  border: none;
   padding-right: 5em;
 }
 .sendbox .thumbnail-container {
@@ -289,12 +285,7 @@ export default {
   position: absolute;
   right: 1.2em;
   top: calc(50% - 1.25em);
-  background-color: transparent;
-  border: none !important;
   font-size: 1.5rem !important;
-}
-.sendbox .fixed-right-button:hover {
-  background-color: #eeeeee;
 }
 .sendbox .fixed-right-button .fa {
   font-size: 1.5rem !important;

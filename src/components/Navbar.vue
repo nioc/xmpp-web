@@ -1,7 +1,8 @@
 <template>
-  <nav class="navbar is-primary is-fixed-top">
+  <nav class="navbar is-shade-2 is-fixed-top">
     <div class="navbar-brand">
-      <router-link class="navbar-item" :to="{name: 'home'}"><h1 class="has-text-weight-bold">Chat</h1></router-link>
+      <router-link class="navbar-item is-hidden-mobile" :to="{name: 'home'}"><h1 class="has-text-weight-bold"><i class="fa fa-xmpp fa-fw has-margin-right-7" />Home</h1></router-link>
+      <span class="navbar-item is-hidden-tablet">{{ activeChat }}</span>
       <a id="navbar-burger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenu">
         <span aria-hidden="true" class="is-primary" />
         <span aria-hidden="true" />
@@ -9,12 +10,9 @@
       </a>
     </div>
     <div id="navbar-menu" class="navbar-menu">
-      <div class="navbar-start">
-        <router-link class="navbar-item" :to="{name: 'home'}"><i class="fa fa-xmpp fa-fw" />Home</router-link>
-      </div>
       <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link is-arrowless is-hidden-mobile">
+          <a class="navbar-link is-arrowless">
             <presence v-if="isOnline" :presence="user.presence" :display-label="false" />
             <presence v-else presence="off" :display-label="false" />
           </a>
@@ -58,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isOnline']),
+    ...mapState(['isOnline', 'activeChat']),
   },
   mounted() {
     document.body.classList.add('has-navbar-fixed-top')
