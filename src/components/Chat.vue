@@ -19,10 +19,10 @@
       <form @submit.prevent="sendMessage">
         <div class="field">
           <div class="control">
-            <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" placeholder="Send message" rows="3" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
+            <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
             <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
               <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
-              <i v-if="fileIcon" class="fa fa-5x" :class="fileIcon" />
+              <i v-if="fileIcon" class="fa fa-2x" :class="fileIcon" />
               <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
             </div>
           </div>
@@ -275,7 +275,7 @@ export default {
   left: 1em;
 }
 .sendbox .thumbnail {
-  max-height: 4.5em;
+  max-height: 2.5em;
 }
 .sendbox .delete {
   margin-left: -7px;
@@ -283,7 +283,7 @@ export default {
 }
 .sendbox .fixed-right-button {
   position: absolute;
-  right: 1.2em;
+  right: 0;
   top: calc(50% - 1.25em);
   font-size: 1.5rem !important;
 }
