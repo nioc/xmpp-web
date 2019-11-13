@@ -16,6 +16,12 @@ export default {
   components: {
     contacts,
   },
+  props: {
+    jid: {
+      type: String,
+      default: null,
+    },
+  },
   computed: {
     displayContact () {
       return this.$route.meta.displayContact
@@ -28,6 +34,13 @@ export default {
   // watch network status for resuming session
   watch: {
     hasNetwork: 'handleNetworkStatus',
+    jid: function resetActiveChat () {
+      if (this.jid === null) {
+        this.$store.commit('setActiveChat', {
+          activeChat: null,
+        })
+      }
+    },
   },
   mounted() {
     // check if user is connected
