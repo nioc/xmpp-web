@@ -1,6 +1,9 @@
 module.exports = {
   pwa: {
     workboxPluginMode: 'GenerateSW',
+    workboxOptions: {
+      skipWaiting: true,
+    },
     name: 'XMPP Web',
     themeColor: '#333333',
     msTileColor: '#333333',
