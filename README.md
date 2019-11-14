@@ -13,7 +13,10 @@ Lightweight web chat client for XMPP server.
 -   Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
 -   Send and receive files over HTTP (XEP-0066, XEP-0363)
 -   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
--   Lightweight (400 KB gzipped at the first loading and then less than 10 KB )
+-   Lightweight (400 KB gzipped at the first loading and then less than 10 KB)
+
+![Screenshot desktop](/docs/screenshot-desktop-main.png)
+![Screenshot mobile home](/docs/screenshot-mobile-main.png) ![Screenshot mobile chat](/docs/screenshot-mobile-chat.png)
 
 ## Credits
 
