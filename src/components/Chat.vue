@@ -241,7 +241,7 @@ export default {
 .toolbar {
   position: relative;
   padding: 0.5em 0.3em;
-  min-height: 2.5em;
+  height: 3em;
   display: flex;
   align-items: center;
   justify-content: space-between;
