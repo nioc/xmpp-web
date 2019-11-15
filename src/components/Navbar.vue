@@ -25,8 +25,8 @@
           <div class="navbar-dropdown is-right">
             <router-link class="navbar-item" to="/profile"><i class="fa fa-user-circle fa-fw has-margin-right-7" />Profile</router-link>
             <hr class="navbar-divider">
-            <router-link class="navbar-item" to="/about"><i class="fa fa-info-circle fa-fw has-margin-right-7" />About</router-link>
-            <a class="navbar-item" href="https://github.com/nioc/xmpp-web/issues/new" target="_blank" rel="noreferrer"><i class="fa fa-bug fa-fw has-margin-right-7" />Bug</a>
+            <router-link class="navbar-item" :to="{name: 'about'}" active-class="is-active"><i class="fa fa-info-circle fa-fw has-margin-right-7" />About</router-link>
+            <a class="navbar-item" :href="bugUrl" target="_blank" rel="noreferrer"><i class="fa fa-bug fa-fw has-margin-right-7" />Bug</a>
             <hr class="navbar-divider">
             <a class="navbar-item" @click="logout()"><i class="fa fa-sign-out fa-fw has-margin-right-7" />Logout</a>
           </div>
@@ -40,6 +40,7 @@
 import avatar from '@/components/Avatar'
 import presence from '@/components/Presence'
 import {mapState} from 'vuex'
+import {bugs} from '../../package.json'
 
 export default {
   name: 'Navbar',
@@ -53,6 +54,7 @@ export default {
         jid: localStorage.getItem('jid'),
         presence: 'chat',
       },
+      bugUrl: bugs.url,
     }
   },
   computed: {

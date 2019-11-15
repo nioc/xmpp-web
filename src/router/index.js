@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar.vue'
 import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
 import RoomsList from '@/components/RoomsList.vue'
+import About from '@/components/About.vue'
 
 Vue.use(Router)
 
@@ -56,6 +57,15 @@ let router = new Router({
             jid: route.params.jid,
             isRoom: true,
           }),
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
+          // about component
+          name: 'about',
+          path: 'about',
+          component: About,
           meta: {
             requiresAuth: true,
           },
