@@ -1,7 +1,5 @@
 @charset "utf-8";
 
-@import "~bulma/sass/utilities/initial-variables";
-@import "~buefy/src/scss/utils/_variables";
 @import "~bulma/sass/utilities/_all";
 
 $primary: #2da192;
@@ -59,7 +57,7 @@ $colors: (
 
 $navbar-item-img-max-height: unset;
 
-$sizes: (
+$indexSizes: (
 	1,
 	2,
 	3,
@@ -84,7 +82,7 @@ $bulmaSizes: (
 	$size-7
 );
 $i: 1;
-@each $size in $sizes {
+@each $size in $indexSizes {
 	$sizee: nth($bulmaSizes, $i);
 	$i: $i+1;
 	.has-margin-#{$size} {
@@ -115,7 +113,7 @@ $i: 1;
 	}
 }
 
-@import "~bulma/bulma.sass";
+@import "~bulma";
 @import "~buefy/src/scss/buefy";
 
 html, body {
