@@ -152,6 +152,7 @@ export default {
               let room = this.setRoomAttributes(muc.jid, muc.name, mucDiscoInfoResult)
               this.context.$store.commit('setBookmarkedRoom', room)
             })
+            .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
           })
         })
         .catch((error) => console.error('getBookmarks', error))
