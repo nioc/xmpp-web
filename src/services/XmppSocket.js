@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
 import * as XMPP from 'stanza'
 import defaultAvatar from '@/assets/defaultAvatar'
+import axios from 'axios'
 let transports = window.config.transports
 let resource = window.config.resource
 let defaultDomain = window.config.defaultDomain
+let hasHttpAutoDiscovery = window.config.hasHttpAutoDiscovery
 
 export default {
 
@@ -14,6 +16,7 @@ export default {
 
   // create XMPP client with credentials and context
   create(jid, password, transportsUser, context) {
+    return new Promise(async (resolve) => {
       // set default domain if missing
       if (!/\S+@\S+\S+/.test(jid)) {
         jid += '@' + defaultDomain
@@ -27,6 +30,24 @@ export default {
       }
       if (transportsUser.websocket) {
         transports.websocket = transportsUser.websocket
+      }
+
+      // if active, try to get well-known/host-meta from domain
+      let userDomain = this.jid.split('@')[1]
+      if (hasHttpAutoDiscovery && userDomain !== defaultDomain) {
+        try {
+          const response = await axios.get('https://' + userDomain + '/.well-known/host-meta.json', {maxRedirects: 1})
+          response.data.links.forEach(link => {
+            if (link.rel === 'urn:xmpp:alt-connections:xbosh' && link.href) {
+              transports.bosh = link.href
+            }
+            if (link.rel === 'urn:xmpp:alt-connections:websocket' && link.href) {
+              transports.websocket = link.href
+            }
+          })
+        } catch (error) {
+          console.error('Auto-discovery failed:', error.message)
+        }
       }
 
       // create Stanza client
@@ -48,6 +69,8 @@ export default {
           console.debug(name, data)
         })
       }
+      resolve()
+    })
   },
 
   // connect client to XMPP server

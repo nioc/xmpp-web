@@ -6,6 +6,7 @@ var config = {
     bosh: 'https://chat.domain-web.ltd/http-bind',
   },
   isTransportsUserAllowed: true,
+  hasHttpAutoDiscovery: false,
   resource: 'Web XMPP',
   defaultDomain: 'domain-xmpp.ltd',
 }

@@ -118,24 +118,26 @@ export default {
       // call the auth service
       this.isLoading = true
       this.$xmpp.create(this.credentials.jid, this.credentials.password, this.transportsUser, this)
-      this.$xmpp.connect()
       .then(() => {
-        // authentication succeeded, route to requested page or default
-        if (this.credentials.remember) {
-          localStorage.setItem('p', reverse(btoa(reverse(this.credentials.password))))
-        }
-        if(this.$route.query.redirect !== undefined){
-          return this.$router.push(this.$route.query.redirect)
-        }
-        this.$router.push('/')
-      })
-      .catch((error) => {
-        // authentication failed, display error
-        return this.error = error
-      })
-      .finally(() => {
-        // remove loading status
-        this.isLoading = false
+        this.$xmpp.connect()
+        .then(() => {
+          // authentication succeeded, route to requested page or default
+          if (this.credentials.remember) {
+            localStorage.setItem('p', reverse(btoa(reverse(this.credentials.password))))
+          }
+          if(this.$route.query.redirect !== undefined){
+            return this.$router.push(this.$route.query.redirect)
+          }
+          this.$router.push('/')
+        })
+        .catch((error) => {
+          // authentication failed, display error
+          return this.error = error
+        })
+        .finally(() => {
+          // remove loading status
+          this.isLoading = false
+        })
       })
     },
   },
