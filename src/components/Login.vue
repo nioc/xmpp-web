@@ -28,6 +28,26 @@
                   {{ rememberLabel }}
                 </b-checkbox>
               </div>
+              <b-collapse v-if="isTransportsUserAllowed" class="card has-background-shade-3 has-margin-bottom-7" :open="false" aria-id="connection-settings">
+                <div slot="trigger" slot-scope="props" class="card-header" role="button" aria-controls="connection-settings">
+                  <p class="card-header-title has-text-grey-light"><span class="fa fa-cog fa-fw has-margin-right-7" aria-hidden="true" />Connection settings</p>
+                  <a class="card-header-icon has-text-grey-light">
+                    <span class="fa fa-fw has-margin-right-7" :class="[props.open ? 'fa-caret-down': 'fa-caret-up']" aria-hidden="true" />
+                  </a>
+                </div>
+                <div class="card-content">
+                  <div class="field">
+                    <div class="control">
+                      <input v-model="transportsUser.websocket" class="input" type="url" name="websocket" placeholder="wss://chat.domain.ltd/xmpp-websocket" title="Websocket url">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <input v-model="transportsUser.bosh" class="input" type="url" name="bosh" placeholder="https://chat.domain.ltd/http-bind" title="BOSH url">
+                    </div>
+                  </div>
+                </div>
+              </b-collapse>
               <div class="field">
                 <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{'is-loading': isLoading}" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw has-margin-right-7" aria-hidden="true" />Login</button>
               </div>
@@ -54,8 +74,13 @@ export default {
         password: '',
         remember: false,
       },
+      transportsUser: {
+        websocket: window.config.transports.websocket,
+        bosh: window.config.transports.bosh,
+      },
       isLoading: false,
       error: '',
+      isTransportsUserAllowed: window.config.isTransportsUserAllowed,
     }
   },
   computed: {
@@ -92,7 +117,7 @@ export default {
       }
       // call the auth service
       this.isLoading = true
-      this.$xmpp.create(this.credentials.jid, this.credentials.password, this)
+      this.$xmpp.create(this.credentials.jid, this.credentials.password, this.transportsUser, this)
       this.$xmpp.connect()
       .then(() => {
         // authentication succeeded, route to requested page or default

@@ -13,13 +13,21 @@ export default {
   client: null,
 
   // create XMPP client with credentials and context
-  create(jid, password, context) {
+  create(jid, password, transportsUser, context) {
       // set default domain if missing
       if (!/\S+@\S+\S+/.test(jid)) {
         jid += '@' + defaultDomain
       }
       this.jid = jid
       this.context = context
+
+      // use transports if user provided them
+      if (transportsUser.bosh) {
+        transports.bosh = transportsUser.bosh
+      }
+      if (transportsUser.websocket) {
+        transports.websocket = transportsUser.websocket
+      }
 
       // create Stanza client
       this.client = XMPP.createClient({
