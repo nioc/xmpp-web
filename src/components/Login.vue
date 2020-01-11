@@ -52,7 +52,7 @@
                 <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{'is-loading': isLoading}" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw has-margin-right-7" aria-hidden="true" />Login</button>
               </div>
               <div v-if="error" class="message is-danger">
-                <div class="message-body">{{ error }}</div>
+                <div class="message-body has-text-danger">{{ error }}</div>
               </div>
             </form>
           </div>
