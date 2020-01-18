@@ -1,0 +1,67 @@
+---
+- name: Install and configure Apache
+  include_tasks: apache.yml
+  when: xmppweb_install_apache
+
+- name: Creates XMPP Web folder
+  become: yes
+  file:
+    path: '{{xmppweb_rootpath}}/xmpp-web'
+    state: directory
+    owner: '{{xmppweb_webuser}}'
+    group: '{{xmppweb_webuser}}'
+
+- name: Download and unarchive XMPP Web code
+  become: yes
+  unarchive:
+    src: '{{xmppweb_download_url}}'
+    dest: '{{xmppweb_rootpath}}'
+    owner: '{{xmppweb_webuser}}'
+    group: '{{xmppweb_webuser}}'
+    remote_src: yes
+
+- name: Replace hostname in local.js file
+  become: yes
+  replace:
+    path: '{{xmppweb_rootpath}}/xmpp-web/local.js'
+    regexp: '{{item.regexp}}'
+    replace: '{{item.replace}}'
+  with_items:
+  - regexp: domain-xmpp.ltd
+    replace: '{{xmppweb_xmpp_server}}'
+  - regexp: chat.domain-web.ltd
+    replace: '{{xmppweb_domain}}'
+
+- name: Create XMPP Web Apache virtual host (using web proxy)
+  when: use_web_proxy
+  block:
+  - name: Create XMPP Web Apache virtual hosts
+    become: yes
+    template:
+      src: '024-chat-proxy.conf.j2'
+      dest: /etc/apache2/sites-available/024-chat.conf
+
+  - name: Enable XMPP Web Apache virtual host
+    become: yes
+    command: a2ensite 024-chat
+    notify: reload apache
+
+- name: Create XMPP Web Apache virtual host
+  when: not use_web_proxy
+  block:
+  - name: Create XMPP Web Apache virtual hosts
+    become: yes
+    template:
+      src: '{{item}}.conf.j2'
+      dest: /etc/apache2/sites-available/{{item}}.conf
+    with_items:
+    - 024-chat
+    - 024-chat-ssl
+
+  - name: Enable XMPP Web Apache virtual host
+    become: yes
+    command: a2ensite {{item}}
+    with_items:
+    - 024-chat
+    - 024-chat-ssl
+    notify: reload apache

@@ -1,0 +1,12 @@
+---
+- name: reload apache
+  become: yes
+  systemd:
+    name: apache2
+    state: reloaded
+
+- name: restart apache
+  become: yes
+  systemd:
+    name: apache2
+    state: restarted

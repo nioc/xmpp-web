@@ -1,0 +1,45 @@
+# {{ ansible_managed }}
+<VirtualHost *:{{xmppweb_port}}>
+	ServerName   {{xmppweb_domain}}
+	ServerAlias  {{xmppweb_domain}}
+	ServerAdmin  webmaster@{{domain}}
+
+	DocumentRoot {{xmppweb_rootpath}}/xmpp-web
+
+	# websocket proxy
+	<IfModule mod_proxy_wstunnel.c>
+		<Location "/xmpp-websocket">
+			#ProxyPreserveHost On
+			ProxyPass "ws://{{xmppweb_xmpp_server}}:{{xmppweb_xmpp_port}}/{{xmppweb_xmpp_ws_url}}"
+		</Location>
+	</IfModule>
+
+	# bosh proxy
+	<IfModule mod_proxy.c>
+		<Location "/http-bind">
+			Header set Access-Control-Allow-Origin "*"
+			Header set Access-Control-Allow-Headers "*"
+			ProxyPass         "http://{{xmppweb_xmpp_server}}:{{xmppweb_xmpp_port}}/{{xmppweb_xmpp_bosh_url}}"
+			ProxyPassReverse  "http://{{xmppweb_xmpp_server}}:{{xmppweb_xmpp_port}}/{{xmppweb_xmpp_bosh_url}}"
+		</Location>
+	</IfModule>
+
+	# front files
+	<Directory {{xmppweb_rootpath}}/xmpp-web>
+		Options -Indexes +FollowSymLinks +MultiViews
+		AllowOverride None
+		Require all granted
+		<IfModule mod_rewrite.c>
+			RewriteEngine On
+			RewriteBase   /
+			RewriteRule   ^index\.html$ - [L]
+			RewriteCond   %{REQUEST_FILENAME} !-f
+			RewriteCond   %{REQUEST_FILENAME} !-d
+			RewriteRule   . /index.html [L]
+		</IfModule>
+	</Directory>
+
+	ErrorLog  ${APACHE_LOG_DIR}/chat_error.log
+	LogLevel  warn
+	CustomLog ${APACHE_LOG_DIR}/chat_access.log vhost_combined
+</VirtualHost>

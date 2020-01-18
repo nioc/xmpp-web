@@ -1,0 +1,12 @@
+---
+xmppweb_install_apache: true
+xmppweb_version: 0.4.1
+xmppweb_download_url: https://github.com/nioc/xmpp-web/releases/download/{{xmppweb_version}}/xmpp-web-{{xmppweb_version}}.tar.xz
+xmppweb_domain: chat.{{domain}}
+xmppweb_xmpp_server: '{{domain}}'
+xmppweb_xmpp_port: 5280
+xmppweb_xmpp_ws_url: xmpp-websocket
+xmppweb_xmpp_bosh_url: http-bind
+xmppweb_port: 8080
+xmppweb_rootpath: /var/www
+xmppweb_webuser: www-data

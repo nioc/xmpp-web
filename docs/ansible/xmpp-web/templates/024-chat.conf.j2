@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+<VirtualHost *:80>
+	ServerName   {{xmppweb_domain}}
+	ServerAlias  {{xmppweb_domain}}
+	ServerAdmin  webmaster@{{domain}}
+	Redirect permanent / https://{{xmppweb_domain}}/
+
+	ErrorLog  ${APACHE_LOG_DIR}/chat_error.log
+	LogLevel  warn
+	CustomLog ${APACHE_LOG_DIR}/chat_access.log vhost_combined
+</VirtualHost>

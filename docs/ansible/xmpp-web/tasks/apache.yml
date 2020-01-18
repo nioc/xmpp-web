@@ -1,0 +1,22 @@
+---
+- name: Install and configure Apache
+  become: yes
+  apt:
+    name: ['apache2']
+    state: present
+    cache_valid_time: 3600
+
+- name: Enable Apache modules
+  become: yes
+  apache2_module:
+    name: '{{item}}'
+    state: present
+  with_items: ['proxy_wstunnel', 'proxy', 'proxy_http', 'rewrite', 'headers', 'ssl']
+  notify: restart apache
+
+- name: Make sure Apache is started and enabled to start on boot
+  become: yes
+  systemd:
+    name: apache2
+    state: started
+    enabled: yes

@@ -18,6 +18,17 @@ Lightweight web chat client for XMPP server.
 ![Screenshot desktop](/docs/screenshot-desktop-main.png)
 ![Screenshot mobile home](/docs/screenshot-mobile-main.png) ![Screenshot mobile chat](/docs/screenshot-mobile-chat.png)
 
+## Installation
+
+XMPP Web can be installed:
+-   With provided [Ansible role](/docs/ansible/xmpp-web/README.md),
+-   From archive:
+    -   download [latest release](https://github.com/nioc/xmpp-web/releases/latest),
+    -   unarchive,
+    -   create [Apache virtual host](/docs/apache.conf),
+    -   configure [`local.js`](public/local.js))
+-   From source (`git clone`, `npm build`, etc...)
+
 ## Credits
 
 -   **[Nioc](https://github.com/nioc/)** - _Initial work_
