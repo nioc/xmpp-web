@@ -16,6 +16,7 @@ export default {
 
   // create XMPP client with credentials and context
   create(jid, password, transportsUser, context) {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // set default domain if missing
       if (!/\S+@\S+\S+/.test(jid)) {

@@ -14,5 +14,25 @@ module.exports = {
       maskIcon: 'img/icons/safari-pinned-tab.svg',
       msTileImage: 'img/icons/mstile-150x150.png',
     },
+    manifestOptions: {
+      name: 'XMPP web',
+      "short_name": 'XMPP web',
+      icons: [
+        {
+          src: '/img/icons/android-chrome-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: '/img/icons/android-chrome-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+      ],
+      "start_url": '/',
+      display: 'standalone',
+      "background_color": '#333333',
+      "theme_color": '#333333',
+    },
   },
 }
