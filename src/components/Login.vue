@@ -24,8 +24,8 @@
                 </div>
               </div>
               <div class="field has-text-left has-padding-left-7">
-                <b-checkbox v-model="credentials.remember" type="is-danger" :class="[credentials.remember ? 'has-text-danger' : 'has-text-grey-light']">
-                  {{ rememberLabel }}
+                <b-checkbox v-model="credentials.remember" type="is-primary" class="has-text-grey-light">
+                  Store my password in browser
                 </b-checkbox>
               </div>
               <b-collapse v-if="isTransportsUserAllowed" class="card has-background-shade-3 has-margin-bottom-7" :open="false" aria-id="connection-settings">
@@ -86,9 +86,6 @@ export default {
   computed: {
     isDisabled () {
       return this.isLoading || !this.credentials.jid || !this.credentials.password || !this.hasNetwork
-    },
-    rememberLabel () {
-      return this.credentials.remember ? 'Store my password in browser, I accept the risk' : 'Do not store my password'
     },
     ...mapState(['hasNetwork']),
   },
