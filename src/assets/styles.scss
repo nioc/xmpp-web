@@ -133,3 +133,8 @@ html, body {
 .has-placeholder-shade-1::placeholder {
 	color: $shade-1;
 }
+
+.modal-close::before,
+.modal-close::after {
+	background-color: $white;
+}

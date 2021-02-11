@@ -14,7 +14,7 @@
       <div class="modal-content image-container">
         <img :src="url" alt="">
       </div>
-      <button class="modal-close is-large" aria-label="close" @click="displayModal = false" />
+      <button class="modal-close is-large" aria-label="close" title="Close" @click="displayModal = false" />
     </div>
   </div>
 </template>
