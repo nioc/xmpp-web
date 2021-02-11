@@ -16,7 +16,7 @@ Vue.use(Moment)
 Vue.prototype.$xmpp = xmppSocket
 Vue.prototype.$bus = new Vue()
 
-let app = new Vue({
+const app = new Vue({
   router,
   store,
   render: h => h(App),

@@ -22,7 +22,7 @@
 
 <script>
 import contact from '@/components/Contact'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Contacts',

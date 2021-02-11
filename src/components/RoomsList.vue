@@ -27,19 +27,19 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'RoomsList',
   computed: {
     ...mapState(['publicRooms']),
   },
-  mounted() {
+  mounted () {
     this.$xmpp.getPublicMuc()
   },
   methods: {
     joinRoom (jid) {
-      this.$router.push({name: 'groupchat', params: {jid}})
+      this.$router.push({ name: 'groupchat', params: { jid } })
     },
   },
 }

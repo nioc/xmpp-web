@@ -9,7 +9,7 @@ import About from '@/components/About.vue'
 
 Vue.use(Router)
 
-let router = new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
@@ -81,7 +81,7 @@ let router = new Router({
     {
       // redirect unknown path to homepage
       path: '*',
-      redirect: {name: 'home'},
+      redirect: { name: 'home' },
     },
   ],
 })
@@ -93,9 +93,8 @@ router.beforeEach((to, from, next) => {
       // user is not authenticated, route to login page
       return next({
         name: 'login',
-        query: {redirect: to.fullPath},
+        query: { redirect: to.fullPath },
       })
-
     }
     // valid auth, route to requested path
     return next()

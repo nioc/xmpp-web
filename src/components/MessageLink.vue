@@ -20,17 +20,17 @@
 </template>
 
 <script>
-import mime from "mime-types"
+import mime from 'mime-types'
 
 export default {
-  name: "MessageLink",
+  name: 'MessageLink',
   props: {
     url: {
       type: String,
       required: true,
     },
   },
-  data() {
+  data () {
     return {
       isImage: false,
       isAudio: false,
@@ -39,31 +39,31 @@ export default {
     }
   },
   computed: {
-    contentType() {
+    contentType () {
       return mime.lookup(this.url)
     },
   },
-  mounted() {
+  mounted () {
     switch (this.contentType) {
-      case "image/jpeg":
-      case "image/gif":
-      case "image/png":
-      case "image/tiff":
+      case 'image/jpeg':
+      case 'image/gif':
+      case 'image/png':
+      case 'image/tiff':
         this.isImage = true
         break
-      case "audio/mpeg":
-      case "audio/mp3":
-      case "audio/mp4":
-      case "audio/x-wav":
-      case "audio/wave":
-      case "audio/wav":
+      case 'audio/mpeg':
+      case 'audio/mp3':
+      case 'audio/mp4':
+      case 'audio/x-wav':
+      case 'audio/wave':
+      case 'audio/wav':
         this.isAudio = true
         break
-      case "video/mpeg":
-      case "video/mp4":
-      case "video/quicktime":
-      case "video/x-ms-wmv":
-      case "video/x-msvideo":
+      case 'video/mpeg':
+      case 'video/mp4':
+      case 'video/quicktime':
+      case 'video/x-ms-wmv':
+      case 'video/x-msvideo':
         this.isVideo = true
         break
     }

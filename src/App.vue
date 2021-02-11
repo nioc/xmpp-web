@@ -9,7 +9,7 @@
 
 export default {
   name: 'App',
-  mounted() {
+  mounted () {
     // handle network status
     this.$store.commit('setNetworkStatus', window.navigator.onLine)
     window.addEventListener('offline', this.notifyConnectivity)

@@ -9,7 +9,7 @@
 
 <script>
 import contacts from '@/components/Contacts'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Home',
@@ -42,12 +42,12 @@ export default {
       }
     },
   },
-  mounted() {
+  mounted () {
     // check if user is connected
     if (this.userJid === null) {
       // user not connected, return to login page
       localStorage.removeItem('auth')
-      this.$router.replace({name: 'login', query: {redirect: this.$route.fullPath}})
+      this.$router.replace({ name: 'login', query: { redirect: this.$route.fullPath } })
     }
     // disconnect before leaving page
     window.addEventListener('beforeunload', () => {
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     // try to resume session when network is back
-    handleNetworkStatus(hasNetwork) {
+    handleNetworkStatus (hasNetwork) {
       if (hasNetwork === true) {
         this.$xmpp.connect()
       }

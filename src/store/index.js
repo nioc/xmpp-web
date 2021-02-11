@@ -31,8 +31,8 @@ export default new Vuex.Store({
       state.activeChat = payload.activeChat
       // reset unread messages count for this chat
       function resetUnreadCount (collection) {
-        let copy = collection.slice(0)
-        let index = copy.findIndex((item) => item.jid === payload.activeChat)
+        const copy = collection.slice(0)
+        const index = copy.findIndex((item) => item.jid === payload.activeChat)
         if (index !== -1) {
           copy[index].unreadCount = 0
         }
@@ -58,8 +58,8 @@ export default new Vuex.Store({
       state.publicRooms = []
     },
     setPublicRoom (state, publicRoom) {
-      let publicRooms = state.publicRooms.slice(0)
-      let index = publicRooms.findIndex((knownRoom) => knownRoom.jid === publicRoom.jid)
+      const publicRooms = state.publicRooms.slice(0)
+      const index = publicRooms.findIndex((knownRoom) => knownRoom.jid === publicRoom.jid)
       if (index === -1) {
         return state.publicRooms.push(publicRoom)
       }
@@ -69,8 +69,8 @@ export default new Vuex.Store({
 
     // MUC bookmarked rooms setter
     setBookmarkedRoom (state, room) {
-      let bookmarkedRooms = state.bookmarkedRooms.slice(0)
-      let index = bookmarkedRooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
+      const bookmarkedRooms = state.bookmarkedRooms.slice(0)
+      const index = bookmarkedRooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
       if (index === -1) {
         return state.bookmarkedRooms.push(room)
       }
@@ -83,8 +83,8 @@ export default new Vuex.Store({
 
     // MUC joined rooms setter
     setJoinedRoom (state, room) {
-      let joinedRooms = state.joinedRooms.slice(0)
-      let index = joinedRooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
+      const joinedRooms = state.joinedRooms.slice(0)
+      const index = joinedRooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
       if (index === -1) {
         return state.joinedRooms.push(room)
       }
@@ -97,8 +97,8 @@ export default new Vuex.Store({
 
     // contact presence setter
     setContactPresence (state, contactPresence) {
-      let contacts = state.contacts.slice(0)
-      let index = contacts.findIndex((contact) => contact.jid === contactPresence.jid)
+      const contacts = state.contacts.slice(0)
+      const index = contacts.findIndex((contact) => contact.jid === contactPresence.jid)
       if (index !== -1) {
         contacts[index].presence = contactPresence.presence
         state.contacts = contacts
@@ -109,7 +109,7 @@ export default new Vuex.Store({
     storePreviousMessages (state, newMessages) {
       let messages = state.messages.slice(0)
       messages = messages.concat(newMessages)
-      let vm = this.$app
+      const vm = this.$app
       messages.sort(function (a, b) {
         return vm.$moment(a.delay).isAfter(vm.$moment(b.delay))
       })
@@ -117,8 +117,8 @@ export default new Vuex.Store({
     },
     storeMessage (state, payload) {
       if (payload.message.id) {
-        let messages = state.messages.slice(0)
-        let index = messages.findIndex((knownMessage) => knownMessage.id === payload.message.id)
+        const messages = state.messages.slice(0)
+        const index = messages.findIndex((knownMessage) => knownMessage.id === payload.message.id)
         if (index !== -1) {
           // update existing message
           messages[index] = payload.message
@@ -137,8 +137,8 @@ export default new Vuex.Store({
       })
 
       // order messages by date
-      let messages = state.messages.slice(0)
-      let vm = this.$app
+      const messages = state.messages.slice(0)
+      const vm = this.$app
       messages.sort((a, b) => {
         return vm.$moment(a.delay).isAfter(vm.$moment(b.delay))
       })
@@ -146,8 +146,8 @@ export default new Vuex.Store({
 
       // handle unread messages count
       function addUnreadCount (collection) {
-        let copy = collection.slice(0)
-        let index = copy.findIndex((item) => item.jid === payload.message.from.bare)
+        const copy = collection.slice(0)
+        const index = copy.findIndex((item) => item.jid === payload.message.from.bare)
         if (index !== -1) {
           if (copy[index].unreadCount === undefined) {
             copy[index].unreadCount = 1

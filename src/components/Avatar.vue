@@ -29,13 +29,13 @@ export default {
       default: 32,
     },
   },
-  data() {
+  data () {
     return {
       uri: null,
     }
   },
   computed: {
-    presenceClass() {
+    presenceClass () {
       switch (this.presence) {
         case 'dnd':
           return 'has-text-danger'
@@ -47,11 +47,11 @@ export default {
       }
     },
   },
-  mounted() {
+  mounted () {
     this.$xmpp.getJidAvatar(this.jid)
-    .then((uri) => {
-      this.uri = uri
-    })
+      .then((uri) => {
+        this.uri = uri
+      })
   },
 }
 </script>

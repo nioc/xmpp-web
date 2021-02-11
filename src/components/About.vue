@@ -26,13 +26,13 @@
 </template>
 
 <script>
-import {version, description, license, homepage, xmppWeb} from '../../package.json'
+import { version, description, license, homepage, xmppWeb } from '../../package.json'
 import axios from 'axios'
 import spdxLicenseList from 'spdx-license-list'
 
 export default {
   name: 'About',
-  data() {
+  data () {
     return {
       version: {
         installed: version,
@@ -49,23 +49,22 @@ export default {
       isUpToDate: true,
     }
   },
-  mounted() {
+  mounted () {
     this.getLastVersion()
     this.getLicense()
-    
   },
   methods: {
-    getLastVersion() {
+    getLastVersion () {
       axios.get(xmppWeb.latestReleaseUrl)
-      .then((response) => {
-        this.version.latest = response.data.tag_name
-        this.version.latestLink = response.data.html_url        
-        if (this.version.latest !== this.version.installed) {
-          this.isUpToDate = false
-        }
-      })
+        .then((response) => {
+          this.version.latest = response.data.tag_name
+          this.version.latestLink = response.data.html_url
+          if (this.version.latest !== this.version.installed) {
+            this.isUpToDate = false
+          }
+        })
     },
-    getLicense() {
+    getLicense () {
       Object.assign(this.license, spdxLicenseList[license])
     },
   },

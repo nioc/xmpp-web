@@ -63,11 +63,11 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Login',
-  data() {
+  data () {
     return {
       credentials: {
         jid: '',
@@ -90,27 +90,27 @@ export default {
     rememberLabel () {
       return this.credentials.remember ? 'Store my password in browser, I accept the risk' : 'Do not store my password'
     },
-    ...mapState(['hasNetwork']),    
+    ...mapState(['hasNetwork']),
   },
-  mounted() {
+  mounted () {
     // remove navbar spacing
     document.body.classList.remove('has-navbar-fixed-top')
     // get stored credentials
-    let jid = localStorage.getItem('jid')
+    const jid = localStorage.getItem('jid')
     if (jid) {
       this.credentials.jid = jid
     }
-    let password = localStorage.getItem('p')
+    const password = localStorage.getItem('p')
     if (password) {
       // auto login
-      let reverse = (value) => value.split('').reverse().join('')
+      const reverse = (value) => value.split('').reverse().join('')
       this.credentials.password = reverse(atob(reverse(password)))
       this.login()
     }
   },
   methods: {
     login () {
-      let reverse = (value) => value.split('').reverse().join('')
+      const reverse = (value) => value.split('').reverse().join('')
       // check credentials are set
       if (this.credentials.jid === '' || this.credentials.password === '') {
         return
@@ -118,27 +118,28 @@ export default {
       // call the auth service
       this.isLoading = true
       this.$xmpp.create(this.credentials.jid, this.credentials.password, this.transportsUser, this)
-      .then(() => {
-        this.$xmpp.connect()
         .then(() => {
-          // authentication succeeded, route to requested page or default
-          if (this.credentials.remember) {
-            localStorage.setItem('p', reverse(btoa(reverse(this.credentials.password))))
-          }
-          if(this.$route.query.redirect !== undefined){
-            return this.$router.push(this.$route.query.redirect)
-          }
-          this.$router.push('/')
+          this.$xmpp.connect()
+            .then(() => {
+            // authentication succeeded, route to requested page or default
+              if (this.credentials.remember) {
+                localStorage.setItem('p', reverse(btoa(reverse(this.credentials.password))))
+              }
+              if (this.$route.query.redirect !== undefined) {
+                return this.$router.push(this.$route.query.redirect)
+              }
+              this.$router.push('/')
+            })
+            .catch((error) => {
+            // authentication failed, display error
+              this.error = error
+              return this.error
+            })
+            .finally(() => {
+              // remove loading status
+              this.isLoading = false
+            })
         })
-        .catch((error) => {
-          // authentication failed, display error
-          return this.error = error
-        })
-        .finally(() => {
-          // remove loading status
-          this.isLoading = false
-        })
-      })
     },
   },
 }

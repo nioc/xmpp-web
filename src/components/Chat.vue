@@ -46,7 +46,7 @@
 <script>
 import avatar from '@/components/Avatar'
 import messageLink from '@/components/MessageLink'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 import axios from 'axios'
 import filesize from 'filesize'
 
@@ -66,7 +66,7 @@ export default {
       default: false,
     },
   },
-  data() {
+  data () {
     return {
       composingMessage: '',
       firstMessageId: null,
@@ -101,7 +101,7 @@ export default {
     jid: 'handleRoute',
     messagesWithJid: 'scrollToLastMessage',
   },
-  mounted() {
+  mounted () {
     // handle route prop
     this.handleRoute()
     // listen for chat states
@@ -117,19 +117,19 @@ export default {
       return jid.bare === this.userJid.bare || jid.resource === this.userJid.local
     },
     // ask for messages archive (update messages in store)
-    getPreviousMessages() {
+    getPreviousMessages () {
       this.isLoadingPreviousMessages = true
       this.$xmpp.searchHistory(this.activeChat, this.firstMessageId)
-      .then(data => {
+        .then(data => {
         // store first displayed message
-        this.firstMessageId = data.first
-      })
-      .finally(() => {
-        this.isLoadingPreviousMessages = false
-      })
+          this.firstMessageId = data.first
+        })
+        .finally(() => {
+          this.isLoadingPreviousMessages = false
+        })
     },
     // send message
-    sendMessage() {
+    sendMessage () {
       if (this.file) {
         this.postFile(this.file)
         return
@@ -137,8 +137,8 @@ export default {
       this.$xmpp.sendMessage(this.activeChat, this.composingMessage, this.isRoom)
       this.composingMessage = ''
     },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files
+    onFileChange (e) {
+      const files = e.target.files || e.dataTransfer.files
       if (!files.length) {
         return
       }
@@ -150,10 +150,10 @@ export default {
       }
       // handle thumbnail
       if (this.file.type.startsWith('image/')) {
-        var reader = new FileReader()
-        var vm = this
+        const reader = new FileReader()
+        const vm = this
         reader.onload = (e) => {
-            vm.fileThumbnail = e.target.result
+          vm.fileThumbnail = e.target.result
         }
         reader.readAsDataURL(this.file)
       } else if (this.file.type.startsWith('audio/')) {
@@ -166,32 +166,32 @@ export default {
         this.fileIcon = 'fa-file-o'
       }
     },
-    postFile(file) {
+    postFile (file) {
       // reserve slot
       this.$xmpp.getUploadSlot(this.userJid.domain, {
         name: file.name,
         size: file.size,
         mediaType: file.type,
       })
-      .then((httpUploadSlotResult) => {
+        .then((httpUploadSlotResult) => {
         // upload file on returned slot
-        axios.put(httpUploadSlotResult.upload.url, file, {
+          axios.put(httpUploadSlotResult.upload.url, file, {
             headers: {
               'Content-Type': file.type,
             },
           })
-        .then(() => {
-          // upload is ok, send message
-          this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
-          this.file = null
-          this.fileThumbnail = null
-          this.fileIcon = null
+            .then(() => {
+              // upload is ok, send message
+              this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
+              this.file = null
+              this.fileThumbnail = null
+              this.fileIcon = null
+            })
+            .catch((uploadError) => console.error('uploadError', uploadError))
         })
-        .catch((uploadError) => console.error('uploadError', uploadError))
-      })
-      .catch((httpUploadSlotError) => console.error('httpUploadSlot', httpUploadSlotError))
+        .catch((httpUploadSlotError) => console.error('httpUploadSlot', httpUploadSlotError))
     },
-    removeFile() {
+    removeFile () {
       this.file = null
       this.fileThumbnail = null
       this.fileIcon = null
@@ -214,8 +214,8 @@ export default {
     },
     // scroll to last message (called when messages changes)
     scrollToLastMessage () {
-      this.$nextTick( () => {
-        var messagesContainer = document.getElementById("messages-container")
+      this.$nextTick(() => {
+        const messagesContainer = document.getElementById('messages-container')
         if (messagesContainer) {
           messagesContainer.scrollTop = messagesContainer.scrollHeight + 5000
         }

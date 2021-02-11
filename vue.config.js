@@ -16,7 +16,7 @@ module.exports = {
     },
     manifestOptions: {
       name: 'XMPP web',
-      "short_name": 'XMPP web',
+      short_name: 'XMPP web',
       icons: [
         {
           src: '/img/icons/android-chrome-192x192.png',
@@ -29,10 +29,10 @@ module.exports = {
           type: 'image/png',
         },
       ],
-      "start_url": '/',
+      start_url: '/',
       display: 'standalone',
-      "background_color": '#333333',
-      "theme_color": '#333333',
+      background_color: '#333333',
+      theme_color: '#333333',
     },
   },
 }

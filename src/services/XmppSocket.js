@@ -2,10 +2,10 @@
 import * as XMPP from 'stanza'
 import defaultAvatar from '@/assets/defaultAvatar'
 import axios from 'axios'
-let transports = window.config.transports
-let resource = window.config.resource
-let defaultDomain = window.config.defaultDomain
-let hasHttpAutoDiscovery = window.config.hasHttpAutoDiscovery
+const transports = window.config.transports
+const resource = window.config.resource
+const defaultDomain = window.config.defaultDomain
+const hasHttpAutoDiscovery = window.config.hasHttpAutoDiscovery
 
 export default {
 
@@ -15,7 +15,7 @@ export default {
   client: null,
 
   // create XMPP client with credentials and context
-  create(jid, password, transportsUser, context) {
+  create (jid, password, transportsUser, context) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // set default domain if missing
@@ -34,10 +34,10 @@ export default {
       }
 
       // if active, try to get well-known/host-meta from domain
-      let userDomain = this.jid.split('@')[1]
+      const userDomain = this.jid.split('@')[1]
       if (hasHttpAutoDiscovery && userDomain !== defaultDomain) {
         try {
-          const response = await axios.get('https://' + userDomain + '/.well-known/host-meta.json', {maxRedirects: 1})
+          const response = await axios.get('https://' + userDomain + '/.well-known/host-meta.json', { maxRedirects: 1 })
           response.data.links.forEach(link => {
             if (link.rel === 'urn:xmpp:alt-connections:xbosh' && link.href) {
               transports.bosh = link.href
@@ -56,7 +56,7 @@ export default {
         jid,
         password,
         resource: resource || 'Web XMPP',
-        transports: transports || {websocket: true, bosh: true},
+        transports: transports || { websocket: true, bosh: true },
       })
 
       // debug stanza on dev mode
@@ -75,11 +75,11 @@ export default {
   },
 
   // connect client to XMPP server
-  connect() {
+  connect () {
     return new Promise((resolve, reject) => {
       // listen for websocket failure
-      let _xmppSocket = this
-      function retryWithoutWebsocket(error) {
+      const _xmppSocket = this
+      function retryWithoutWebsocket (error) {
         if (!error || error.type !== 'close') {
           return
         }
@@ -87,10 +87,10 @@ export default {
         _xmppSocket.client.off('disconnected', retryWithoutWebsocket)
         transports.websocket = false
         _xmppSocket.connect()
-        .then(() => resolve())
-        .catch((error) => {
-          reject(error)
-        })
+          .then(() => resolve())
+          .catch((error) => {
+            reject(error)
+          })
       }
       if (transports.websocket) {
         _xmppSocket.client.on('disconnected', retryWithoutWebsocket)
@@ -98,7 +98,7 @@ export default {
 
       // listen for authentication failure
       this.client.on('auth:failed', () => {
-        reject('Check your credentials')
+        reject(new Error('Check your credentials'))
       })
 
       // listen for authentication success
@@ -109,26 +109,26 @@ export default {
         localStorage.setItem('auth', true)
         // resolve when listen is resolved
         this.listen()
-        .then(() => resolve())
+          .then(() => resolve())
       })
 
       try {
         this.client.connect()
       } catch (error) {
-        reject('Error during login')
+        reject(new Error('Error during login'))
       }
     })
   },
 
   // logic post connection (listeners)
-  listen() {
+  listen () {
     function storeMessage (xmppSocket, type, message) {
       // clean body message if it contains only a link
       if (message.links) {
         if (message.links.some((link) => link.url === message.body)) {
           message.body = ''
         }
-      }      
+      }
       xmppSocket.context.$store.commit('storeMessage', {
         type,
         message: {
@@ -161,41 +161,41 @@ export default {
 
         // get contacts (rfc6121)
         this.client.getRoster()
-        .then((rosterResult) => {
-          this.context.$store.commit('setRoster', rosterResult.items)
+          .then((rosterResult) => {
+            this.context.$store.commit('setRoster', rosterResult.items)
 
-          // send presence to contacts (rfc6121)
-          this.client.sendPresence()
-        })
-        .catch((rosterError) => console.error('getRoster', rosterError))
+            // send presence to contacts (rfc6121)
+            this.client.sendPresence()
+          })
+          .catch((rosterError) => console.error('getRoster', rosterError))
 
         // enable carbons (XEP-0280: Message Carbons)
         this.client.enableCarbons()
-        .catch((error) => console.error('carbon', error))
+          .catch((error) => console.error('carbon', error))
 
         // get bookmarked rooms (XEP-0048: Bookmarks)
         this.client.getBookmarks()
-        .then((mucBookmarks) => {
-          this.context.$store.commit('setBookmarkedRooms', mucBookmarks)
-          // get rooms attributes
-          mucBookmarks.forEach((muc) => {
-            this.client.getDiscoInfo(muc.jid, '')
-            .then((mucDiscoInfoResult) => {
-              let room = this.setRoomAttributes(muc.jid, muc.name, mucDiscoInfoResult)
-              this.context.$store.commit('setBookmarkedRoom', room)
+          .then((mucBookmarks) => {
+            this.context.$store.commit('setBookmarkedRooms', mucBookmarks)
+            // get rooms attributes
+            mucBookmarks.forEach((muc) => {
+              this.client.getDiscoInfo(muc.jid, '')
+                .then((mucDiscoInfoResult) => {
+                  const room = this.setRoomAttributes(muc.jid, muc.name, mucDiscoInfoResult)
+                  this.context.$store.commit('setBookmarkedRoom', room)
+                })
+                .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
             })
-            .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
           })
-        })
-        .catch((error) => console.error('getBookmarks', error))
+          .catch((error) => console.error('getBookmarks', error))
 
         // get HTTP file upload capacity (XEP-0363)
         this.client.getUploadService()
-        .then((UploadServiceResult) => {
-          if (UploadServiceResult.maxSize) {
-            this.context.$store.commit('setHttpFileUploadMaxSize', UploadServiceResult.maxSize)
-          }
-        })
+          .then((UploadServiceResult) => {
+            if (UploadServiceResult.maxSize) {
+              this.context.$store.commit('setHttpFileUploadMaxSize', UploadServiceResult.maxSize)
+            }
+          })
       })
 
       // listen for contact messages
@@ -211,10 +211,10 @@ export default {
       // listen for room joined
       this.client.on('muc:join', (receivedMUCPresence) => {
         // @TODO add participants and role handling
-        let occupantJid = XMPP.JID.parse(receivedMUCPresence.from)
+        const occupantJid = XMPP.JID.parse(receivedMUCPresence.from)
         // @TODO better handle nick
         if (occupantJid.resource === this.fullJid.local) {
-          this.context.$store.commit('setJoinedRoom', {jid: occupantJid.bare})
+          this.context.$store.commit('setJoinedRoom', { jid: occupantJid.bare })
         }
       })
 
@@ -237,7 +237,7 @@ export default {
 
       // listen for presence
       this.client.on('available', available => {
-        let fullJid = XMPP.JID.parse(available.from)
+        const fullJid = XMPP.JID.parse(available.from)
         if (!available.show) {
           // set default value to 'chat'
           available.show = 'chat'
@@ -251,12 +251,12 @@ export default {
           return
         }
         // contact presence commit to store
-        this.context.$store.commit('setContactPresence', {jid: fullJid.bare, presence: available.show})
+        this.context.$store.commit('setContactPresence', { jid: fullJid.bare, presence: available.show })
       })
     })
   },
 
-  disconnect() {
+  disconnect () {
     if (this.context) {
       if (this.client) {
         this.client.disconnect()
@@ -264,17 +264,17 @@ export default {
     }
   },
 
-  sendUrl(to, url, isMuc) {
+  sendUrl (to, url, isMuc) {
     this.client.sendMessage({
       from: this.fullJid.full,
       to,
       body: url,
       type: isMuc ? 'groupchat' : 'chat',
-      links: [{url}],
+      links: [{ url }],
     })
   },
 
-  sendMessage(to, body, isMuc) {
+  sendMessage (to, body, isMuc) {
     this.client.sendMessage({
       from: this.fullJid.full,
       to,
@@ -283,8 +283,8 @@ export default {
     })
   },
 
-  setRoomAttributes(jid, name, mucDiscoInfoResult) {
-    let room = {
+  setRoomAttributes (jid, name, mucDiscoInfoResult) {
+    const room = {
       jid: jid,
       name: name,
       password: null,
@@ -340,9 +340,9 @@ export default {
     return room
   },
 
-  getJidAvatar(jid) {
+  getJidAvatar (jid) {
     return new Promise((resolve) => {
-      let uri = localStorage.getItem('avatar-' + jid)
+      const uri = localStorage.getItem('avatar-' + jid)
       if (uri) {
         return resolve(uri)
       }
@@ -350,31 +350,31 @@ export default {
         return resolve(defaultAvatar)
       }
       this.client.getVCard(jid)
-      .then((data) => {
-        if (!data.records) {
+        .then((data) => {
+          if (!data.records) {
+            return resolve(defaultAvatar)
+          }
+          const avatar = data.records.find((record) => record.type === 'photo')
+          if (avatar && avatar.mediaType && avatar.data) {
+            const uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
+            localStorage.setItem('avatar-' + jid, uri)
+            return resolve(uri)
+          }
           return resolve(defaultAvatar)
-        }
-        let avatar = data.records.find((record) => record.type === 'photo')
-        if (avatar && avatar.mediaType && avatar.data) {
-          let uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
-          localStorage.setItem('avatar-' + jid, uri)
-          return resolve(uri)
-        }
-        return resolve(defaultAvatar)
-      })
-      .catch(() => {
-        return resolve(defaultAvatar)
-      })
+        })
+        .catch(() => {
+          return resolve(defaultAvatar)
+        })
     })
   },
 
-  sendPresence(presence) {
+  sendPresence (presence) {
     this.client.sendPresence(presence)
   },
 
-  searchHistory(jid, last = true) {
+  searchHistory (jid, last = true) {
     return new Promise((resolve, reject) => {
-      let options = {
+      const options = {
         with: jid,
         paging: {
           before: last,
@@ -382,140 +382,140 @@ export default {
         },
       }
       this.client.searchHistory(options)
-      .then((data) => {
+        .then((data) => {
         // get messages
-        let messages = []
-        data.results.map((item) => {
-          if (!item.item.message || (!item.item.message.body && !item.item.message.links)) {
+          const messages = []
+          data.results.forEach((item) => {
+            if (!item.item.message || (!item.item.message.body && !item.item.message.links)) {
             // message de not have text (stanza maybe)
-            return
-          }
-          if (this.context.$store.state.messages.some((message) => message.id === item.item.message.id)) {
-            // message already known
-            return
-          }
-          let message = {
-            id: item.item.message.id,
-            delay: item.item.delay.timestamp,
-            from: XMPP.JID.parse(item.item.message.from),
-            to: XMPP.JID.parse(item.item.message.to),
-            body: item.item.message.body || null,
-            links: item.item.message.links || null,
-          }
-          // clean body message if it contains only a link
-          if (message.links) {
-            if (message.links.some((link) => link.url === message.body)) {
-              message.body = ''
+              return
             }
-          }
-          messages.push(message)
+            if (this.context.$store.state.messages.some((message) => message.id === item.item.message.id)) {
+            // message already known
+              return
+            }
+            const message = {
+              id: item.item.message.id,
+              delay: item.item.delay.timestamp,
+              from: XMPP.JID.parse(item.item.message.from),
+              to: XMPP.JID.parse(item.item.message.to),
+              body: item.item.message.body || null,
+              links: item.item.message.links || null,
+            }
+            // clean body message if it contains only a link
+            if (message.links) {
+              if (message.links.some((link) => link.url === message.body)) {
+                message.body = ''
+              }
+            }
+            messages.push(message)
+          })
+          this.context.$store.commit('storePreviousMessages', messages)
+          return resolve(data.paging)
         })
-        this.context.$store.commit('storePreviousMessages', messages)
-        return resolve(data.paging)
-      })
-      .catch((error) => reject(error))
+        .catch((error) => reject(error))
     })
   },
 
-  joinRoom(jid, nick = null, opts = {}) {
+  joinRoom (jid, nick = null, opts = {}) {
     if (nick === null) {
       nick = this.fullJid.local
     }
     this.client.joinRoom(jid, nick, opts)
   },
 
-  getPublicMuc() {
+  getPublicMuc () {
     return new Promise((resolve, reject) => {
       this.context.$store.commit('clearPublicRooms')
       // discoItems on server
       this.client.getDiscoItems(this.fullJid.domain, '')
-      .then((serverDiscoItemsResult) => {
-        if (serverDiscoItemsResult.items.length === 0) {
-          return reject('There is no MUC service')
-        }
-        // discoInfo on every service
-        serverDiscoItemsResult.items.forEach((serverDiscoItem) => {
-          this.client.getDiscoInfo(serverDiscoItem.jid, '')
-          .then((serviceDiscoInfoResult) => {
-            // @TODO use promise race
-            if (serviceDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
-              this.client.getDiscoItems(serverDiscoItem.jid, '')
-              .then((MucDiscoItemsResult) => {
-                // discoInfo on every MUC
-                MucDiscoItemsResult.items.forEach((MucDiscoItem) => {
-                  this.client.getDiscoInfo(MucDiscoItem.jid, '')
-                  .then((mucDiscoInfoResult) => {
-                    if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
-                      // add room
-                      let room = this.setRoomAttributes(MucDiscoItem.jid, MucDiscoItem.name, mucDiscoInfoResult)
-                      this.context.$store.commit('setPublicRoom', room)
-                    }
-                  })
-                })
-                return resolve(MucDiscoItemsResult)
+        .then((serverDiscoItemsResult) => {
+          if (serverDiscoItemsResult.items.length === 0) {
+            return reject(new Error('There is no MUC service'))
+          }
+          // discoInfo on every service
+          serverDiscoItemsResult.items.forEach((serverDiscoItem) => {
+            this.client.getDiscoInfo(serverDiscoItem.jid, '')
+              .then((serviceDiscoInfoResult) => {
+                // @TODO use promise race
+                if (serviceDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+                  this.client.getDiscoItems(serverDiscoItem.jid, '')
+                    .then((MucDiscoItemsResult) => {
+                      // discoInfo on every MUC
+                      MucDiscoItemsResult.items.forEach((MucDiscoItem) => {
+                        this.client.getDiscoInfo(MucDiscoItem.jid, '')
+                          .then((mucDiscoInfoResult) => {
+                            if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+                              // add room
+                              const room = this.setRoomAttributes(MucDiscoItem.jid, MucDiscoItem.name, mucDiscoInfoResult)
+                              this.context.$store.commit('setPublicRoom', room)
+                            }
+                          })
+                      })
+                      return resolve(MucDiscoItemsResult)
+                    })
+                  // catch discoItems on MUC error
+                    .catch((error) => reject(error))
+                }
               })
-              // catch discoItems on MUC error
+            // catch discoInfo error
               .catch((error) => reject(error))
-            }
           })
-          // catch discoInfo error
-          .catch((error) => reject(error))
-        })          
-      })
+        })
       // catch discoItems on server error
-      .catch((error) => reject(error))
+        .catch((error) => reject(error))
     })
   },
 
-  getDiscoItems(jid, node) {
+  getDiscoItems (jid, node) {
     return new Promise((resolve, reject) => {
       this.client.getDiscoItems(jid, node)
-      .then((data) => {
-        return resolve(data)
-      })
-      .catch((error) => reject(error))
+        .then((data) => {
+          return resolve(data)
+        })
+        .catch((error) => reject(error))
     })
   },
 
-  getDiscoInfo(jid, node) {
+  getDiscoInfo (jid, node) {
     return new Promise((resolve, reject) => {
       this.client.getDiscoInfo(jid, node)
-      .then((data) => {
-        return resolve(data)
-      })
-      .catch((error) => reject(error))
+        .then((data) => {
+          return resolve(data)
+        })
+        .catch((error) => reject(error))
     })
   },
 
-  getUniqueRoomName(host) {
+  getUniqueRoomName (host) {
     return new Promise((resolve, reject) => {
       this.client.discoverBindings(host)
-      .then((data) => {
-        return resolve(data)
-      })
-      .catch((error) => reject(error))
+        .then((data) => {
+          return resolve(data)
+        })
+        .catch((error) => reject(error))
     })
   },
 
-  getServices(jid, string) {
+  getServices (jid, string) {
     return new Promise((resolve, reject) => {
       this.client.getServices(jid, string)
-      .then((data) => {
-        return resolve(data)
-      })
-      .catch((error) => reject(error))
+        .then((data) => {
+          return resolve(data)
+        })
+        .catch((error) => reject(error))
     })
   },
 
   // HTTP upload (XEP-0363)
-  getUploadSlot(uploadService, uploadRequest) {
+  getUploadSlot (uploadService, uploadRequest) {
     return new Promise((resolve, reject) => {
       this.client.getUploadSlot(uploadService, uploadRequest)
-      .then((data) => {
-        return resolve(data)
-      })
-      .catch((error) => reject(error))
+        .then((data) => {
+          return resolve(data)
+        })
+        .catch((error) => reject(error))
     })
   },
-  
+
 }

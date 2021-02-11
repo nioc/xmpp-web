@@ -39,8 +39,8 @@
 <script>
 import avatar from '@/components/Avatar'
 import presence from '@/components/Presence'
-import {mapState} from 'vuex'
-import {bugs} from '../../package.json'
+import { mapState } from 'vuex'
+import { bugs } from '../../package.json'
 
 export default {
   name: 'Navbar',
@@ -48,7 +48,7 @@ export default {
     avatar,
     presence,
   },
-  data() {
+  data () {
     return {
       user: {
         jid: localStorage.getItem('jid'),
@@ -60,9 +60,12 @@ export default {
   computed: {
     ...mapState(['isOnline', 'activeChat']),
   },
-  mounted() {
+  mounted () {
     document.body.classList.add('has-navbar-fixed-top')
-    this.$bus.$on('myPresence', (presence) => this.user.presence = presence)
+    this.$bus.$on('myPresence', (presence) => {
+      this.user.presence = presence
+      return this.user.presence
+    })
   },
   methods: {
     toggleMenu (e) {
@@ -74,8 +77,8 @@ export default {
       localStorage.clear()
       this.$router.replace('/login')
     },
-    setPresence(presence) {
-      this.$xmpp.sendPresence({show: presence})
+    setPresence (presence) {
+      this.$xmpp.sendPresence({ show: presence })
     },
   },
 }
