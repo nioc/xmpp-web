@@ -54,15 +54,17 @@ export default {
     this.getLicense()
   },
   methods: {
-    getLastVersion () {
-      axios.get(xmppWeb.latestReleaseUrl)
-        .then((response) => {
-          this.version.latest = response.data.tag_name
-          this.version.latestLink = response.data.html_url
-          if (this.version.latest !== this.version.installed) {
-            this.isUpToDate = false
-          }
-        })
+    async getLastVersion () {
+      try {
+        const response = await axios.get(xmppWeb.latestReleaseUrl)
+        this.version.latest = response.data.tag_name
+        this.version.latestLink = response.data.html_url
+        if (this.version.latest !== this.version.installed) {
+          this.isUpToDate = false
+        }
+      } catch (error) {
+        console.error('getLastVersion error', error)
+      }
     },
     getLicense () {
       Object.assign(this.license, spdxLicenseList[license])

@@ -34,8 +34,12 @@ export default {
   computed: {
     ...mapState(['publicRooms']),
   },
-  mounted () {
-    this.$xmpp.getPublicMuc()
+  async mounted () {
+    try {
+      await this.$xmpp.getPublicMuc()
+    } catch (error) {
+      console.error('getPublicMuc error', error)
+    }
   },
   methods: {
     joinRoom (jid) {

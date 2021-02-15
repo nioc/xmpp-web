@@ -47,11 +47,12 @@ export default {
       }
     },
   },
-  mounted () {
-    this.$xmpp.getJidAvatar(this.jid)
-      .then((uri) => {
-        this.uri = uri
-      })
+  async mounted () {
+    try {
+      this.uri = await this.$xmpp.getJidAvatar(this.jid)
+    } catch (error) {
+      console.error('getJidAvatar error', error)
+    }
   },
 }
 </script>

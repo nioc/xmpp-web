@@ -120,16 +120,16 @@ export default {
       return jid.bare === this.userJid.bare || jid.resource === this.userJid.local || jid.resource === this.userNick
     },
     // ask for messages archive (update messages in store)
-    getPreviousMessages () {
+    async getPreviousMessages () {
       this.isLoadingPreviousMessages = true
-      this.$xmpp.searchHistory(this.activeChat, this.firstMessageId)
-        .then(data => {
+      try {
+        const messages = await this.$xmpp.searchHistory(this.activeChat, this.firstMessageId)
         // store first displayed message
-          this.firstMessageId = data.first
-        })
-        .finally(() => {
-          this.isLoadingPreviousMessages = false
-        })
+        this.firstMessageId = messages.first
+      } catch (error) {
+        console.error('Error during retrieving history', error)
+      }
+      this.isLoadingPreviousMessages = false
     },
     // send message
     sendMessage () {
@@ -169,30 +169,28 @@ export default {
         this.fileIcon = 'fa-file-o'
       }
     },
-    postFile (file) {
-      // reserve slot
-      this.$xmpp.getUploadSlot(this.userJid.domain, {
-        name: file.name,
-        size: file.size,
-        mediaType: file.type,
-      })
-        .then((httpUploadSlotResult) => {
-        // upload file on returned slot
-          axios.put(httpUploadSlotResult.upload.url, file, {
-            headers: {
-              'Content-Type': file.type,
-            },
-          })
-            .then(() => {
-              // upload is ok, send message
-              this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
-              this.file = null
-              this.fileThumbnail = null
-              this.fileIcon = null
-            })
-            .catch((uploadError) => console.error('uploadError', uploadError))
+    async postFile (file) {
+      try {
+        // reserve slot
+        const httpUploadSlotResult = await this.$xmpp.getUploadSlot(this.userJid.domain, {
+          name: file.name,
+          size: file.size,
+          mediaType: file.type,
         })
-        .catch((httpUploadSlotError) => console.error('httpUploadSlot', httpUploadSlotError))
+        // upload file on returned slot
+        await axios.put(httpUploadSlotResult.upload.url, file, {
+          headers: {
+            'Content-Type': file.type,
+          },
+        })
+        // upload is ok, send message
+        this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
+        this.file = null
+        this.fileThumbnail = null
+        this.fileIcon = null
+      } catch (error) {
+        console.error('httpUpload', error)
+      }
     },
     removeFile () {
       this.file = null
