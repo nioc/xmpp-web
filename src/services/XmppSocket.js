@@ -82,7 +82,16 @@ export default {
 
   // connect client to XMPP server
   connect () {
-    return new Promise((resolve, reject) => {
+    const timeoutDuration = 5000
+    let timeoutId = null
+    const timeoutPromise = new Promise((resolve, reject) => {
+      timeoutId = setTimeout(() => {
+        clearTimeout(timeoutId)
+        reject(new Error('Server unreachable'))
+      }, timeoutDuration)
+    })
+
+    const connectPromise = new Promise((resolve, reject) => {
       // listen for websocket failure
       const _xmppSocket = this
       function retryWithoutWebsocket (error) {
@@ -93,8 +102,12 @@ export default {
         _xmppSocket.client.off('disconnected', retryWithoutWebsocket)
         transports.websocket = false
         _xmppSocket.connect()
-          .then(() => resolve())
+          .then(() => {
+            clearTimeout(timeoutId)
+            resolve()
+          })
           .catch((error) => {
+            clearTimeout(timeoutId)
             reject(error)
           })
       }
@@ -104,6 +117,7 @@ export default {
 
       // listen for authentication failure
       this.client.on('auth:failed', () => {
+        clearTimeout(timeoutId)
         reject(new Error('Check your credentials'))
       })
 
@@ -115,7 +129,10 @@ export default {
         localStorage.setItem('auth', true)
         // resolve when listen is resolved
         this.listen()
-          .then(() => resolve())
+          .then(() => {
+            clearTimeout(timeoutId)
+            resolve()
+          })
       })
 
       try {
@@ -124,6 +141,11 @@ export default {
         reject(new Error('Error during login'))
       }
     })
+
+    return Promise.race([
+      connectPromise,
+      timeoutPromise,
+    ])
   },
 
   // logic post connection (listeners)
