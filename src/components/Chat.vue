@@ -1,7 +1,7 @@
 <template>
   <main class="is-growing chat-container has-background-shade-4">
     <div class="toolbar has-border-bottom-shade-3">
-      <router-link :to="{name: 'home'}" class="button has-text-primary has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
+      <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button has-text-primary has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
       <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
     </div>

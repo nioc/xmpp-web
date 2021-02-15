@@ -14,6 +14,7 @@ export default {
   context: null,
   client: null,
   nick: null,
+  isAnonymous: true,
 
   // create XMPP client with credentials and context
   create (jid, password, server, transportsUser, context) {
@@ -22,6 +23,9 @@ export default {
       // set default domain if missing
       if (!/\S+@\S+\S+/.test(jid)) {
         jid += '@' + defaultDomain
+      }
+      if (this.jid) {
+        this.isAnonymous = false
       }
       this.jid = jid
       this.context = context
