@@ -6,6 +6,8 @@ import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
 import RoomsList from '@/components/RoomsList.vue'
 import About from '@/components/About.vue'
+import GuestHome from '@/components/GuestHome.vue'
+import GuestChat from '@/components/GuestChat.vue'
 
 Vue.use(Router)
 
@@ -77,6 +79,30 @@ const router = new Router({
       name: 'login',
       path: '/login',
       component: Login,
+    },
+    {
+      // guest home
+      name: 'gest',
+      path: '/guest',
+      component: GuestHome,
+      props: (route) => ({
+        requestedJid: route.query.join,
+      }),
+      meta: {
+        requiresAuth: false,
+      },
+    },
+    {
+      // guest access room
+      name: 'gestInRoom',
+      path: '/guest/:jid',
+      component: GuestChat,
+      props: (route) => ({
+        jid: route.params.jid,
+      }),
+      meta: {
+        requiresAuth: false,
+      },
     },
     {
       // redirect unknown path to homepage

@@ -138,3 +138,11 @@ html, body {
 .modal-close::after {
 	background-color: $white;
 }
+
+.is-guest .main-container {
+  height: 100vh;
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+	justify-content: space-between;
+}

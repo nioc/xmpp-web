@@ -114,7 +114,7 @@ export default {
       }
       // call the auth service
       this.isLoading = true
-      this.$xmpp.create(this.credentials.jid, this.credentials.password, this.transportsUser, this)
+      this.$xmpp.create(this.credentials.jid, this.credentials.password, null, this.transportsUser, this)
         .then(() => {
           this.$xmpp.connect()
             .then(() => {
@@ -128,7 +128,7 @@ export default {
               this.$router.push('/')
             })
             .catch((error) => {
-            // authentication failed, display error
+              // authentication failed, display error
               this.error = error
               return this.error
             })

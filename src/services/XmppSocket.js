@@ -13,9 +13,10 @@ export default {
   fullJid: null,
   context: null,
   client: null,
+  nick: null,
 
   // create XMPP client with credentials and context
-  create (jid, password, transportsUser, context) {
+  create (jid, password, server, transportsUser, context) {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       // set default domain if missing
@@ -55,6 +56,7 @@ export default {
       this.client = XMPP.createClient({
         jid,
         password,
+        server,
         resource: resource || 'Web XMPP',
         transports: transports || { websocket: true, bosh: true },
       })
@@ -417,11 +419,21 @@ export default {
     })
   },
 
-  joinRoom (jid, nick = null, opts = {}) {
+  async joinRoom (jid, nick = null, opts = {}) {
     if (nick === null) {
-      nick = this.fullJid.local
+      if (this.nick !== null) {
+        nick = this.nick
+      } else {
+        nick = this.fullJid.local
+      }
     }
-    this.client.joinRoom(jid, nick, opts)
+    try {
+      await this.client.joinRoom(jid, nick, opts)
+      return true
+    } catch (error) {
+      console.error('joinRoom', error)
+      return false
+    }
   },
 
   getPublicMuc () {
@@ -516,6 +528,11 @@ export default {
         })
         .catch((error) => reject(error))
     })
+  },
+
+  // Set nickname
+  setNick (nick) {
+    this.nick = nick
   },
 
 }

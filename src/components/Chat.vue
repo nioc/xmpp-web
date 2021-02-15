@@ -81,6 +81,9 @@ export default {
     userJid () {
       return this.$xmpp.fullJid
     },
+    userNick () {
+      return this.$xmpp.nick
+    },
     messagesWithJid () {
       return this.messages.filter((message) => (message.from.bare === this.jid || message.to.bare === this.jid))
     },
@@ -114,7 +117,7 @@ export default {
   methods: {
     // check if a jid is current user (including MUC nick)
     isUser (jid) {
-      return jid.bare === this.userJid.bare || jid.resource === this.userJid.local
+      return jid.bare === this.userJid.bare || jid.resource === this.userJid.local || jid.resource === this.userNick
     },
     // ask for messages archive (update messages in store)
     getPreviousMessages () {
@@ -197,7 +200,7 @@ export default {
       this.fileIcon = null
     },
     // handle route on mount (commit active chat, reset chatState and first message, join room if not already)
-    handleRoute () {
+    async handleRoute () {
       this.$store.commit('setActiveChat', {
         type: this.isRoom ? 'groupchat' : 'chat',
         activeChat: this.jid,
@@ -208,7 +211,11 @@ export default {
       this.fileThumbnail = null
       this.fileIcon = null
       if (this.isRoom && this.joinedRooms.findIndex((joinedRoom) => joinedRoom.jid === this.jid) === -1) {
-        this.$xmpp.joinRoom(this.jid)
+        const isSuccess = await this.$xmpp.joinRoom(this.jid)
+        if (!isSuccess) {
+          alert('Unable to join room')
+          this.$router.back()
+        }
       }
       this.scrollToLastMessage()
     },

@@ -5,6 +5,8 @@ var config = {
     websocket: 'wss://chat.domain-web.ltd/xmpp-websocket',
     bosh: 'https://chat.domain-web.ltd/http-bind',
   },
+  anonymousHost: null,
+  // anonymousHost: 'anon.domain-xmpp.ltd',
   isTransportsUserAllowed: true,
   hasHttpAutoDiscovery: false,
   resource: 'Web XMPP',
