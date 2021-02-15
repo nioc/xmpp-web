@@ -198,6 +198,9 @@ export default {
               this.context.$store.commit('setHttpFileUploadMaxSize', UploadServiceResult.maxSize)
             }
           })
+          .catch((error) => {
+            console.warn(error.message)
+          })
       })
 
       // listen for contact messages
