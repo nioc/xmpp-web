@@ -10,7 +10,10 @@ import Moment from 'vue-moment'
 import './registerServiceWorker'
 
 Vue.config.productionTip = false
-Vue.use(Buefy)
+Vue.use(Buefy, {
+  defaultIconPack: 'fa',
+  defaultProgrammaticPromise: true,
+})
 Vue.use(Moment)
 
 Vue.prototype.$xmpp = xmppSocket

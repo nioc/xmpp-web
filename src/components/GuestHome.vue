@@ -41,7 +41,12 @@
         <div class="is-flex is-justify-content-center is-flex-grow-1">
           <ul class="is-align-self-center columns is-multiline is-mobile">
             <li v-for="room in filteredPublicRooms" :key="room.jid" class="column">
-              <router-link :to="{name: 'gestInRoom', params: {jid: room.jid}}" class="button is-primary" title="Join room" @click="joinRoom(room.jid)">{{ room.name }}</router-link>
+              <router-link :to="{name: 'gestInRoom', params: {jid: room.jid}}" class="button is-primary" :title="`Join '${room.jid}' room`" @click="joinRoom(room.jid)">
+                <span v-if="room.isPasswordProtected" class="icon">
+                  <i class="fa fa-key-modern" />
+                </span>
+                <span>{{ room.name }}</span>
+              </router-link>
             </li>
           </ul>
         </div>

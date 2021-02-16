@@ -146,3 +146,7 @@ html, body {
   flex-direction: row;
 	justify-content: space-between;
 }
+
+.modal-card-head, .modal-card-foot {
+	background-color: $shade-3;
+}

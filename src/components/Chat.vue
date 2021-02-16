@@ -97,7 +97,7 @@ export default {
           return 'has-text-shade-4'
       }
     },
-    ...mapState(['activeChat', 'messages', 'joinedRooms', 'httpFileUploadMaxSize']),
+    ...mapState(['activeChat', 'messages', 'joinedRooms', 'publicRooms', 'httpFileUploadMaxSize']),
   },
   // watch route param to force component update
   watch: {
@@ -215,9 +215,31 @@ export default {
       this.fileThumbnail = null
       this.fileIcon = null
       if (this.isRoom && this.joinedRooms.findIndex((joinedRoom) => joinedRoom.jid === this.jid) === -1) {
-        const isSuccess = await this.$xmpp.joinRoom(this.jid)
+        // user was not in this room, he have to join before
+        const room = this.publicRooms.find((room) => room.jid === this.jid)
+        const options = { }
+        if (room && room.isPasswordProtected) {
+          // room is protected, asking password
+          const { result } = await this.$buefy.dialog.prompt({
+            title: 'Room protected',
+            message: '<span class="icon mr-2"><i class="fa fa-key-modern" /></i></span><span>Please enter password</span>',
+            trapFocus: true,
+            inputAttrs: {
+              placeholder: 'Password',
+              type: 'password',
+            },
+          })
+          options.muc = {
+            password: result,
+          }
+        }
+        const isSuccess = await this.$xmpp.joinRoom(this.jid, null, options)
         if (!isSuccess) {
-          alert('Unable to join room')
+          await this.$buefy.dialog.alert({
+            title: 'Error',
+            message: 'Unable to join room',
+            type: 'is-danger',
+          })
           this.$router.back()
         }
       }

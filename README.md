@@ -14,6 +14,7 @@ Lightweight web chat client for XMPP server.
 -   Send and receive files over HTTP (XEP-0066, XEP-0363)
 -   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
 -   Lightweight (400 KB gzipped at the first loading and then less than 10 KB)
+-   Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
 
 ![Screenshot desktop](/docs/screenshot-desktop-main.png)
 ![Screenshot mobile home](/docs/screenshot-mobile-main.png) ![Screenshot mobile chat](/docs/screenshot-mobile-chat.png)
