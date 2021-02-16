@@ -48,11 +48,7 @@ export default {
     },
   },
   async mounted () {
-    try {
-      this.uri = await this.$xmpp.getJidAvatar(this.jid)
-    } catch (error) {
-      console.error('getJidAvatar error', error)
-    }
+    this.uri = await this.$xmpp.getJidAvatar(this.jid)
   },
 }
 </script>

@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     hasValidNick () { return this.nick.length > 2 },
-    displayRoomsList () { return this.isRegistered && this.publicRooms.length > 0 },
+    displayRoomsList () { return this.isRegistered && !this.isLoading && this.publicRooms.length > 0 },
     filteredPublicRooms () {
       return this.publicRooms
         .filter((room) => room.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
@@ -96,9 +96,9 @@ export default {
         await this.$xmpp.connect()
         this.isRegistered = true
         // get public rooms
-        const muc = await this.$xmpp.getPublicMuc()
+        const rooms = await this.$xmpp.getPublicMuc()
         // if room jid provided, check if exists and join it
-        if (this.requestedJid && Object.prototype.hasOwnProperty.call(muc, 'items') && muc.items.find((room) => room.jid === this.requestedJid)) {
+        if (this.requestedJid && rooms.find((room) => room.jid === this.requestedJid)) {
           this.joinRoom(this.requestedJid)
         }
       } catch (error) {

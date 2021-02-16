@@ -72,8 +72,8 @@ export default {
       e.target.classList.toggle('is-active')
       document.getElementById('navbar-menu').classList.toggle('is-active')
     },
-    logout () {
-      this.$xmpp.disconnect()
+    async logout () {
+      await this.$xmpp.disconnect()
       localStorage.clear()
       this.$router.replace('/login')
     },

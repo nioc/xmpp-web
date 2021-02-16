@@ -17,67 +17,67 @@ export default {
   isAnonymous: true,
 
   // create XMPP client with credentials and context
-  create (jid, password, server, transportsUser, context) {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve) => {
-      // set default domain if missing
-      if (!/\S+@\S+\S+/.test(jid)) {
-        jid += '@' + defaultDomain
-      }
-      if (this.jid) {
-        this.isAnonymous = false
-      }
-      this.jid = jid
-      this.context = context
+  async create (jid, password, server, transportsUser, context) {
+    // handle anonymous authentication
+    if (jid) {
+      this.isAnonymous = false
+    } else {
+      jid = 'anon'
+    }
+    // set default domain if missing
+    if (!/\S+@\S+\S+/.test(jid)) {
+      jid += '@' + defaultDomain
+    }
 
-      // use transports if user provided them
-      if (transportsUser.bosh) {
-        transports.bosh = transportsUser.bosh
-      }
-      if (transportsUser.websocket) {
-        transports.websocket = transportsUser.websocket
-      }
+    this.jid = jid
+    this.context = context
 
-      // if active, try to get well-known/host-meta from domain
-      const userDomain = this.jid.split('@')[1]
-      if (hasHttpAutoDiscovery && userDomain !== defaultDomain) {
-        try {
-          const response = await axios.get('https://' + userDomain + '/.well-known/host-meta.json', { maxRedirects: 1 })
-          response.data.links.forEach(link => {
-            if (link.rel === 'urn:xmpp:alt-connections:xbosh' && link.href) {
-              transports.bosh = link.href
-            }
-            if (link.rel === 'urn:xmpp:alt-connections:websocket' && link.href) {
-              transports.websocket = link.href
-            }
-          })
-        } catch (error) {
-          console.error('Auto-discovery failed:', error.message)
-        }
-      }
+    // use transports if user provided them
+    if (transportsUser.bosh) {
+      transports.bosh = transportsUser.bosh
+    }
+    if (transportsUser.websocket) {
+      transports.websocket = transportsUser.websocket
+    }
 
-      // create Stanza client
-      this.client = XMPP.createClient({
-        jid,
-        password,
-        server,
-        resource: resource || 'Web XMPP',
-        transports: transports || { websocket: true, bosh: true },
-      })
-
-      // debug stanza on dev mode
-      if (process.env.NODE_ENV !== 'production') {
-        this.client.on('*', (name, data) => {
-          switch (name) {
-            case 'raw:incoming':
-            // case 'raw:outgoing':
-              return
+    // if active, try to get well-known/host-meta from domain
+    const userDomain = this.jid.split('@')[1]
+    if (hasHttpAutoDiscovery && userDomain !== defaultDomain) {
+      try {
+        const response = await axios.get('https://' + userDomain + '/.well-known/host-meta.json', { maxRedirects: 1 })
+        response.data.links.forEach(link => {
+          if (link.rel === 'urn:xmpp:alt-connections:xbosh' && link.href) {
+            transports.bosh = link.href
           }
-          console.debug(name, data)
+          if (link.rel === 'urn:xmpp:alt-connections:websocket' && link.href) {
+            transports.websocket = link.href
+          }
         })
+      } catch (error) {
+        console.warn('Auto-discovery failed:', error.message)
       }
-      resolve()
+    }
+
+    // create Stanza client
+    this.client = XMPP.createClient({
+      jid,
+      password,
+      server,
+      resource: resource || 'Web XMPP',
+      transports: transports || { websocket: true, bosh: true },
     })
+
+    // debug stanza on dev mode
+    if (process.env.NODE_ENV !== 'production') {
+      this.client.on('*', (name, data) => {
+        switch (name) {
+          case 'raw:incoming':
+          // case 'raw:outgoing':
+            return
+        }
+        console.debug(name, data)
+      })
+    }
   },
 
   // connect client to XMPP server
@@ -125,8 +125,10 @@ export default {
       this.client.on('auth:success', () => {
         // remove websocket failure listener
         this.client.off('disconnected', retryWithoutWebsocket)
-        localStorage.setItem('jid', this.jid)
-        localStorage.setItem('auth', true)
+        if (!this.isAnonymous) {
+          localStorage.setItem('jid', this.jid)
+          localStorage.setItem('auth', true)
+        }
         // resolve when listen is resolved
         this.listen()
           .then(() => {
@@ -287,16 +289,18 @@ export default {
     })
   },
 
-  disconnect () {
-    if (this.context) {
-      if (this.client) {
-        this.client.disconnect()
+  async disconnect () {
+    if (this.context && this.client) {
+      try {
+        await this.client.disconnect()
+      } catch (error) {
+        console.error('disconnect error', error)
       }
     }
   },
 
-  sendUrl (to, url, isMuc) {
-    this.client.sendMessage({
+  async sendUrl (to, url, isMuc) {
+    await this.client.sendMessage({
       from: this.fullJid.full,
       to,
       body: url,
@@ -305,8 +309,8 @@ export default {
     })
   },
 
-  sendMessage (to, body, isMuc) {
-    this.client.sendMessage({
+  async sendMessage (to, body, isMuc) {
+    await this.client.sendMessage({
       from: this.fullJid.full,
       to,
       body,
@@ -371,84 +375,86 @@ export default {
     return room
   },
 
-  getJidAvatar (jid) {
-    return new Promise((resolve) => {
+  async getJidAvatar (jid) {
+    try {
       const uri = localStorage.getItem('avatar-' + jid)
       if (uri) {
-        return resolve(uri)
+        return uri
       }
       if (!this.client) {
-        return resolve(defaultAvatar)
+        return defaultAvatar
       }
-      this.client.getVCard(jid)
-        .then((data) => {
-          if (!data.records) {
-            return resolve(defaultAvatar)
-          }
-          const avatar = data.records.find((record) => record.type === 'photo')
-          if (avatar && avatar.mediaType && avatar.data) {
-            const uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
-            localStorage.setItem('avatar-' + jid, uri)
-            return resolve(uri)
-          }
-          return resolve(defaultAvatar)
-        })
-        .catch(() => {
-          return resolve(defaultAvatar)
-        })
-    })
+      const vCard = await this.client.getVCard(jid)
+      if (!vCard.records) {
+        return defaultAvatar
+      }
+      const avatar = vCard.records.find((record) => record.type === 'photo')
+      if (avatar && avatar.mediaType && avatar.data) {
+        const uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
+        localStorage.setItem('avatar-' + jid, uri)
+        return uri
+      }
+    } catch (error) {
+    }
+    return defaultAvatar
   },
 
-  sendPresence (presence) {
-    this.client.sendPresence(presence)
+  async sendPresence (presence) {
+    try {
+      await this.client.sendPresence(presence)
+    } catch (error) {
+      console.error('sendPresence error', error)
+    }
   },
 
-  searchHistory (jid, last = true) {
-    return new Promise((resolve, reject) => {
-      const options = {
-        with: jid,
-        paging: {
-          before: last,
-          max: 50,
-        },
-      }
-      this.client.searchHistory(options)
-        .then((data) => {
-        // get messages
-          const messages = []
-          data.results.forEach((item) => {
-            if (!item.item.message || (!item.item.message.body && !item.item.message.links)) {
-            // message de not have text (stanza maybe)
-              return
-            }
-            if (this.context.$store.state.messages.some((message) => message.id === item.item.message.id)) {
-            // message already known
-              return
-            }
-            const message = {
-              id: item.item.message.id,
-              delay: item.item.delay.timestamp,
-              from: XMPP.JID.parse(item.item.message.from),
-              to: XMPP.JID.parse(item.item.message.to),
-              body: item.item.message.body || null,
-              links: item.item.message.links || null,
-            }
-            // clean body message if it contains only a link
-            if (message.links) {
-              if (message.links.some((link) => link.url === message.body)) {
-                message.body = ''
-              }
-            }
-            messages.push(message)
-          })
-          this.context.$store.commit('storePreviousMessages', messages)
-          return resolve(data.paging)
-        })
-        .catch((error) => reject(error))
-    })
+  async searchHistory (jid, last = true) {
+    const options = {
+      with: jid,
+      paging: {
+        before: last,
+        max: 50,
+      },
+    }
+    try {
+      const history = await this.client.searchHistory(options)
+      // get messages
+      const messages = []
+      history.results.forEach((item) => {
+        if (!item.item.message || (!item.item.message.body && !item.item.message.links)) {
+          // message de not have text (stanza maybe)
+          return
+        }
+        if (this.context.$store.state.messages.some((message) => message.id === item.item.message.id)) {
+          // message already known
+          return
+        }
+        const message = {
+          id: item.item.message.id,
+          delay: item.item.delay.timestamp,
+          from: XMPP.JID.parse(item.item.message.from),
+          to: XMPP.JID.parse(item.item.message.to),
+          body: item.item.message.body || null,
+          links: item.item.message.links || null,
+        }
+        // clean body message if it contains only a link
+        if (message.links) {
+          if (message.links.some((link) => link.url === message.body)) {
+            message.body = ''
+          }
+        }
+        messages.push(message)
+      })
+      this.context.$store.commit('storePreviousMessages', messages)
+      return history.paging
+    } catch (error) {
+      console.error('searchHistory error', error)
+    }
   },
 
   async joinRoom (jid, nick = null, opts = {}) {
+    if (!this.fullJid) {
+      return false
+    }
     if (nick === null) {
       if (this.nick !== null) {
         nick = this.nick
@@ -465,98 +471,84 @@ export default {
     }
   },
 
-  getPublicMuc () {
-    return new Promise((resolve, reject) => {
-      this.context.$store.commit('clearPublicRooms')
-      // discoItems on server
-      this.client.getDiscoItems(this.fullJid.domain, '')
-        .then((serverDiscoItemsResult) => {
-          if (serverDiscoItemsResult.items.length === 0) {
-            return reject(new Error('There is no MUC service'))
-          }
-          // discoInfo on every service
-          serverDiscoItemsResult.items.forEach((serverDiscoItem) => {
-            this.client.getDiscoInfo(serverDiscoItem.jid, '')
-              .then((serviceDiscoInfoResult) => {
-                // @TODO use promise race
-                if (serviceDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
-                  this.client.getDiscoItems(serverDiscoItem.jid, '')
-                    .then((MucDiscoItemsResult) => {
-                      // discoInfo on every MUC
-                      MucDiscoItemsResult.items.forEach((MucDiscoItem) => {
-                        this.client.getDiscoInfo(MucDiscoItem.jid, '')
-                          .then((mucDiscoInfoResult) => {
-                            if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
-                              // add room
-                              const room = this.setRoomAttributes(MucDiscoItem.jid, MucDiscoItem.name, mucDiscoInfoResult)
-                              this.context.$store.commit('setPublicRoom', room)
-                            }
-                          })
-                      })
-                      return resolve(MucDiscoItemsResult)
-                    })
-                  // catch discoItems on MUC error
-                    .catch((error) => reject(error))
+  async getPublicMuc () {
+    if (!this.context) {
+      return []
+    }
+    this.context.$store.commit('clearPublicRooms')
+    const rooms = []
+
+    // discoItems on server
+    try {
+      const serverDiscoItemsResult = await this.client.getDiscoItems(this.fullJid.domain, '')
+      if (serverDiscoItemsResult.items.length === 0) {
+        console.info('There is no MUC service')
+        return []
+      }
+
+      // discoInfo on every service for finding MUC services
+      for (const serverDiscoItem of serverDiscoItemsResult.items) {
+        try {
+          const serviceDiscoInfoResult = await this.client.getDiscoInfo(serverDiscoItem.jid, '')
+
+          if (serviceDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+            // discoItems on every MUC service for listing rooms
+            try {
+              const MucDiscoItemsResult = await this.client.getDiscoItems(serverDiscoItem.jid, '')
+
+              // discoInfo on every room for getting attributes
+              for (const MucDiscoItem of MucDiscoItemsResult.items) {
+                try {
+                  const mucDiscoInfoResult = await this.client.getDiscoInfo(MucDiscoItem.jid, '')
+
+                  if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+                    // add room with attributes
+                    const room = this.setRoomAttributes(MucDiscoItem.jid, MucDiscoItem.name, mucDiscoInfoResult)
+                    this.context.$store.commit('setPublicRoom', room)
+                    rooms.push(room)
+                  }
+                } catch (error) {
+                  console.warn('getDiscoInfo on a room error', error)
                 }
-              })
-            // catch discoInfo error
-              .catch((error) => reject(error))
-          })
-        })
-      // catch discoItems on server error
-        .catch((error) => reject(error))
-    })
+              }
+            } catch (error) {
+              console.warn('getDiscoItems on a MUC service error', error)
+            }
+          }
+        } catch (error) {
+          console.warn('getDiscoInfo on a service error', error)
+        }
+      }
+    } catch (error) {
+      console.error('getDiscoItems on server error', error)
+    }
+    return rooms
   },
 
-  getDiscoItems (jid, node) {
-    return new Promise((resolve, reject) => {
-      this.client.getDiscoItems(jid, node)
-        .then((data) => {
-          return resolve(data)
-        })
-        .catch((error) => reject(error))
-    })
+  async getDiscoItems (jid, node) {
+    return await this.client.getDiscoItems(jid, node)
   },
 
-  getDiscoInfo (jid, node) {
-    return new Promise((resolve, reject) => {
-      this.client.getDiscoInfo(jid, node)
-        .then((data) => {
-          return resolve(data)
-        })
-        .catch((error) => reject(error))
-    })
+  async getDiscoInfo (jid, node) {
+    return await this.client.getDiscoInfo(jid, node)
   },
 
-  getUniqueRoomName (host) {
-    return new Promise((resolve, reject) => {
-      this.client.discoverBindings(host)
-        .then((data) => {
-          return resolve(data)
-        })
-        .catch((error) => reject(error))
-    })
-  },
+  // async getUniqueRoomName (host) {
+  //   return await this.client.discoverBindings(host)
+  // },
 
-  getServices (jid, string) {
-    return new Promise((resolve, reject) => {
-      this.client.getServices(jid, string)
-        .then((data) => {
-          return resolve(data)
-        })
-        .catch((error) => reject(error))
-    })
-  },
+  // async getServices (jid, string) {
+  //   return this.client.getServices(jid, string)
+  // },
 
   // HTTP upload (XEP-0363)
-  getUploadSlot (uploadService, uploadRequest) {
-    return new Promise((resolve, reject) => {
-      this.client.getUploadSlot(uploadService, uploadRequest)
-        .then((data) => {
-          return resolve(data)
-        })
-        .catch((error) => reject(error))
-    })
+  async getUploadSlot (uploadService, uploadRequest) {
+    try {
+      return this.client.getUploadSlot(uploadService, uploadRequest)
+    } catch (error) {
+      console.error('getUploadSlot error', error)
+      throw error
+    }
   },
 
   // Set nickname

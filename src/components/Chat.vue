@@ -122,23 +122,25 @@ export default {
     // ask for messages archive (update messages in store)
     async getPreviousMessages () {
       this.isLoadingPreviousMessages = true
-      try {
-        const messages = await this.$xmpp.searchHistory(this.activeChat, this.firstMessageId)
+      const paging = await this.$xmpp.searchHistory(this.activeChat, this.firstMessageId)
+      if (paging) {
         // store first displayed message
-        this.firstMessageId = messages.first
-      } catch (error) {
-        console.error('Error during retrieving history', error)
+        this.firstMessageId = paging.first
       }
       this.isLoadingPreviousMessages = false
     },
     // send message
-    sendMessage () {
-      if (this.file) {
-        this.postFile(this.file)
-        return
+    async sendMessage () {
+      try {
+        if (this.file) {
+          await this.postFile(this.file)
+          return
+        }
+        await this.$xmpp.sendMessage(this.activeChat, this.composingMessage, this.isRoom)
+        this.composingMessage = ''
+      } catch (error) {
+        console.error('send error', error)
       }
-      this.$xmpp.sendMessage(this.activeChat, this.composingMessage, this.isRoom)
-      this.composingMessage = ''
     },
     onFileChange (e) {
       const files = e.target.files || e.dataTransfer.files
@@ -184,7 +186,7 @@ export default {
           },
         })
         // upload is ok, send message
-        this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
+        await this.$xmpp.sendUrl(this.activeChat, httpUploadSlotResult.download, this.isRoom)
         this.file = null
         this.fileThumbnail = null
         this.fileIcon = null
@@ -199,6 +201,10 @@ export default {
     },
     // handle route on mount (commit active chat, reset chatState and first message, join room if not already)
     async handleRoute () {
+      if (!this.userJid) {
+        // $xmpp is not loaded
+        return
+      }
       this.$store.commit('setActiveChat', {
         type: this.isRoom ? 'groupchat' : 'chat',
         activeChat: this.jid,

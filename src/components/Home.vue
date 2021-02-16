@@ -50,15 +50,18 @@ export default {
       this.$router.replace({ name: 'login', query: { redirect: this.$route.fullPath } })
     }
     // disconnect before leaving page
-    window.addEventListener('beforeunload', () => {
-      this.$xmpp.disconnect()
+    window.addEventListener('beforeunload', async () => {
+      await this.$xmpp.disconnect()
     })
   },
   methods: {
     // try to resume session when network is back
-    handleNetworkStatus (hasNetwork) {
+    async handleNetworkStatus (hasNetwork) {
       if (hasNetwork === true) {
-        this.$xmpp.connect()
+        try {
+          await this.$xmpp.connect()
+        } catch (error) {
+        }
       }
     },
   },
