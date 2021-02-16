@@ -10,7 +10,7 @@
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
         <span class="message-text has-background-shade-1 has-margin-left-7 has-margin-right-7" style="">
           <span>{{ message.body }}</span>
-          <message-link v-for="link in message.links" :key="link.url" :url="link.url" />
+          <message-link v-for="link in message.links" :key="link.url" :url="link.url" class="is-clickable" />
           <div v-if="message.delay" class="content is-italic has-text-weight-light is-small" :title="message.delay | moment()">{{ message.delay | moment("from") }}</div>
         </span>
       </div>
@@ -56,6 +56,11 @@ export default {
     avatar,
     messageLink,
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.previousRoute = from
+    })
+  },
   props: {
     jid: {
       type: String,
@@ -75,6 +80,7 @@ export default {
       file: null,
       fileThumbnail: null,
       fileIcon: null,
+      previousRoute: null,
     }
   },
   computed: {
@@ -216,9 +222,22 @@ export default {
       this.fileIcon = null
       if (this.isRoom && this.joinedRooms.findIndex((joinedRoom) => joinedRoom.jid === this.jid) === -1) {
         // user was not in this room, he have to join before
-        const room = this.publicRooms.find((room) => room.jid === this.jid)
+        let room = this.publicRooms.find((room) => room.jid === this.jid)
         const options = { }
-        if (room && room.isPasswordProtected) {
+        if (!room) {
+          // room is private, get more info
+          room = await this.$xmpp.getRoom(this.jid)
+          if (!room.jid) {
+            // handle room error
+            await this.$buefy.dialog.alert({
+              title: 'Error',
+              message: room.message || 'Unable to join room',
+              type: 'is-danger',
+            })
+            return this.abortChat()
+          }
+        }
+        if (room.jid && room.isPasswordProtected) {
           // room is protected, asking password
           const { result } = await this.$buefy.dialog.prompt({
             title: 'Room protected',
@@ -232,18 +251,31 @@ export default {
           options.muc = {
             password: result,
           }
+          if (result === false) {
+            return this.abortChat()
+          }
         }
-        const isSuccess = await this.$xmpp.joinRoom(this.jid, null, options)
-        if (!isSuccess) {
+        const result = await this.$xmpp.joinRoom(this.jid, null, options, room)
+        if (!result.isSuccess) {
           await this.$buefy.dialog.alert({
             title: 'Error',
-            message: 'Unable to join room',
+            message: result.message || 'Unable to join room',
             type: 'is-danger',
           })
-          this.$router.back()
+          return this.abortChat()
         }
       }
       this.scrollToLastMessage()
+    },
+    abortChat () {
+      // choose valid path for navigation
+      if (this.previousRoute && this.previousRoute.query.redirect === this.$route.fullPath) {
+        if (this.$xmpp.isAnonymous) {
+          return this.$router.push({ name: 'gest' })
+        }
+        return this.$router.push({ name: 'home' })
+      }
+      return this.$router.back()
     },
     // scroll to last message (called when messages changes)
     scrollToLastMessage () {

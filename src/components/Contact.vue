@@ -1,9 +1,10 @@
 <template>
-  <router-link :to="{name: isRoom ? 'groupchat' : 'chat', params: {jid}}" class="has-unread" :title="jid" exact exact-active-class="is-active">
+  <router-link :to="{name: isRoom ? 'groupchat' : 'chat', params: {jid}}" class="has-unread" :title="title" exact exact-active-class="is-active">
+    <!-- groupchat (room) -->
     <span v-if="isRoom">
-      <i class="fa fa-star has-text-warning has-margin-right-7" />
-      <span>{{ room.name }}</span>
-      <span class="has-text-grey-light has-margin-left-7 room-attributes">
+      <i v-if="room.isBookmarked" class="fa fa-star has-text-warning has-margin-right-7" />
+      <span :class="{'is-italic has-text-grey': !room.isJoined}">{{ roomName }}</span>
+      <span class="has-margin-left-7 room-attributes" :class="room.isJoined ? 'has-text-grey-light': 'has-text-grey'">
         <i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" />
         <i v-if="room.isModerated" class="fa fa-shield fa-fw" title="Is moderated" />
         <i v-if="room.isAnonymous" class="fa fa-user-secret fa-fw" title="Allow anonymous (nick)" />
@@ -11,7 +12,9 @@
         <i v-if="room.isPublic" class="fa fa-globe fa-fw" title="Public room" />
       </span>
     </span>
+    <!-- chat -->
     <avatar v-else :jid="jid" :display-jid="true" :size="24" :presence="presence" />
+    <!-- common -->
     <span v-if="unreadCount > 0" class="tag has-margin-left-7 is-rounded is-danger">{{ unreadCount }}</span>
   </router-link>
 </template>
@@ -45,6 +48,10 @@ export default {
       type: Object,
       default: () => {},
     },
+  },
+  computed: {
+    title () { return this.isRoom ? `${this.jid}\n${this.room.name}` : this.jid },
+    roomName () { return this.room.name && this.room.name.length > 25 ? this.room.name.substring(0, 25) + '…' : this.room.name },
   },
 }
 </script>

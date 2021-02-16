@@ -41,11 +41,17 @@
         <div class="is-flex is-justify-content-center is-flex-grow-1">
           <ul class="is-align-self-center columns is-multiline is-mobile">
             <li v-for="room in filteredPublicRooms" :key="room.jid" class="column">
-              <router-link :to="{name: 'gestInRoom', params: {jid: room.jid}}" class="button is-primary" :title="`Join '${room.jid}' room`" @click="joinRoom(room.jid)">
+              <router-link :to="{name: 'gestInRoom', params: {jid: room.jid}}" class="button is-primary" :title="`Join '${room.jid}' room\n${room.description}`" @click="openRoom(room.jid)">
                 <span v-if="room.isPasswordProtected" class="icon">
                   <i class="fa fa-key-modern" />
                 </span>
-                <span>{{ room.name }}</span>
+                <span><span v-if="room.lang" class="has-text-weight-light">[{{ room.lang }}] </span>{{ room.name }}</span>
+                <span v-if="room.occupantsCount">
+                  <span class="icon ml-2">
+                    <i class="fa fa-users" />
+                  </span>
+                  <span>{{ room.occupantsCount }}</span>
+                </span>
               </router-link>
             </li>
           </ul>
@@ -103,15 +109,31 @@ export default {
         // get public rooms
         const rooms = await this.$xmpp.getPublicMuc()
         // if room jid provided, check if exists and join it
-        if (this.requestedJid && rooms.find((room) => room.jid === this.requestedJid)) {
-          this.joinRoom(this.requestedJid)
+        if (this.requestedJid) {
+          if (rooms.find((room) => room.jid === this.requestedJid)) {
+            // join public room
+            return this.openRoom(this.requestedJid)
+          }
+          // check if room exist as private
+          const requestedRoom = await this.$xmpp.getRoom(this.requestedJid)
+          if (requestedRoom.jid) {
+            // join private room
+            return this.openRoom(this.requestedJid)
+          }
+          if (requestedRoom.message) {
+            this.$buefy.dialog.alert({
+              title: 'Error',
+              message: requestedRoom.message || 'Unable to join room',
+              type: 'is-danger',
+            })
+          }
         }
       } catch (error) {
         this.error = error.message
       }
       this.isLoading = false
     },
-    joinRoom (jid) {
+    openRoom (jid) {
       this.$router.push({ name: 'gestInRoom', params: { jid } })
     },
   },

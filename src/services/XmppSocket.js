@@ -15,6 +15,7 @@ export default {
   client: null,
   nick: null,
   isAnonymous: true,
+  defaultDomain,
 
   // create XMPP client with credentials and context
   async create (jid, password, server, transportsUser, context) {
@@ -211,8 +212,9 @@ export default {
             mucBookmarks.forEach((muc) => {
               this.client.getDiscoInfo(muc.jid, '')
                 .then((mucDiscoInfoResult) => {
-                  const room = this.setRoomAttributes(muc.jid, muc.name, mucDiscoInfoResult)
+                  const room = this.setRoomAttributes(muc.jid, mucDiscoInfoResult)
                   this.context.$store.commit('setBookmarkedRoom', room)
+                  this.context.$store.commit('setRoom', room)
                 })
                 .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
             })
@@ -318,10 +320,13 @@ export default {
     })
   },
 
-  setRoomAttributes (jid, name, mucDiscoInfoResult) {
+  setRoomAttributes (jid, mucDiscoInfoResult) {
     const room = {
       jid: jid,
-      name: name,
+      name: jid,
+      description: null,
+      lang: null,
+      occupantsCount: null,
       password: null,
       isPublic: null,
       isPersistent: null,
@@ -329,6 +334,38 @@ export default {
       isMembersOnly: null,
       isAnonymous: null,
       isModerated: null,
+      unreadCount: undefined,
+    }
+    // get room name from identities
+    if (
+      Object.prototype.hasOwnProperty.call(mucDiscoInfoResult, 'identities') &&
+      mucDiscoInfoResult.identities.length > 0 &&
+      Object.prototype.hasOwnProperty.call(mucDiscoInfoResult.identities[0], 'name')
+    ) {
+      room.name = mucDiscoInfoResult.identities[0].name
+    }
+    // get room extensions
+    if (
+      mucDiscoInfoResult.extensions.length > 0 &&
+      Object.prototype.hasOwnProperty.call(mucDiscoInfoResult.extensions[0], 'fields')
+    ) {
+      const fields = mucDiscoInfoResult.extensions[0].fields
+      // description
+      const description = fields.find((field) => field.name === 'muc#roominfo_description')
+      if (description) {
+        room.description = description.value
+      }
+      // lang
+      const lang = fields.find((field) => field.name === 'muc#roominfo_lang')
+      if (lang) {
+        room.lang = lang.value
+      }
+      // occupants
+      const occupantsCount = fields.find((field) => field.name === 'muc#roominfo_occupants')
+      if (occupantsCount) {
+        room.occupantsCount = parseInt(occupantsCount.value)
+        room.occupantsCount = isNaN(room.occupantsCount) ? occupantsCount.value : room.occupantsCount
+      }
     }
     // public or hidden
     if (mucDiscoInfoResult.features.includes('muc_public')) {
@@ -451,9 +488,12 @@ export default {
     }
   },
 
-  async joinRoom (jid, nick = null, opts = {}) {
+  async joinRoom (jid, nick = null, opts = {}, room = {}) {
     if (!this.fullJid) {
-      return false
+      return {
+        isSuccess: false,
+        message: 'User Jid is missing',
+      }
     }
     if (nick === null) {
       if (this.nick !== null) {
@@ -464,10 +504,16 @@ export default {
     }
     try {
       await this.client.joinRoom(jid, nick, opts)
-      return true
+      this.context.$store.commit('setRoom', room)
+      return {
+        isSuccess: true,
+      }
     } catch (error) {
       console.error('joinRoom', error)
-      return false
+      return {
+        isSuccess: false,
+        message: this.getRoomError(error),
+      }
     }
   },
 
@@ -498,17 +544,10 @@ export default {
 
               // discoInfo on every room for getting attributes
               for (const MucDiscoItem of MucDiscoItemsResult.items) {
-                try {
-                  const mucDiscoInfoResult = await this.client.getDiscoInfo(MucDiscoItem.jid, '')
-
-                  if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
-                    // add room with attributes
-                    const room = this.setRoomAttributes(MucDiscoItem.jid, MucDiscoItem.name, mucDiscoInfoResult)
-                    this.context.$store.commit('setPublicRoom', room)
-                    rooms.push(room)
-                  }
-                } catch (error) {
-                  console.warn('getDiscoInfo on a room error', error)
+                const room = await this.getRoom(MucDiscoItem.jid)
+                if (room.jid && room.jid !== serverDiscoItem.jid) {
+                  this.context.$store.commit('setPublicRoom', room)
+                  rooms.push(room)
                 }
               }
             } catch (error) {
@@ -523,6 +562,52 @@ export default {
       console.error('getDiscoItems on server error', error)
     }
     return rooms
+  },
+
+  async getRoom (jid) {
+    if (!this.context) {
+      return {
+        message: 'Missing context',
+      }
+    }
+    try {
+      const mucDiscoInfoResult = await this.client.getDiscoInfo(jid, '')
+      if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+        const room = this.setRoomAttributes(jid, mucDiscoInfoResult)
+        return room
+      }
+    } catch (error) {
+      return {
+        message: this.getRoomError(error),
+      }
+    }
+    return {
+      message: 'Not a valid room',
+    }
+  },
+
+  getRoomError (error) {
+    if (Object.prototype.hasOwnProperty.call(error, 'error') && Object.prototype.hasOwnProperty.call(error.error, 'condition')) {
+      switch (error.error.condition) {
+        case 'not-authorized':
+          return 'Valid password is required to join this room'
+        case 'forbidden':
+          return 'You have been banned from this room'
+        case 'item-not-found':
+          return 'This room does not exist'
+        case 'not-allowed':
+          return 'Room creation is restricted'
+        case 'not-acceptable':
+          return 'Reserved roomnick must be used'
+        case 'registration-required':
+          return 'You must be on the member list to join this room'
+        case 'conflict':
+          return 'Your nickname is already used in this room'
+        case 'service-unavailable':
+          return 'Maximum number of users has been reached in this room'
+      }
+    }
+    return 'Unable to join room'
   },
 
   async getDiscoItems (jid, node) {

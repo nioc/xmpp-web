@@ -9,11 +9,25 @@
       </ul>
       <p class="menu-label">Rooms</p>
       <ul class="menu-list">
-        <li v-for="room in bookmarkedRooms" :key="room.jid">
+        <li v-for="room in displayedRooms" :key="room.jid">
           <contact :jid="room.jid" :room="room" :is-room="true" :unread-count="room.unreadCount" />
         </li>
         <li>
           <router-link active-class="is-active" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw has-margin-right-7" />Public rooms</router-link>
+        </li>
+        <li>
+          <form class="field has-addons" @submit.prevent="joinRoomByJid">
+            <div class="control is-flex-grow-1">
+              <input v-model="roomJid" class="input is-dark" type="text" :placeholder="`room@conference.${$xmpp.defaultDomain}`" title="Enter full room Jid">
+            </div>
+            <div class="control" title="Join this room">
+              <button type="submit" class="button is-dark" :disabled="!isValidRoomJid">
+                <span class="icon">
+                  <i class="fa fa-sign-in" />
+                </span>
+              </button>
+            </div>
+          </form>
         </li>
       </ul>
     </div>
@@ -29,8 +43,39 @@ export default {
   components: {
     contact,
   },
+  data () {
+    return {
+      roomJid: '',
+    }
+  },
   computed: {
-    ...mapState(['contacts', 'bookmarkedRooms']),
+    ...mapState([
+      'contacts',
+      'rooms',
+      'bookmarkedRooms',
+      'joinedRooms',
+    ]),
+    displayedRooms () {
+      return this.rooms
+        .slice(0)
+        .map((room) => {
+          room.isBookmarked = this.bookmarkedRooms.some((bookmarkedRoom) => bookmarkedRoom.jid === room.jid)
+          room.isJoined = this.joinedRooms.some((joinedRoom) => joinedRoom.jid === room.jid)
+          return room
+        })
+    },
+    isValidRoomJid () { return /\S+@\S+\S+/.test(this.roomJid) },
+  },
+  methods: {
+    joinRoomByJid () {
+      if (this.roomJid === '') {
+        return
+      }
+      if (this.$route.name !== 'groupchat' || (!this.$route.params.jid || this.$route.params.jid !== this.roomJid)) {
+        this.$router.push({ name: 'groupchat', params: { jid: this.roomJid } })
+      }
+      this.roomJid = ''
+    },
   },
 }
 </script>

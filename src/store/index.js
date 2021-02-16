@@ -11,6 +11,7 @@ export default new Vuex.Store({
     bookmarkedRooms: [],
     joinedRooms: [],
     publicRooms: [],
+    rooms: [],
     httpFileUploadMaxSize: null,
     hasNetwork: null,
     isOnline: false,
@@ -43,7 +44,7 @@ export default new Vuex.Store({
           state.contacts = resetUnreadCount(state.contacts)
           break
         case 'groupchat':
-          state.bookmarkedRooms = resetUnreadCount(state.bookmarkedRooms)
+          state.rooms = resetUnreadCount(state.rooms)
           break
       }
     },
@@ -51,6 +52,17 @@ export default new Vuex.Store({
     // roster setter
     setRoster (state, contacts) {
       state.contacts = contacts
+    },
+
+    // MUC rooms setter
+    setRoom (state, room) {
+      const rooms = state.rooms.slice(0)
+      const index = rooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
+      if (index === -1) {
+        return state.rooms.push(room)
+      }
+      rooms[index] = room
+      state.rooms = rooms
     },
 
     // MUC public rooms setter
@@ -166,7 +178,7 @@ export default new Vuex.Store({
           state.contacts = addUnreadCount(state.contacts)
           break
         case 'groupchat':
-          state.bookmarkedRooms = addUnreadCount(state.bookmarkedRooms)
+          state.rooms = addUnreadCount(state.rooms)
           break
       }
     },
