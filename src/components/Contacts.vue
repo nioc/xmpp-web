@@ -10,7 +10,7 @@
       <p class="menu-label">Rooms</p>
       <ul class="menu-list">
         <li v-for="room in displayedRooms" :key="room.jid">
-          <contact :jid="room.jid" :room="room" :is-room="true" :unread-count="room.unreadCount" />
+          <contact :jid="room.jid" :is-room="true" :unread-count="room.unreadCount" />
         </li>
         <li>
           <router-link active-class="is-active" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw has-margin-right-7" />Public rooms</router-link>
@@ -51,18 +51,11 @@ export default {
   computed: {
     ...mapState([
       'contacts',
-      'rooms',
-      'bookmarkedRooms',
-      'joinedRooms',
+      'knownRooms',
     ]),
     displayedRooms () {
-      return this.rooms
-        .slice(0)
-        .map((room) => {
-          room.isBookmarked = this.bookmarkedRooms.some((bookmarkedRoom) => bookmarkedRoom.jid === room.jid)
-          room.isJoined = this.joinedRooms.some((joinedRoom) => joinedRoom.jid === room.jid)
-          return room
-        })
+      return this.knownRooms
+        .filter((room) => room.isBookmarked || this.$store.getters.isJoined(room.jid))
     },
     isValidRoomJid () { return /\S+@\S+\S+/.test(this.roomJid) },
   },

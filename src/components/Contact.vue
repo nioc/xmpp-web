@@ -3,8 +3,8 @@
     <!-- groupchat (room) -->
     <span v-if="isRoom">
       <i v-if="room.isBookmarked" class="fa fa-star has-text-warning has-margin-right-7" />
-      <span :class="{'is-italic has-text-grey': !room.isJoined}">{{ roomName }}</span>
-      <span class="has-margin-left-7 room-attributes" :class="room.isJoined ? 'has-text-grey-light': 'has-text-grey'">
+      <span :class="{'is-italic has-text-grey': !isJoined}">{{ roomName }}</span>
+      <span class="has-margin-left-7 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
         <i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" />
         <i v-if="room.isModerated" class="fa fa-shield fa-fw" title="Is moderated" />
         <i v-if="room.isAnonymous" class="fa fa-user-secret fa-fw" title="Allow anonymous (nick)" />
@@ -44,14 +44,12 @@ export default {
       type: Number,
       default: 0,
     },
-    room: {
-      type: Object,
-      default: () => {},
-    },
   },
   computed: {
     title () { return this.isRoom ? `${this.jid}\n${this.room.name}` : this.jid },
     roomName () { return this.room.name && this.room.name.length > 25 ? this.room.name.substring(0, 25) + '…' : this.room.name },
+    room () { return this.isRoom ? this.$store.getters.getRoom(this.jid) : null },
+    isJoined () { return this.$store.getters.isJoined(this.jid) },
   },
 }
 </script>

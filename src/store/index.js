@@ -8,14 +8,34 @@ export default new Vuex.Store({
     activeChat: null,
     messages: [],
     contacts: [],
-    bookmarkedRooms: [],
     joinedRooms: [],
-    publicRooms: [],
-    rooms: [],
+    knownRooms: [],
     httpFileUploadMaxSize: null,
     hasNetwork: null,
     isOnline: false,
   },
+
+  getters: {
+    publicRooms: (state) => {
+      return state.knownRooms.filter((room) => room.isPublic)
+    },
+    joinedRooms: (state) => {
+      return state.knownRooms.filter((room) => state.joinedRooms.includes(room.jid))
+    },
+    bookmarkedRooms: (state) => {
+      return state.knownRooms.filter((room) => room.isBookmarked)
+    },
+    getRoom: (state) => (jid) => {
+      return state.knownRooms.find((room) => room.jid === jid) || {}
+    },
+    isBookmarked: (state) => (jid) => {
+      return state.knownRooms.some((room) => room.jid === jid && room.isBookmarked)
+    },
+    isJoined: (state) => (jid) => {
+      return state.joinedRooms.some((joinedRoomJid) => joinedRoomJid === jid)
+    },
+  },
+
   mutations: {
     // network status setter
     setNetworkStatus (state, hasNetwork) {
@@ -44,7 +64,7 @@ export default new Vuex.Store({
           state.contacts = resetUnreadCount(state.contacts)
           break
         case 'groupchat':
-          state.rooms = resetUnreadCount(state.rooms)
+          state.knownRooms = resetUnreadCount(state.knownRooms)
           break
       }
     },
@@ -55,56 +75,31 @@ export default new Vuex.Store({
     },
 
     // MUC rooms setter
-    setRoom (state, room) {
-      const rooms = state.rooms.slice(0)
+    setKnownRoom (state, room) {
+      const rooms = state.knownRooms.slice(0)
       const index = rooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
       if (index === -1) {
-        return state.rooms.push(room)
+        // add room
+        state.knownRooms.push(room)
+        return
       }
-      rooms[index] = room
-      state.rooms = rooms
-    },
-
-    // MUC public rooms setter
-    clearPublicRooms (state) {
-      state.publicRooms = []
-    },
-    setPublicRoom (state, publicRoom) {
-      const publicRooms = state.publicRooms.slice(0)
-      const index = publicRooms.findIndex((knownRoom) => knownRoom.jid === publicRoom.jid)
-      if (index === -1) {
-        return state.publicRooms.push(publicRoom)
+      // update room
+      for (const key in room) {
+        if (room[key] === null && rooms[index][key] !== null) {
+          continue
+        }
+        rooms[index][key] = room[key]
       }
-      publicRooms[index] = publicRoom
-      state.publicRooms = publicRooms
-    },
-
-    // MUC bookmarked rooms setter
-    setBookmarkedRoom (state, room) {
-      const bookmarkedRooms = state.bookmarkedRooms.slice(0)
-      const index = bookmarkedRooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
-      if (index === -1) {
-        return state.bookmarkedRooms.push(room)
-      }
-      bookmarkedRooms[index] = room
-      state.bookmarkedRooms = bookmarkedRooms
-    },
-    setBookmarkedRooms (state, rooms) {
-      state.bookmarkedRooms = rooms
+      state.knownRooms = rooms
     },
 
     // MUC joined rooms setter
-    setJoinedRoom (state, room) {
+    setJoinedRoom (state, roomJid) {
       const joinedRooms = state.joinedRooms.slice(0)
-      const index = joinedRooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
+      const index = joinedRooms.findIndex((knownRoomJid) => knownRoomJid === roomJid)
       if (index === -1) {
-        return state.joinedRooms.push(room)
+        return state.joinedRooms.push(roomJid)
       }
-      joinedRooms[index] = room
-      state.bookmarkedRooms = joinedRooms
-    },
-    setJoinedRooms (state, rooms) {
-      state.joinedRooms = rooms
     },
 
     // contact presence setter
@@ -161,7 +156,7 @@ export default new Vuex.Store({
         const copy = collection.slice(0)
         const index = copy.findIndex((item) => item.jid === payload.message.from.bare)
         if (index !== -1) {
-          if (copy[index].unreadCount === undefined) {
+          if (copy[index].unreadCount === undefined || copy[index].unreadCount === null) {
             copy[index].unreadCount = 1
           } else {
             copy[index].unreadCount++
@@ -178,7 +173,7 @@ export default new Vuex.Store({
           state.contacts = addUnreadCount(state.contacts)
           break
         case 'groupchat':
-          state.rooms = addUnreadCount(state.rooms)
+          state.knownRooms = addUnreadCount(state.knownRooms)
           break
       }
     },

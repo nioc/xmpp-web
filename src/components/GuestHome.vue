@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'GuestHome',
   props: {
@@ -92,7 +92,7 @@ export default {
       return this.publicRooms
         .filter((room) => room.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
     },
-    ...mapState(['publicRooms']),
+    ...mapGetters(['publicRooms']),
   },
   mounted () {
     // remove navbar spacing

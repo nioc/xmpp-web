@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'RoomsList',
   computed: {
-    ...mapState(['publicRooms']),
+    ...mapGetters(['publicRooms']),
   },
   async mounted () {
     try {

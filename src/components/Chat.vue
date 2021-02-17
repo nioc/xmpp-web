@@ -103,7 +103,11 @@ export default {
           return 'has-text-shade-4'
       }
     },
-    ...mapState(['activeChat', 'messages', 'joinedRooms', 'publicRooms', 'httpFileUploadMaxSize']),
+    ...mapState([
+      'activeChat',
+      'messages',
+      'httpFileUploadMaxSize',
+    ]),
   },
   // watch route param to force component update
   watch: {
@@ -220,12 +224,12 @@ export default {
       this.file = null
       this.fileThumbnail = null
       this.fileIcon = null
-      if (this.isRoom && this.joinedRooms.findIndex((joinedRoom) => joinedRoom.jid === this.jid) === -1) {
+      if (this.isRoom && !this.$store.getters.isJoined(this.jid)) {
         // user was not in this room, he have to join before
-        let room = this.publicRooms.find((room) => room.jid === this.jid)
+        let room = this.$store.getters.getRoom(this.jid)
         const options = { }
-        if (!room) {
-          // room is private, get more info
+        if (!room || !room.jid) {
+          // room is not known, request more info
           room = await this.$xmpp.getRoom(this.jid)
           if (!room.jid) {
             // handle room error
@@ -246,6 +250,7 @@ export default {
             inputAttrs: {
               placeholder: 'Password',
               type: 'password',
+              value: room.password || '',
             },
           })
           options.muc = {

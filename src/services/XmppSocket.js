@@ -207,14 +207,20 @@ export default {
         // get bookmarked rooms (XEP-0048: Bookmarks)
         this.client.getBookmarks()
           .then((mucBookmarks) => {
-            this.context.$store.commit('setBookmarkedRooms', mucBookmarks)
+            mucBookmarks.forEach((bookmark) => {
+              const room = this.setRoomAttributes(bookmark.jid, null, bookmark.password)
+              room.isBookmarked = true
+              room.name = bookmark.name
+              room.autoJoin = bookmark.autoJoin
+              this.context.$store.commit('setKnownRoom', room)
+            })
             // get rooms attributes
             mucBookmarks.forEach((muc) => {
               this.client.getDiscoInfo(muc.jid, '')
                 .then((mucDiscoInfoResult) => {
-                  const room = this.setRoomAttributes(muc.jid, mucDiscoInfoResult)
-                  this.context.$store.commit('setBookmarkedRoom', room)
-                  this.context.$store.commit('setRoom', room)
+                  const room = this.setRoomAttributes(muc.jid, mucDiscoInfoResult, muc.password)
+                  room.isBookmarked = true
+                  this.context.$store.commit('setKnownRoom', room)
                 })
                 .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
             })
@@ -249,7 +255,7 @@ export default {
         const occupantJid = XMPP.JID.parse(receivedMUCPresence.from)
         // @TODO better handle nick
         if (occupantJid.resource === this.fullJid.local) {
-          this.context.$store.commit('setJoinedRoom', { jid: occupantJid.bare })
+          this.context.$store.commit('setJoinedRoom', occupantJid.bare)
         }
       })
 
@@ -320,94 +326,97 @@ export default {
     })
   },
 
-  setRoomAttributes (jid, mucDiscoInfoResult) {
+  setRoomAttributes (jid, mucDiscoInfoResult, password = null) {
     const room = {
       jid: jid,
       name: jid,
       description: null,
       lang: null,
       occupantsCount: null,
-      password: null,
+      password,
       isPublic: null,
       isPersistent: null,
       isPasswordProtected: null,
       isMembersOnly: null,
       isAnonymous: null,
       isModerated: null,
-      unreadCount: undefined,
+      isBookmarked: null,
+      unreadCount: null,
     }
-    // get room name from identities
-    if (
-      Object.prototype.hasOwnProperty.call(mucDiscoInfoResult, 'identities') &&
-      mucDiscoInfoResult.identities.length > 0 &&
-      Object.prototype.hasOwnProperty.call(mucDiscoInfoResult.identities[0], 'name')
-    ) {
-      room.name = mucDiscoInfoResult.identities[0].name
-    }
-    // get room extensions
-    if (
-      mucDiscoInfoResult.extensions.length > 0 &&
-      Object.prototype.hasOwnProperty.call(mucDiscoInfoResult.extensions[0], 'fields')
-    ) {
-      const fields = mucDiscoInfoResult.extensions[0].fields
-      // description
-      const description = fields.find((field) => field.name === 'muc#roominfo_description')
-      if (description) {
-        room.description = description.value
+    if (mucDiscoInfoResult) {
+      // get room name from identities
+      if (
+        Object.prototype.hasOwnProperty.call(mucDiscoInfoResult, 'identities') &&
+        mucDiscoInfoResult.identities.length > 0 &&
+        Object.prototype.hasOwnProperty.call(mucDiscoInfoResult.identities[0], 'name')
+      ) {
+        room.name = mucDiscoInfoResult.identities[0].name
       }
-      // lang
-      const lang = fields.find((field) => field.name === 'muc#roominfo_lang')
-      if (lang) {
-        room.lang = lang.value
+      // get room extensions
+      if (
+        mucDiscoInfoResult.extensions.length > 0 &&
+        Object.prototype.hasOwnProperty.call(mucDiscoInfoResult.extensions[0], 'fields')
+      ) {
+        const fields = mucDiscoInfoResult.extensions[0].fields
+        // description
+        const description = fields.find((field) => field.name === 'muc#roominfo_description')
+        if (description) {
+          room.description = description.value
+        }
+        // lang
+        const lang = fields.find((field) => field.name === 'muc#roominfo_lang')
+        if (lang) {
+          room.lang = lang.value
+        }
+        // occupants
+        const occupantsCount = fields.find((field) => field.name === 'muc#roominfo_occupants')
+        if (occupantsCount) {
+          room.occupantsCount = parseInt(occupantsCount.value)
+          room.occupantsCount = isNaN(room.occupantsCount) ? occupantsCount.value : room.occupantsCount
+        }
       }
-      // occupants
-      const occupantsCount = fields.find((field) => field.name === 'muc#roominfo_occupants')
-      if (occupantsCount) {
-        room.occupantsCount = parseInt(occupantsCount.value)
-        room.occupantsCount = isNaN(room.occupantsCount) ? occupantsCount.value : room.occupantsCount
+      // public or hidden
+      if (mucDiscoInfoResult.features.includes('muc_public')) {
+        room.isPublic = true
       }
-    }
-    // public or hidden
-    if (mucDiscoInfoResult.features.includes('muc_public')) {
-      room.isPublic = true
-    }
-    if (mucDiscoInfoResult.features.includes('muc_hidden')) {
-      room.isPublic = false
-    }
-    // persistent or temporary (destroyed if the last occupant exits)
-    if (mucDiscoInfoResult.features.includes('muc_persistent')) {
-      room.isPersistent = true
-    }
-    if (mucDiscoInfoResult.features.includes('muc_temporary')) {
-      room.isPersistent = false
-    }
-    // password protected or not
-    if (mucDiscoInfoResult.features.includes('muc_passwordprotected')) {
-      room.isPasswordProtected = true
-    }
-    if (mucDiscoInfoResult.features.includes('muc_unsecured')) {
-      room.isPasswordProtected = false
-    }
-    // members only or open
-    if (mucDiscoInfoResult.features.includes('muc_membersonly')) {
-      room.isMembersOnly = true
-    }
-    if (mucDiscoInfoResult.features.includes('muc_open')) {
-      room.isMembersOnly = false
-    }
-    // semi-anonymous (display nick) or non-anonymous (display jid)
-    if (mucDiscoInfoResult.features.includes('muc_semianonymous')) {
-      room.isAnonymous = true
-    }
-    if (mucDiscoInfoResult.features.includes('muc_nonanonymous')) {
-      room.isAnonymous = false
-    }
-    // moderated or not
-    if (mucDiscoInfoResult.features.includes('muc_moderated')) {
-      room.isModerated = true
-    }
-    if (mucDiscoInfoResult.features.includes('muc_unmoderated')) {
-      room.isModerated = false
+      if (mucDiscoInfoResult.features.includes('muc_hidden')) {
+        room.isPublic = false
+      }
+      // persistent or temporary (destroyed if the last occupant exits)
+      if (mucDiscoInfoResult.features.includes('muc_persistent')) {
+        room.isPersistent = true
+      }
+      if (mucDiscoInfoResult.features.includes('muc_temporary')) {
+        room.isPersistent = false
+      }
+      // password protected or not
+      if (mucDiscoInfoResult.features.includes('muc_passwordprotected')) {
+        room.isPasswordProtected = true
+      }
+      if (mucDiscoInfoResult.features.includes('muc_unsecured')) {
+        room.isPasswordProtected = false
+      }
+      // members only or open
+      if (mucDiscoInfoResult.features.includes('muc_membersonly')) {
+        room.isMembersOnly = true
+      }
+      if (mucDiscoInfoResult.features.includes('muc_open')) {
+        room.isMembersOnly = false
+      }
+      // semi-anonymous (display nick) or non-anonymous (display jid)
+      if (mucDiscoInfoResult.features.includes('muc_semianonymous')) {
+        room.isAnonymous = true
+      }
+      if (mucDiscoInfoResult.features.includes('muc_nonanonymous')) {
+        room.isAnonymous = false
+      }
+      // moderated or not
+      if (mucDiscoInfoResult.features.includes('muc_moderated')) {
+        room.isModerated = true
+      }
+      if (mucDiscoInfoResult.features.includes('muc_unmoderated')) {
+        room.isModerated = false
+      }
     }
     return room
   },
@@ -488,7 +497,8 @@ export default {
     }
   },
 
-  async joinRoom (jid, nick = null, opts = {}, room = {}) {
+  async joinRoom (jid, nick = null, opts = {}, _room = {}) {
+    const room = Object.assign({}, _room)
     if (!this.fullJid) {
       return {
         isSuccess: false,
@@ -504,7 +514,10 @@ export default {
     }
     try {
       await this.client.joinRoom(jid, nick, opts)
-      this.context.$store.commit('setRoom', room)
+      if (opts && opts.muc && opts.muc.password) {
+        room.password = opts.muc.password
+      }
+      this.context.$store.commit('setKnownRoom', room)
       return {
         isSuccess: true,
       }
@@ -521,7 +534,6 @@ export default {
     if (!this.context) {
       return []
     }
-    this.context.$store.commit('clearPublicRooms')
     const rooms = []
 
     // discoItems on server
@@ -546,7 +558,7 @@ export default {
               for (const MucDiscoItem of MucDiscoItemsResult.items) {
                 const room = await this.getRoom(MucDiscoItem.jid)
                 if (room.jid && room.jid !== serverDiscoItem.jid) {
-                  this.context.$store.commit('setPublicRoom', room)
+                  this.context.$store.commit('setKnownRoom', room)
                   rooms.push(room)
                 }
               }
