@@ -213,6 +213,10 @@ export default {
               room.name = bookmark.name
               room.autoJoin = bookmark.autoJoin
               this.context.$store.commit('setKnownRoom', room)
+              if (bookmark.autoJoin) {
+                // handle autojoin
+                this.joinRoom(bookmark.jid, null, { muc: { password: bookmark.password } })
+              }
             })
             // get rooms attributes
             mucBookmarks.forEach((muc) => {
@@ -498,7 +502,6 @@ export default {
   },
 
   async joinRoom (jid, nick = null, opts = {}, _room = {}) {
-    const room = Object.assign({}, _room)
     if (!this.fullJid) {
       return {
         isSuccess: false,
@@ -514,10 +517,13 @@ export default {
     }
     try {
       await this.client.joinRoom(jid, nick, opts)
-      if (opts && opts.muc && opts.muc.password) {
-        room.password = opts.muc.password
+      if (_room.jid) {
+        const room = Object.assign({}, _room)
+        if (opts && opts.muc && opts.muc.password) {
+          room.password = opts.muc.password
+        }
+        this.context.$store.commit('setKnownRoom', room)
       }
-      this.context.$store.commit('setKnownRoom', room)
       return {
         isSuccess: true,
       }
@@ -645,6 +651,43 @@ export default {
     } catch (error) {
       console.error('getUploadSlot error', error)
       throw error
+    }
+  },
+
+  async bookmarkRoom (isAdd, jid, autoJoin = true, nick = null) {
+    try {
+      const room = this.context.$store.getters.getRoom(jid)
+      if (isAdd) {
+        // add bookmark
+        const bookmark = {
+          jid,
+          name: room.name,
+          autoJoin,
+        }
+        if (room.password) {
+          bookmark.password = room.password
+        }
+        if (nick) {
+          bookmark.nick = nick
+        } else if (this.nick) {
+          bookmark.nick = this.nick
+        }
+        await this.client.addBookmark(bookmark)
+        this.context.$store.commit('setKnownRoom', {
+          jid,
+          isBookmarked: true,
+        })
+        return true
+      }
+      // remove bookmark
+      await this.client.removeBookmark(jid)
+      this.context.$store.commit('setKnownRoom', {
+        jid,
+        isBookmarked: false,
+      })
+      return true
+    } catch (error) {
+      return false
     }
   },
 

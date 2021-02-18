@@ -10,7 +10,7 @@
         <form @submit.prevent="join">
           <div class="field has-addons">
             <div class="control has-icons-left">
-              <input v-model="nick" class="input" type="text" name="nick" placeholder="Nickname">
+              <input v-model="nick" autofocus class="input" type="text" name="nick" placeholder="Nickname">
               <span class="icon is-small is-left">
                 <i class="fa fa-user" />
               </span>

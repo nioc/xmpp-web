@@ -1,7 +1,7 @@
 <template>
   <section class="is-fullheight is-guest">
     <div class="main-container is-justify-content-center">
-      <Chat v-if="displayChat" :jid="jid" :is-room="true" />
+      <chat v-if="displayChat" :jid="jid" :is-room="true" />
     </div>
   </section>
 </template>

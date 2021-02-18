@@ -3,7 +3,10 @@
     <div class="toolbar has-border-bottom-shade-3">
       <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button has-text-primary has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
-      <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
+      <span class="is-flex is-align-items-center">
+        <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
+        <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
+      </span>
     </div>
     <div id="messages-container" class="messages-container">
       <div v-for="message in messagesWithJid" :key="message.id" class="message-container is-flex" :class="{'is-row-reverse': isUser(message.from)}">
@@ -46,6 +49,7 @@
 <script>
 import avatar from '@/components/Avatar'
 import messageLink from '@/components/MessageLink'
+import BookmarkButton from '@/components/BookmarkButton'
 import { mapState } from 'vuex'
 import axios from 'axios'
 import filesize from 'filesize'
@@ -55,6 +59,7 @@ export default {
   components: {
     avatar,
     messageLink,
+    BookmarkButton,
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
