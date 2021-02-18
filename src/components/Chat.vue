@@ -5,6 +5,7 @@
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
       <span class="is-flex is-align-items-center">
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
+        <invite-guest-button v-if="isRoom" :room-jid="jid" />
         <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
       </span>
     </div>
@@ -49,6 +50,7 @@
 <script>
 import avatar from '@/components/Avatar'
 import messageLink from '@/components/MessageLink'
+import InviteGuestButton from '@/components/InviteGuestButton'
 import BookmarkButton from '@/components/BookmarkButton'
 import { mapState } from 'vuex'
 import axios from 'axios'
@@ -59,6 +61,7 @@ export default {
   components: {
     avatar,
     messageLink,
+    InviteGuestButton,
     BookmarkButton,
   },
   beforeRouteEnter (to, from, next) {

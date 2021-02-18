@@ -150,3 +150,13 @@ html, body {
 .modal-card-head, .modal-card-foot {
 	background-color: $shade-3;
 }
+
+.is-select-all {
+  user-select: text;
+  -webkit-user-select: text;
+  -webkit-touch-callout: all;
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: text;
+  user-select: all;
+}
