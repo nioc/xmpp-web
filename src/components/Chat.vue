@@ -4,6 +4,7 @@
       <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button has-text-primary has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
       <span class="is-flex is-align-items-center">
+        <room-occupants v-if="isRoom" :room-jid="jid" />
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
         <invite-guest-button v-if="isRoom" :room-jid="jid" />
         <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
@@ -52,6 +53,7 @@ import avatar from '@/components/Avatar'
 import messageLink from '@/components/MessageLink'
 import InviteGuestButton from '@/components/InviteGuestButton'
 import BookmarkButton from '@/components/BookmarkButton'
+import RoomOccupants from '@/components/RoomOccupants.vue'
 import { mapState } from 'vuex'
 import axios from 'axios'
 import filesize from 'filesize'
@@ -63,6 +65,7 @@ export default {
     messageLink,
     InviteGuestButton,
     BookmarkButton,
+    RoomOccupants,
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

@@ -10,6 +10,7 @@ export default new Vuex.Store({
     contacts: [],
     joinedRooms: [],
     knownRooms: [],
+    roomsOccupants: [],
     httpFileUploadMaxSize: null,
     hasNetwork: null,
     isOnline: false,
@@ -33,6 +34,13 @@ export default new Vuex.Store({
     },
     isJoined: (state) => (jid) => {
       return state.joinedRooms.some((joinedRoomJid) => joinedRoomJid === jid)
+    },
+    getRoomOccupants: (state) => (jid) => {
+      const roomOccupants = state.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === jid)
+      if (roomOccupants) {
+        return roomOccupants.occupants
+      }
+      return []
     },
   },
 
@@ -182,6 +190,40 @@ export default new Vuex.Store({
     setHttpFileUploadMaxSize (state, httpFileUploadMaxSize) {
       state.httpFileUploadMaxSize = httpFileUploadMaxSize
     },
+
+    setRoomOccupant (state, { roomJid, jid, presence }) {
+      if (!state.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === roomJid)) {
+        // create room occupants list
+        state.roomsOccupants.push({
+          roomJid,
+          occupants: [],
+        })
+      }
+      const roomIndex = state.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === roomJid)
+      const occupant = {
+        jid,
+        presence,
+      }
+      const occupantIndex = state.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid)
+      if (occupantIndex !== -1) {
+        // remove previous room occupant
+        state.roomsOccupants[roomIndex].occupants.splice(occupantIndex, 1)
+      }
+      // add room occupant
+      state.roomsOccupants[roomIndex].occupants.push(occupant)
+    },
+
+    removeRoomOccupant (state, { roomJid, jid }) {
+      const roomIndex = state.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === roomJid)
+      if (roomIndex === -1) {
+        return
+      }
+      const index = state.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid)
+      if (index !== -1) {
+        state.roomsOccupants[roomIndex].occupants.splice(index, 1)
+      }
+    },
+
   },
   strict: process.env.NODE_ENV !== 'production',
 })

@@ -253,6 +253,31 @@ export default {
         storeMessage(this, 'groupchat', receivedMessage)
       })
 
+      // listen for room presences
+      this.client.on('presence', (presence) => {
+        const jid = XMPP.JID.parse(presence.from)
+        const room = this.context.$store.getters.getRoom(jid.bare)
+        if (room.jid) {
+          if (jid.resource === '') {
+            // room presence
+            return
+          }
+          if (presence.type === 'unavailable') {
+            // occupant left room
+            this.context.$store.commit('removeRoomOccupant', {
+              roomJid: room.jid,
+              jid: jid.full,
+            })
+            return
+          }
+          this.context.$store.commit('setRoomOccupant', {
+            roomJid: room.jid,
+            jid: jid.full,
+            presence: presence.show,
+          })
+        }
+      })
+
       // listen for room joined
       this.client.on('muc:join', (receivedMUCPresence) => {
         // @TODO add participants and role handling
