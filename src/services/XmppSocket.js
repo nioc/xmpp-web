@@ -476,7 +476,12 @@ export default {
 
   async sendPresence (presence) {
     try {
+      // send global presence
       await this.client.sendPresence(presence)
+      // send presence to joined rooms
+      this.context.$store.state.joinedRooms.forEach((roomJid) => {
+        this.client.sendPresence({ to: roomJid, show: presence.show })
+      })
     } catch (error) {
       console.error('sendPresence error', error)
     }
