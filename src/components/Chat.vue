@@ -1,13 +1,13 @@
 <template>
   <main class="is-growing chat-container has-background-shade-4">
     <div class="toolbar has-border-bottom-shade-3">
-      <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button has-text-primary has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
+      <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button is-primary-ghost has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
       <span class="is-flex is-align-items-center">
         <room-occupants v-if="isRoom" :room-jid="jid" />
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
         <invite-guest-button v-if="isRoom" :room-jid="jid" />
-        <button class="button has-text-primary has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
+        <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
       </span>
     </div>
     <div id="messages-container" class="messages-container">
@@ -31,13 +31,13 @@
               <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
             </div>
           </div>
-          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button fixed-right-button has-text-primary has-no-border is-shadowless" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button fixed-right-button is-primary-ghost has-no-border is-shadowless" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
           <div v-else class="file fixed-right-button has-no-border" title="Send a file">
             <label class="file-label">
               <input class="file-input" type="file" name="resume" @change="onFileChange">
               <span class="file-cta">
                 <span class="file-icon">
-                  <i class="fa fa-paperclip has-text-primary" />
+                  <i class="fa fa-paperclip is-primary-ghost" />
                 </span>
               </span>
             </label>

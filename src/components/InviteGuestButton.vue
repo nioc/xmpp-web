@@ -1,8 +1,9 @@
 <template>
-  <button class="button has-text-primary has-no-border is-shadowless" title="Guest invitation link" @click="getInviteLink()">
+  <button class="button is-primary-ghost has-no-border is-shadowless" title="Guest invitation link" @click="getInviteLink()">
     <i class="fa fa-share-alt" aria-hidden="true" />
   </button>
 </template>
+
 <script>
 export default {
   props: {

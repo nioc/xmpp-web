@@ -5,6 +5,7 @@
 $primary: #2da192;
 $primary-light: lighten($primary, 10);
 $primary-invert: findColorInvert($primary);
+$warning-light: lighten($warning, 10);
 $shade-1: #3d444b;
 $shade-1-invert: findColorInvert($shade-1);
 $shade-2: #33393f;
@@ -26,6 +27,7 @@ $label-color: $black-ter;
 $input-background-color: $shade-1;
 
 $link-focus: $black;
+$link-hover: $primary-light;
 
 $border-light: $black;
 $navbar-divider-background-color: $shade-3;
@@ -157,6 +159,22 @@ html, body {
 
 .is-width-min-400 {
 	min-width: 400px;
+}
+
+.is-primary-ghost {
+	background-color: transparent;
+	color: $primary;
+	&:hover, &:focus {
+		color:$primary-light;
+	}
+}
+
+.is-warning-ghost {
+	background-color: transparent;
+	color: $warning;
+	&:hover, &:focus {
+		color:$warning-light;
+	}
 }
 
 .is-select-all {
