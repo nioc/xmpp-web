@@ -151,6 +151,14 @@ html, body {
 	background-color: $shade-3;
 }
 
+.table td {
+	vertical-align: middle;
+}
+
+.is-width-min-400 {
+	min-width: 400px;
+}
+
 .is-select-all {
   user-select: text;
   -webkit-user-select: text;

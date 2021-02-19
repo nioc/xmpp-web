@@ -1,6 +1,6 @@
 <template>
-  <section class="is-fullheight is-guest">
-    <div class="main-container is-justify-content-center">
+  <section class="is-fullheight is-guest has-background-shade-3">
+    <div class="main-container is-justify-content-center" style="overflow-y:auto;">
       <!-- Guest access not allowed message -->
       <div v-if="server === null" class="message is-danger is-light is-align-self-center">
         <div class="message-body has-text-danger">Anonymous access is not allowed<br>Please <router-link :to="{name: 'login'}">login</router-link></div>
@@ -39,20 +39,43 @@
           </div>
         </div>
         <div class="is-flex is-justify-content-center is-flex-grow-1">
-          <ul class="is-align-self-center columns is-multiline is-mobile">
+          <ul class="is-align-self-center columns is-multiline">
             <li v-for="room in filteredPublicRooms" :key="room.jid" class="column">
-              <router-link :to="{name: 'gestInRoom', params: {jid: room.jid}}" class="button is-primary" :title="`Join '${room.jid}' room\n${room.description}`" @click="openRoom(room.jid)">
-                <span v-if="room.isPasswordProtected" class="icon">
-                  <i class="fa fa-key-modern" />
-                </span>
-                <span><span v-if="room.lang" class="has-text-weight-light">[{{ room.lang }}] </span>{{ room.name }}</span>
-                <span v-if="room.occupantsCount">
-                  <span class="icon ml-2">
-                    <i class="fa fa-users" />
+              <div class="card is-width-min-400">
+                <header class="card-header">
+                  <span class="card-header-title">
+                    <span v-if="room.lang" class="has-text-weight-light" title="Language">[{{ room.lang }}]</span>
                   </span>
-                  <span>{{ room.occupantsCount }}</span>
-                </span>
-              </router-link>
+                  <span class="px-4 py-3">
+                    <span v-if="room.isPasswordProtected" class="icon" title="This room is password protected">
+                      <i class="fa fa-key-modern" />
+                    </span>
+                    <span v-if="room.occupantsCount" title="Occupants">
+                      <span class="icon mr-1 ml-2">
+                        <i class="fa fa-users" />
+                      </span>
+                      <span>{{ room.occupantsCount }}</span>
+                    </span>
+                  </span>
+                </header>
+                <div class="card-content">
+                  <div class="media">
+                    <avatar v-if="room.hasVCard" class="media-left" :jid="room.jid" :display-jid="false" :size="48" />
+                    <div class="media-content">
+                      <div class="title is-5">{{ room.name }}</div>
+                      <div class="subtitle is-6">{{ room.jid }}</div>
+                    </div>
+                  </div>
+                  <small class="content">{{ room.description }}</small>
+                </div>
+                <footer class="card-footer">
+                  <router-link :to="{name: 'gestInRoom', params: {jid: room.jid}}" class="card-footer-item" title="Join the room">
+                    <span class="icon">
+                      <i class="fa fa-sign-in" /></span>
+                    <span>Join</span>
+                  </router-link>
+                </footer>
+              </div>
             </li>
           </ul>
         </div>
@@ -62,9 +85,13 @@
 </template>
 
 <script>
+import avatar from '@/components/Avatar'
 import { mapGetters } from 'vuex'
 export default {
   name: 'GuestHome',
+  components: {
+    avatar,
+  },
   props: {
     requestedJid: {
       type: String,

@@ -4,6 +4,7 @@
     <table class="table is-hoverable is-fullwidth center-table">
       <thead>
         <tr>
+          <th style="width: 32px;" />
           <th class="has-text-centered">Room name</th>
           <th class="has-text-centered">Occupants</th>
           <th class="has-text-centered">Password protected</th>
@@ -15,6 +16,7 @@
       </thead>
       <tbody>
         <tr v-for="room in publicRooms" :key="room.jid" class="is-clickable" @click="openRoom(room.jid)">
+          <td><avatar v-if="room.hasVCard" :jid="room.jid" :size="32" /></td>
           <td class="has-text-centered" :title="getRoomTitle(room)">{{ room.name }}</td>
           <td class="has-text-centered">{{ room.occupantsCount }}</td>
           <td class="has-text-centered"><i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" /></td>
@@ -30,9 +32,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import avatar from '@/components/Avatar'
 
 export default {
   name: 'RoomsList',
+  components: {
+    avatar,
+  },
   computed: {
     ...mapGetters(['publicRooms']),
   },

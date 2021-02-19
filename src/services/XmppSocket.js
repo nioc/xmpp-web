@@ -370,6 +370,7 @@ export default {
       isAnonymous: null,
       isModerated: null,
       isBookmarked: null,
+      hasVCard: null,
       unreadCount: null,
     }
     if (mucDiscoInfoResult) {
@@ -445,6 +446,10 @@ export default {
       }
       if (mucDiscoInfoResult.features.includes('muc_unmoderated')) {
         room.isModerated = false
+      }
+      // has vCard
+      if (mucDiscoInfoResult.features.includes('vcard-temp')) {
+        room.hasVCard = true
       }
     }
     return room
