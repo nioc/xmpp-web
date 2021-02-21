@@ -96,7 +96,10 @@
         "error",
         "always-multiline"
       ],
-      "vue/component-name-in-template-casing": "error",
+      "vue/component-name-in-template-casing": [
+        "error",
+        "kebab-case"
+      ],
       "vue/eqeqeq": "error",
       "eqeqeq": "error",
       "vue/key-spacing": "error",

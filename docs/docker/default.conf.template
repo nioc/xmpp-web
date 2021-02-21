@@ -1,0 +1,40 @@
+server {
+  listen 80;
+
+  # enable gzip
+  gzip on;
+  gzip_vary on;
+  gzip_types text/plain text/css application/javascript;
+  gzip_proxied any;
+
+  # proxy XMPP Bosh
+  location /http-bind {
+    proxy_pass  ${XMPP_HTTP};
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_buffering off;
+    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+    add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept' always;
+    add_header 'Access-Control-Allow-Credentials' 'true' always;
+  }
+
+  # proxy XMPP websocket
+  location /xmpp-websocket {
+    proxy_pass ${XMPP_WS};
+    proxy_http_version 1.1;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_read_timeout 2h;
+  }
+
+  # serve web app
+  location / {
+    root /usr/share/nginx/html;
+    try_files $uri $uri/ /index.html;
+    expires 30d;
+  }
+
+}
