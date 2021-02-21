@@ -7,7 +7,7 @@ var config = {
   },
   anonymousHost: null,
   // anonymousHost: 'anon.domain-xmpp.ltd',
-  isTransportsUserAllowed: true,
+  isTransportsUserAllowed: false,
   hasHttpAutoDiscovery: false,
   resource: 'Web XMPP',
   defaultDomain: 'domain-xmpp.ltd',

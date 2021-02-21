@@ -2,7 +2,6 @@
 
 [![license: AGPLv3](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub release](https://img.shields.io/github/release/nioc/xmpp-web.svg)](https://github.com/nioc/xmpp-web/releases/latest)
-[![Build Status](https://travis-ci.org/nioc/xmpp-web.svg?branch=master)](https://travis-ci.org/nioc/xmpp-web)
 
 Lightweight web chat client for XMPP server.
 
@@ -11,13 +10,16 @@ Lightweight web chat client for XMPP server.
 -   Connect to an XMPP server with WebSocket or [BOSH](https://xmpp.org/about/technology-overview.html#bosh),
 -   Chat and groupchat (MUC as defined in XEP-0045),
 -   Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
--   Send and receive files over HTTP (XEP-0066, XEP-0363)
+-   Send and receive files over HTTP (XEP-0066, XEP-0363),
+-   Handle password protected room,
+-   Display chat state notifications: is composing, is paused (XEP-0085)),
 -   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
 -   Lightweight (400 KB gzipped at the first loading and then less than 10 KB)
 -   Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
 
 ![Screenshot desktop](/docs/screenshot-desktop-main.png)
 ![Screenshot mobile home](/docs/screenshot-mobile-main.png) ![Screenshot mobile chat](/docs/screenshot-mobile-chat.png)
+![Screenshot guest join](/docs/screenshot-guest-join.png)
 
 ## Installation
 
@@ -27,8 +29,45 @@ XMPP Web can be installed:
     -   download [latest release](https://github.com/nioc/xmpp-web/releases/latest),
     -   unarchive,
     -   create [Apache virtual host](/docs/apache.conf),
-    -   configure [`local.js`](public/local.js))
+    -   configure [`local.js`](public/local.js)),
+-   From Docker image ([docker pull nioc/xmpp-web](https://hub.docker.com/r/nioc/xmpp-web), based on nginx):
+    -   as standalone service:
+        ``` bash
+        docker run -it -p 80:80 --rm \
+        -e XMPP_HTTP=https://domain-xmpp.ltd:5281/http-bind \
+        -e XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket \
+        -e APP_DEFAULT_DOMAIN=domain-xmpp.ltd \
+        --name xmpp-web-1 nioc/xmpp-web
+        ```
+    -   in a docker-compose:
+        ``` yml
+        version: "3.4"
+        services:
+          xmpp-web:
+            image: nioc/xmpp-web:latest
+            ports:
+              - "80:80"
+            environment: 
+              - XMPP_HTTP=https://domain-xmpp.ltd:5281/http-bind
+              - XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket
+              - APP_DEFAULT_DOMAIN=domain-xmpp.ltd
+        ```
 -   From source (`git clone`, `npm build`, etc...)
+
+## Configuration
+
+| `local.js` attribute      | Environment                      | Default                                      | Description
+| ------------------------- |----------------------------------| ---------------------------------------------|---------------------------
+| `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name
+| `transports.bosh`         | `APP_HTTP`                       | `"wss://chat.domain-web.ltd/xmpp-websocket"` | BOSH endpoint used by application (proxy or direct XMPP server)
+| `transports.websocket`    | `APP_WS`                         | `"https://chat.domain-web.ltd/http-bind"`    | Websocket endpoint used by application  (proxy or direct XMPP server)
+| `anonymousHost`           | `XMPP_ANON_HOST`                 | `null`                                       | Virtual host used for guest access (anonymous)
+| `isTransportsUserAllowed` | `APP_IS_TRANSPORTS_USER_ALLOWED` | `false`                                      | Allow user to set endpoints on the fly in login component
+| `hasHttpAutoDiscovery`    | `APP_HTTP_AUTODISCOVERY`         | `false`                                      | Allow to retrieve a `.well-known/host-meta.json` if user log on a different domain
+| `resource`                | `APP_RESOURCE`                   | `"Web XMPP"`                                 | Resource (client) affected to user
+| `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid
+| N/A                       | `XMPP_HTTP`                      | `"http://localhost:5280/http-bind"`          | BOSH endpoint proxyfied by Nginx (on a docker installation)
+| N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
 
 ## Credits
 
