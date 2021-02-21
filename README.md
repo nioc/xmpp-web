@@ -59,8 +59,8 @@ XMPP Web can be installed:
 | `local.js` attribute      | Environment                      | Default                                      | Description
 | ------------------------- |----------------------------------| ---------------------------------------------|---------------------------
 | `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name
-| `transports.bosh`         | `APP_HTTP`                       | `"wss://chat.domain-web.ltd/xmpp-websocket"` | BOSH endpoint used by application (proxy or direct XMPP server)
-| `transports.websocket`    | `APP_WS`                         | `"https://chat.domain-web.ltd/http-bind"`    | Websocket endpoint used by application  (proxy or direct XMPP server)
+| `transports.bosh`         | `APP_HTTP`                       | `"https://chat.domain-web.ltd/http-bind"`    | BOSH endpoint used by application (proxy or direct XMPP server)
+| `transports.websocket`    | `APP_WS`                         | `"wss://chat.domain-web.ltd/xmpp-websocket"` | Websocket endpoint used by application  (proxy or direct XMPP server)
 | `anonymousHost`           | `XMPP_ANON_HOST`                 | `null`                                       | Virtual host used for guest access (anonymous)
 | `isTransportsUserAllowed` | `APP_IS_TRANSPORTS_USER_ALLOWED` | `false`                                      | Allow user to set endpoints on the fly in login component
 | `hasHttpAutoDiscovery`    | `APP_HTTP_AUTODISCOVERY`         | `false`                                      | Allow to retrieve a `.well-known/host-meta.json` if user log on a different domain
