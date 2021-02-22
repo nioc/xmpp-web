@@ -14,11 +14,7 @@
     <div id="messages-container" class="messages-container">
       <div v-for="message in messagesWithJid" :key="message.id" class="message-container is-flex" :class="{'is-row-reverse': isUser(message.from)}">
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
-        <span class="message-text has-background-shade-1 has-margin-left-7 has-margin-right-7" style="">
-          <span>{{ message.body }}</span>
-          <message-link v-for="link in message.links" :key="link.url" :url="link.url" class="is-clickable" />
-          <div v-if="message.delay" class="content is-italic has-text-weight-light is-small" :title="message.delay | moment()">{{ message.delay | moment("from") }}</div>
-        </span>
+        <message :message="message" />
       </div>
     </div>
     <div class="sendbox has-border-top-shade-3">
@@ -51,7 +47,7 @@
 
 <script>
 import avatar from '@/components/Avatar'
-import messageLink from '@/components/MessageLink'
+import message from '@/components/Message'
 import InviteGuestButton from '@/components/InviteGuestButton'
 import BookmarkButton from '@/components/BookmarkButton'
 import RoomConfigurationButton from '@/components/RoomConfigurationButton'
@@ -64,7 +60,7 @@ export default {
   name: 'Chat',
   components: {
     avatar,
-    messageLink,
+    message,
     InviteGuestButton,
     BookmarkButton,
     RoomConfigurationButton,
@@ -308,77 +304,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow-y: auto;
-  height: 100%;
-}
-.messages-container {
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  flex-grow: 1;
-}
-.toolbar {
-  position: relative;
-  padding: 0.5em 0.3em;
-  height: 3em;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.message-container {
-  margin: 0.5em 1em;
-}
-.message-text {
-  white-space: pre-wrap;
-  border-radius: 3px 9px 9px 9px !important;
-  padding: 0 0.75em;
-  margin: 0 0.75em;
-}
-.is-row-reverse {
-  flex-direction: row-reverse;
-}
-.is-row-reverse .message-text {
-  border-radius: 9px 3px 9px 9px !important;
-}
-.sendbox {
-  position: relative;
-}
-.sendbox textarea {
-  resize: none;
-  border: none;
-  padding-right: 5em;
-}
-.sendbox .thumbnail-container {
-  position: absolute;
-  top: 1em;
-  left: 1em;
-}
-.sendbox .thumbnail {
-  max-height: 2.5em;
-}
-.sendbox .delete {
-  margin-left: -7px;
-  margin-top: -13px;
-}
-.sendbox .fixed-right-button {
-  position: absolute;
-  right: 0;
-  top: calc(50% - 1.25em);
-  font-size: 1.5rem !important;
-}
-.sendbox .fixed-right-button .fa {
-  font-size: 1.5rem !important;
-}
-.sendbox .fixed-right-button .file-cta {
-  background-color: transparent;
-  border: none !important;
-}
-.sendbox .fixed-right-button .file-icon {
-  margin-right: 0;
-}
-</style>

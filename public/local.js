@@ -11,4 +11,5 @@ var config = {
   hasHttpAutoDiscovery: false,
   resource: 'Web XMPP',
   defaultDomain: 'domain-xmpp.ltd',
+  isStylingDisabled: false,
 }

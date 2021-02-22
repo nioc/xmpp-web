@@ -2,6 +2,7 @@
 
 [![license: AGPLv3](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub release](https://img.shields.io/github/release/nioc/xmpp-web.svg)](https://github.com/nioc/xmpp-web/releases/latest)
+[![Docker Image CI](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml)
 
 Lightweight web chat client for XMPP server.
 
@@ -12,9 +13,11 @@ Lightweight web chat client for XMPP server.
 -   Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
 -   Send and receive files over HTTP (XEP-0066, XEP-0363),
 -   Handle password protected room,
--   Display chat state notifications: is composing, is paused (XEP-0085)),
+-   Display chat state notifications: is composing, is paused (XEP-0085),
+-   Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
+-   Room configuration,
 -   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
--   Lightweight (400 KB gzipped at the first loading and then less than 10 KB)
+-   Lightweight (600 KB gzipped at the first loading and then less than 10 KB)
 -   Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
 
 ![Screenshot desktop](/docs/screenshot-desktop-main.png)
@@ -66,6 +69,7 @@ XMPP Web can be installed:
 | `hasHttpAutoDiscovery`    | `APP_HTTP_AUTODISCOVERY`         | `false`                                      | Allow to retrieve a `.well-known/host-meta.json` if user log on a different domain
 | `resource`                | `APP_RESOURCE`                   | `"Web XMPP"`                                 | Resource (client) affected to user
 | `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid
+| `isStylingDisabled`       | `APP_IS_STYLING_DISABLED`        | `false`                                      | Set to `true` for disable messages styling
 | N/A                       | `XMPP_HTTP`                      | `"http://localhost:5280/http-bind"`          | BOSH endpoint proxyfied by Nginx (on a docker installation)
 | N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
 

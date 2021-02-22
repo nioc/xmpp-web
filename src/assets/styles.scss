@@ -25,6 +25,15 @@ $border-hover: $black-bis;
 $border: $black-ter;
 $label-color: $black-ter;
 $input-background-color: $shade-1;
+$code-background: $shade-3;
+$pre-background: $shade-2;
+$pre: $text;
+$code: $warning-light;
+$pre-padding: 1rem;
+code,
+pre {
+	border-radius: 6px;
+}
 
 $link-focus: $black;
 $link-hover: $primary-light;
@@ -186,4 +195,76 @@ html, body {
   -moz-user-select: all;
   -ms-user-select: text;
   user-select: all;
+}
+
+.chat-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	overflow-y: auto;
+	height: 100%;
+}
+.messages-container {
+	overflow-y: auto;
+	scroll-behavior: smooth;
+	flex-grow: 1;
+}
+.toolbar {
+	position: relative;
+	padding: 0.5em 0.3em;
+	height: 3em;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.message-container {
+	margin: 0.5em 1em;
+}
+.message-text {
+	white-space: pre-wrap;
+	border-radius: 3px 9px 9px 9px !important;
+	padding: 0.25em 0.75em;
+	margin: 0 0.75em;
+}
+.is-row-reverse {
+	flex-direction: row-reverse;
+}
+.is-row-reverse .message-text {
+	border-radius: 9px 3px 9px 9px !important;
+}
+.sendbox {
+	position: relative;
+}
+.sendbox textarea {
+	resize: none;
+	border: none;
+	padding-right: 5em;
+}
+.sendbox .thumbnail-container {
+	position: absolute;
+	top: 1em;
+	left: 1em;
+}
+.sendbox .thumbnail {
+	max-height: 2.5em;
+}
+.sendbox .delete {
+	margin-left: -7px;
+	margin-top: -13px;
+}
+.sendbox .fixed-right-button {
+	position: absolute;
+	right: 0;
+	top: calc(50% - 1.25em);
+	font-size: 1.5rem !important;
+}
+.sendbox .fixed-right-button .fa {
+	font-size: 1.5rem !important;
+}
+.sendbox .fixed-right-button .file-cta {
+	background-color: transparent;
+	border: none !important;
+}
+.sendbox .fixed-right-button .file-icon {
+	margin-right: 0;
 }
