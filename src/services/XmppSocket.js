@@ -726,7 +726,6 @@ export default {
     }
   },
 
-
   async getRoomConfig (roomJid) {
     return this.client.getRoomConfig(roomJid)
   },
