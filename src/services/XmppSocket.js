@@ -726,6 +726,15 @@ export default {
     }
   },
 
+
+  async getRoomConfig (roomJid) {
+    return this.client.getRoomConfig(roomJid)
+  },
+
+  async setRoomConfig (roomJid, form) {
+    return this.client.configureRoom(roomJid, form)
+  },
+
   // Set nickname
   setNick (nick) {
     this.nick = nick

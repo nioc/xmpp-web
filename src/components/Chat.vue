@@ -6,6 +6,7 @@
       <span class="is-flex is-align-items-center">
         <room-occupants v-if="isRoom" :room-jid="jid" />
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
+        <room-configuration-button v-if="isRoom && !$xmpp.isAnonymous" :room-jid="jid" />
         <invite-guest-button v-if="isRoom" :room-jid="jid" />
         <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()"><i class="fa fa-history" aria-hidden="true" /></button>
       </span>
@@ -53,6 +54,7 @@ import avatar from '@/components/Avatar'
 import messageLink from '@/components/MessageLink'
 import InviteGuestButton from '@/components/InviteGuestButton'
 import BookmarkButton from '@/components/BookmarkButton'
+import RoomConfigurationButton from '@/components/RoomConfigurationButton'
 import RoomOccupants from '@/components/RoomOccupants.vue'
 import { mapState } from 'vuex'
 import axios from 'axios'
@@ -65,6 +67,7 @@ export default {
     messageLink,
     InviteGuestButton,
     BookmarkButton,
+    RoomConfigurationButton,
     RoomOccupants,
   },
   beforeRouteEnter (to, from, next) {
