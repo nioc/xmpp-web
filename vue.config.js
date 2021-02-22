@@ -35,4 +35,9 @@ module.exports = {
       theme_color: '#333333',
     },
   },
+  chainWebpack: config => {
+    config.performance
+      .maxAssetSize(2000000)
+      .maxEntrypointSize(2000000)
+  },
 }
