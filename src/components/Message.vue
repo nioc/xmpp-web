@@ -42,6 +42,10 @@ export default {
           if (codeBlockEndLine !== null) {
             // continue current code block
             if (index === codeBlockStartLine) {
+              if (index === codeBlockEndLine - 1) {
+                // start and end code block
+                return '<pre><code>' + line + '</code></pre>'
+              }
               // start code block
               return '<pre><code>' + line
             }
