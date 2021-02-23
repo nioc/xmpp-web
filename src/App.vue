@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="is-full-height">
     <router-view name="navbar" />
     <router-view />
   </div>

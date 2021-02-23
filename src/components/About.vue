@@ -1,5 +1,5 @@
 <template>
-  <main class="is-growing section">
+  <main class="section">
     <div class="container">
       <h2 class="title">About</h2>
       <h3 class="subtitle is-5">

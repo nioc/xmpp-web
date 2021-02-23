@@ -13,7 +13,7 @@
           <contact :jid="room.jid" :is-room="true" :unread-count="room.unreadCount" />
         </li>
         <li>
-          <router-link active-class="is-active" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw has-margin-right-7" />Public rooms</router-link>
+          <router-link active-class="is-active" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw mr-3" />Public rooms</router-link>
         </li>
         <li>
           <form class="field has-addons" @submit.prevent="joinRoomByJid">

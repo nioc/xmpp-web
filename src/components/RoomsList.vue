@@ -1,5 +1,5 @@
 <template>
-  <main class="is-growing section">
+  <main class="section">
     <h2 class="title">Public rooms</h2>
     <table class="table is-hoverable is-fullwidth center-table">
       <thead>

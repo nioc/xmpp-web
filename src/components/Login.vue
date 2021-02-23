@@ -23,16 +23,16 @@
                   </span>
                 </div>
               </div>
-              <div class="field has-text-left has-padding-left-7">
+              <div class="field has-text-left pl-3">
                 <b-checkbox v-model="credentials.remember" type="is-primary" class="has-text-grey-light">
                   Store my password in browser
                 </b-checkbox>
               </div>
-              <b-collapse v-if="isTransportsUserAllowed" class="card has-background-shade-3 has-margin-bottom-7" :open="false" aria-id="connection-settings">
+              <b-collapse v-if="isTransportsUserAllowed" class="card has-background-shade-3 mb-3" :open="false" aria-id="connection-settings">
                 <div slot="trigger" slot-scope="props" class="card-header" role="button" aria-controls="connection-settings">
-                  <p class="card-header-title has-text-grey-light"><span class="fa fa-cog fa-fw has-margin-right-7" aria-hidden="true" />Connection settings</p>
+                  <p class="card-header-title has-text-grey-light"><span class="fa fa-cog fa-fw mr-3" aria-hidden="true" />Connection settings</p>
                   <a class="card-header-icon has-text-grey-light">
-                    <span class="fa fa-fw has-margin-right-7" :class="[props.open ? 'fa-caret-down': 'fa-caret-up']" aria-hidden="true" />
+                    <span class="fa fa-fw mr-3" :class="[props.open ? 'fa-caret-down': 'fa-caret-up']" aria-hidden="true" />
                   </a>
                 </div>
                 <div class="card-content">
@@ -49,7 +49,7 @@
                 </div>
               </b-collapse>
               <div class="field">
-                <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{'is-loading': isLoading}" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw has-margin-right-7" aria-hidden="true" />Login</button>
+                <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{'is-loading': isLoading}" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw mr-3" aria-hidden="true" />Login</button>
               </div>
               <div v-if="error" class="message is-danger">
                 <div class="message-body has-text-danger">{{ error }}</div>

@@ -50,73 +50,32 @@ $link-focus-border: $primary;
 $menu-item-active-background-color: $primary;
 $menu-item-hover-background-color: $shade-1;
 
+$file-cta-background-color: transparent;
+
 $colors: (
-    "white": ($white, $black),
-    "black": ($black, $white),
-    "light": ($light, $light-invert),
-    "dark": ($dark, $dark-invert),
-    "primary": ($primary, $primary-invert),
-    "info": ($info, $info-invert),
-    "success": ($success, $success-invert),
-    "warning": ($warning, $warning-invert),
-    "danger": ($danger, $danger-invert),
-    "shade-1": ($shade-1, $shade-1-invert),
-    "shade-2": ($shade-2, $shade-2-invert),
-    "shade-3": ($shade-3, $shade-3-invert),
-    "shade-4": ($shade-4, $shade-4-invert),
+	"white": ($white, $black),
+	"black": ($black, $white),
+	"light": ($light, $light-invert),
+	"dark": ($dark, $dark-invert),
+	"primary": ($primary, $primary-invert),
+	"info": ($info, $info-invert),
+	"success": ($success, $success-invert),
+	"warning": ($warning, $warning-invert),
+	"danger": ($danger, $danger-invert),
+	"shade-1": ($shade-1, $shade-1-invert),
+	"shade-2": ($shade-2, $shade-2-invert),
+	"shade-3": ($shade-3, $shade-3-invert),
+	"shade-4": ($shade-4, $shade-4-invert),
 );
 
 $navbar-item-img-max-height: unset;
 
-$indexSizes: (
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-  7
-);
 $positions: (
 	"top",
 	"left",
 	"bottom",
 	"right"
 );
-$bulmaSizes: (
-	$size-1,
-	$size-2,
-	$size-3,
-	$size-4,
-	$size-5,
-	$size-6,
-	$size-7
-);
-$i: 1;
-@each $size in $indexSizes {
-	$sizee: nth($bulmaSizes, $i);
-	$i: $i+1;
-	.has-margin-#{$size} {
-		margin: $sizee !important;
-	}
-	.has-negative-margin-#{$size} {
-		margin: -$sizee !important;
-	}
-	.has-padding-#{$size} {
-		padding: $sizee !important;
-	}
-	@each $position in $positions {
-		.has-margin-#{$position}-#{$size} {
-			margin-#{$position}: $sizee !important;
-		}
-		.has-padding-#{$position}-#{$size} {
-			padding-#{$position}: $sizee !important;
-		}
-		.has-negative-margin-#{$position}-#{$size} {
-			margin-#{$position}: -$sizee !important;
-		}
-	}
-}
 
 @each $position in $positions {
 	.has-border-#{$position}-shade-3 {
@@ -128,11 +87,16 @@ $i: 1;
 @import "~buefy/src/scss/buefy";
 @import "~@creativebulma/bulma-divider";
 
-html, body {
+html,
+body,
+.is-full-height {
+	height: 100%;
 	overflow-y: hidden;
 }
-.is-growing {
-  flex-grow: 1;
+
+.is-full-height-scrollable {
+	height: 100%;
+	overflow-y: auto;
 }
 
 .has-no-border {
@@ -151,14 +115,6 @@ html, body {
 	background-color: $white;
 }
 
-.is-guest .main-container {
-  height: 100vh;
-  align-items: stretch;
-  display: flex;
-  flex-direction: row;
-	justify-content: space-between;
-}
-
 .modal-card-head, .modal-card-foot {
 	background-color: $shade-3;
 }
@@ -175,6 +131,7 @@ html, body {
 	background-color: transparent;
 	color: $primary;
 	&:hover, &:focus {
+		background-color: transparent;
 		color:$primary-light;
 	}
 }
@@ -188,22 +145,15 @@ html, body {
 }
 
 .is-select-all {
-  user-select: text;
-  -webkit-user-select: text;
-  -webkit-touch-callout: all;
-  -webkit-user-select: all;
-  -moz-user-select: all;
-  -ms-user-select: text;
-  user-select: all;
+	user-select: text;
+	-webkit-user-select: text;
+	-webkit-touch-callout: all;
+	-webkit-user-select: all;
+	-moz-user-select: all;
+	-ms-user-select: text;
+	user-select: all;
 }
 
-.chat-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	overflow-y: auto;
-	height: 100%;
-}
 .messages-container {
 	overflow-y: auto;
 	scroll-behavior: smooth;
@@ -217,28 +167,18 @@ html, body {
 	align-items: center;
 	justify-content: space-between;
 }
-.message-container {
-	margin: 0.5em 1em;
-}
 .message-text {
 	white-space: pre-wrap;
 	border-radius: 3px 9px 9px 9px !important;
 	padding: 0.25em 0.75em;
 	margin: 0 0.75em;
 }
-.is-row-reverse {
-	flex-direction: row-reverse;
-}
-.is-row-reverse .message-text {
+.is-flex-direction-row-reverse .message-text {
 	border-radius: 9px 3px 9px 9px !important;
-}
-.sendbox {
-	position: relative;
 }
 .sendbox textarea {
 	resize: none;
 	border: none;
-	padding-right: 5em;
 }
 .sendbox .thumbnail-container {
 	position: absolute;
@@ -251,20 +191,4 @@ html, body {
 .sendbox .delete {
 	margin-left: -7px;
 	margin-top: -13px;
-}
-.sendbox .fixed-right-button {
-	position: absolute;
-	right: 0;
-	top: calc(50% - 1.25em);
-	font-size: 1.5rem !important;
-}
-.sendbox .fixed-right-button .fa {
-	font-size: 1.5rem !important;
-}
-.sendbox .fixed-right-button .file-cta {
-	background-color: transparent;
-	border: none !important;
-}
-.sendbox .fixed-right-button .file-icon {
-	margin-right: 0;
 }

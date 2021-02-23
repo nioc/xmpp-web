@@ -4,7 +4,7 @@
       <img class="is-rounded" :src="uri" :title="jid">
       <i v-if="presence" class="fa fa-circle presence-icon" :class="presenceClass" />
     </figure>
-    <span v-if="displayJid" class="has-margin-left-7">{{ jid }}</span>
+    <span v-if="displayJid" class="ml-3">{{ jid }}</span>
   </span>
 </template>
 

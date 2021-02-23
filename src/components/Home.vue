@@ -1,9 +1,9 @@
 <template>
-  <div class="main-container is-block-mobile">
-    <aside class="contacts-list is-block-mobile has-background-shade-3" :class="{'is-hidden-mobile': !displayContact}">
+  <div class="is-flex-tablet is-block-mobile is-full-height">
+    <aside class="is-full-height-scrollable is-block-mobile is-flex-shrink-0 has-background-shade-3" :class="{'is-hidden-mobile': !displayContact}">
       <contacts />
     </aside>
-    <router-view />
+    <router-view class="is-flex-grow-1" />
   </div>
 </template>
 
@@ -67,18 +67,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.main-container {
-  height: calc(100vh - 3.25rem);
-  align-items: stretch;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-.contacts-list {
-  overflow-y: auto;
-  flex-shrink: 0;
-  height: 100%;
-}
-</style>

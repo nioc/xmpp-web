@@ -1,5 +1,5 @@
 <template>
-  <main class="is-growing chat-container has-background-shade-4">
+  <main class="is-flex is-flex-direction-column is-justify-content-space-between is-full-height has-background-shade-4">
     <div class="toolbar has-border-bottom-shade-3">
       <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button is-primary-ghost has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
@@ -12,15 +12,15 @@
       </span>
     </div>
     <div id="messages-container" class="messages-container">
-      <div v-for="message in messagesWithJid" :key="message.id" class="message-container is-flex" :class="{'is-row-reverse': isUser(message.from)}">
+      <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{'is-flex-direction-row-reverse': isUser(message.from)}">
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
         <message :message="message" />
       </div>
     </div>
     <div class="sendbox has-border-top-shade-3">
       <form @submit.prevent="sendMessage">
-        <div class="field">
-          <div class="control">
+        <div class="field is-flex is-align-items-center mr-3">
+          <div class="control is-flex-grow-1">
             <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
             <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
               <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
@@ -28,13 +28,13 @@
               <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
             </div>
           </div>
-          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button fixed-right-button is-primary-ghost has-no-border is-shadowless" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
-          <div v-else class="file fixed-right-button has-no-border" title="Send a file">
+          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+          <div v-else class="file has-no-border is-size-4" title="Send a file">
             <label class="file-label">
               <input class="file-input" type="file" name="resume" @change="onFileChange">
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fa fa-paperclip is-primary-ghost" />
+              <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
+                <span class="file-icon mr-0">
+                  <i class="fa fa-paperclip is-primary-ghost is-size-4" />
                 </span>
               </span>
             </label>

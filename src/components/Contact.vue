@@ -2,10 +2,10 @@
   <router-link :to="{name: isRoom ? 'groupchat' : 'chat', params: {jid}}" class="has-unread" :title="title" exact exact-active-class="is-active">
     <!-- groupchat (room) -->
     <span v-if="isRoom" class="is-flex is-align-items-center">
-      <avatar v-if="room.hasVCard" class="has-margin-right-7" :jid="jid" :display-jid="false" :size="24" />
+      <avatar v-if="room.hasVCard" class="mr-3" :jid="jid" :display-jid="false" :size="24" />
       <span :class="{'is-italic has-text-grey': !isJoined}">{{ roomName }}</span>
-      <i v-if="room.isBookmarked" class="fa fa-star has-text-warning has-margin-left-7" />
-      <span class="has-margin-left-7 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
+      <i v-if="room.isBookmarked" class="fa fa-star has-text-warning ml-3" />
+      <span class="ml-3 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
         <i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" />
         <i v-if="room.isModerated" class="fa fa-shield fa-fw" title="Is moderated" />
         <i v-if="room.isAnonymous" class="fa fa-user-secret fa-fw" title="Allow anonymous (nick)" />
@@ -16,7 +16,7 @@
     <!-- chat -->
     <avatar v-else :jid="jid" :display-jid="true" :size="24" :presence="presence" />
     <!-- common -->
-    <span v-if="unreadCount > 0" class="tag has-margin-left-7 is-rounded is-danger">{{ unreadCount }}</span>
+    <span v-if="unreadCount > 0" class="tag ml-3 is-rounded is-danger">{{ unreadCount }}</span>
   </router-link>
 </template>
 
