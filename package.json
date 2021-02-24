@@ -29,6 +29,7 @@
     "bulma": "^0.9.2",
     "filesize": "^6.1.0",
     "fork-awesome": "^1.1.7",
+    "gemoji": "^6.1.0",
     "mime-types": "^2.1.28",
     "register-service-worker": "^1.7.2",
     "sanitize-html": "^2.3.2",

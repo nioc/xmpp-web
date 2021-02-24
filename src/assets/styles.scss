@@ -192,3 +192,23 @@ body,
 	margin-left: -7px;
 	margin-top: -13px;
 }
+
+.emojiPicker .b-tabs,
+.emojiPicker .tab-content {
+	height: 100%;
+	overflow-y: hidden;
+	padding: 0;
+}
+.emojiPicker {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 1;
+	background-color: $shade-4;
+}
+.emoji {
+	width: 2.5rem;
+	text-align: center;
+}

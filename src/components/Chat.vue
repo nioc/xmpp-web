@@ -1,5 +1,5 @@
 <template>
-  <main class="is-flex is-flex-direction-column is-justify-content-space-between is-full-height has-background-shade-4">
+  <main class="is-flex is-flex-direction-column is-justify-content-space-between is-full-height has-background-shade-4 is-relative">
     <div class="toolbar has-border-bottom-shade-3">
       <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button is-primary-ghost has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
@@ -28,6 +28,7 @@
               <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
             </div>
           </div>
+          <emoji-picker @emojiPicked="addEmoji" />
           <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
           <div v-else class="file has-no-border is-size-4" title="Send a file">
             <label class="file-label">
@@ -52,6 +53,7 @@ import InviteGuestButton from '@/components/InviteGuestButton'
 import BookmarkButton from '@/components/BookmarkButton'
 import RoomConfigurationButton from '@/components/RoomConfigurationButton'
 import RoomOccupants from '@/components/RoomOccupants.vue'
+import EmojiPicker from '@/components/EmojiPicker'
 import { mapState } from 'vuex'
 import axios from 'axios'
 import filesize from 'filesize'
@@ -65,6 +67,7 @@ export default {
     BookmarkButton,
     RoomConfigurationButton,
     RoomOccupants,
+    EmojiPicker,
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -218,6 +221,9 @@ export default {
       this.file = null
       this.fileThumbnail = null
       this.fileIcon = null
+    },
+    addEmoji (emoji) {
+      this.composingMessage += emoji
     },
     // handle route on mount (commit active chat, reset chatState and first message, join room if not already)
     async handleRoute () {
