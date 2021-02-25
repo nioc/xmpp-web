@@ -726,6 +726,55 @@ export default {
     }
   },
 
+  async createRoom (roomJid) {
+    let timeoutId = null
+    const timeoutPromise = new Promise((resolve, reject) => {
+      timeoutId = setTimeout(() => {
+        clearTimeout(timeoutId)
+        reject(new Error('Server unreachable'))
+      }, 5000)
+    })
+
+    const createRoomPromise = new Promise((resolve, reject) => {
+      const _xmppSocket = this
+      function roomCreationAck (presence) {
+        const jid = XMPP.JID.parse(presence.from)
+        if (jid.bare === roomJid) {
+          if (presence.error) {
+            // handle error
+            this.off('presence', roomCreationAck)
+            clearTimeout(timeoutId)
+            return reject(new Error(_xmppSocket.getRoomError(presence)))
+          }
+          if (presence.muc && presence.muc.statusCodes) {
+            clearTimeout(timeoutId)
+            this.off('presence', roomCreationAck)
+            if (presence.muc.statusCodes.includes('201')) {
+              return resolve(true)
+            }
+            return reject(new Error('This room already exists'))
+          }
+        }
+      }
+      // listen for acknowledging
+      this.client.on('presence', roomCreationAck)
+    })
+
+    // ask room creation
+    await this.client.sendPresence({
+      to: `${roomJid}/${this.fullJid.local}`,
+      muc: {
+        namespace: XMPP.Namespaces.NS_MUC,
+        type: 'join',
+      },
+    })
+
+    return Promise.race([
+      createRoomPromise,
+      timeoutPromise,
+    ])
+  },
+
   async getRoomConfig (roomJid) {
     return this.client.getRoomConfig(roomJid)
   },

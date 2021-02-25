@@ -29,6 +29,14 @@
             </div>
           </form>
         </li>
+        <li>
+          <router-link :to="{name: 'room creation'}" class="button is-fullwidth is-dark" title="Create a room">
+            <span class="icon">
+              <i class="fa fa-plus-square" />
+            </span>
+            <span>Create a room</span>
+          </router-link>
+        </li>
       </ul>
     </div>
   </aside>

@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar.vue'
 import Login from '@/components/Login.vue'
 import Home from '@/components/Home.vue'
 import RoomsList from '@/components/RoomsList.vue'
+import RoomCreation from '@/components/RoomCreation.vue'
 import About from '@/components/About.vue'
 import GuestHome from '@/components/GuestHome.vue'
 import GuestChat from '@/components/GuestChat.vue'
@@ -46,6 +47,15 @@ const router = new Router({
           name: 'public muc',
           path: 'rooms/discover',
           component: RoomsList,
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
+          // room creation
+          name: 'room creation',
+          path: 'rooms/new',
+          component: RoomCreation,
           meta: {
             requiresAuth: true,
           },

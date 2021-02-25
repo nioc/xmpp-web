@@ -26,7 +26,7 @@
     </section>
 
     <footer class="modal-card-foot">
-      <button class="button is-dark" @click="$emit('close')">Close</button>
+      <button v-if="hasCancelButton" class="button is-dark" @click="$emit('close')">Close</button>
       <button v-if="form.fields" class="button is-primary" @click="saveRoomConfiguration">Save</button>
       <span v-if="error" class="is-flex-grow-1 has-text-right has-text-danger">{{ error }}</span>
     </footer>
@@ -40,6 +40,10 @@ export default {
     roomJid: {
       type: String,
       required: true,
+    },
+    hasCancelButton: {
+      type: Boolean,
+      default: true,
     },
   },
   data () {
@@ -75,6 +79,8 @@ export default {
       this.isLoading = true
       try {
         await this.$xmpp.setRoomConfig(this.roomJid, this.form)
+        this.$parent.$emit('saved')
+        this.$emit('close')
       } catch (error) {
         if (error.error.text) {
           this.error = error.error.text
