@@ -2,7 +2,9 @@
 
 [![license: AGPLv3](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub release](https://img.shields.io/github/release/nioc/xmpp-web.svg)](https://github.com/nioc/xmpp-web/releases/latest)
-[![Docker Image CI](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml/badge.svg)](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nioc/xmpp-web/Docker%20Image%20CI?label=github%20build)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/nioc/xmpp-web)
+![GitHub issues by-label](https://img.shields.io/github/issues/nioc/xmpp-web/help%20wanted?label=issues%20need%20help)
 
 Lightweight web chat client for XMPP server.
 
@@ -15,7 +17,8 @@ Lightweight web chat client for XMPP server.
 -   Handle password protected room,
 -   Display chat state notifications: is composing, is paused (XEP-0085),
 -   Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
--   Room configuration,
+-   Pick emoji,
+-   Room creation and configuration,
 -   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
 -   Lightweight (600 KB gzipped at the first loading and then less than 10 KB)
 -   Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
