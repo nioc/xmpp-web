@@ -2,9 +2,9 @@
 
 [![license: AGPLv3](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub release](https://img.shields.io/github/release/nioc/xmpp-web.svg)](https://github.com/nioc/xmpp-web/releases/latest)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nioc/xmpp-web/Docker%20Image%20CI?label=github%20build)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/nioc/xmpp-web)
-![GitHub issues by-label](https://img.shields.io/github/issues/nioc/xmpp-web/help%20wanted?label=issues%20need%20help)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nioc/xmpp-web/Docker%20Image%20CI?label=github%20build)](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/nioc/xmpp-web)](https://hub.docker.com/r/nioc/xmpp-web/builds)
+[![GitHub issues by-label](https://img.shields.io/github/issues/nioc/xmpp-web/help%20wanted?label=issues%20need%20help)](https://github.com/nioc/xmpp-web/labels/help%20wanted)
 
 Lightweight web chat client for XMPP server.
 
