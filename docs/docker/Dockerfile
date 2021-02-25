@@ -1,5 +1,6 @@
 # build stage
 FROM node:lts-alpine as build-stage
+RUN apk add git
 # copy package
 WORKDIR /app
 COPY package*.json ./

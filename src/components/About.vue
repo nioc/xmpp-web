@@ -9,7 +9,7 @@
         <div class="control">
           <div class="tags has-addons">
             <span class="tag is-dark">Installed version</span>
-            <span class="tag" :class="[isUpToDate ? 'is-success': 'is-danger']">{{ version.installed }}</span>
+            <span class="tag" :class="[isUpToDate ? 'is-success': 'is-danger']" :title="gitVersion">{{ version.installed }}</span>
           </div>
         </div>
         <div class="control">
@@ -47,6 +47,8 @@ export default {
       },
       homepage,
       isUpToDate: true,
+      // eslint-disable-next-line no-undef
+      gitVersion,
     }
   },
   mounted () {

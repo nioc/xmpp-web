@@ -1,3 +1,7 @@
+const { DefinePlugin } = require('webpack')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const gitRevisionPlugin = new GitRevisionPlugin({ branch: true })
+
 module.exports = {
   pwa: {
     workboxPluginMode: 'GenerateSW',
@@ -34,6 +38,13 @@ module.exports = {
       background_color: '#333333',
       theme_color: '#333333',
     },
+  },
+  configureWebpack: {
+    plugins: [
+      new DefinePlugin({
+        gitVersion: JSON.stringify(gitRevisionPlugin.version() + '-' + gitRevisionPlugin.branch()),
+      }),
+    ],
   },
   chainWebpack: config => {
     config.performance
