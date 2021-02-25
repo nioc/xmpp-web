@@ -23,8 +23,6 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link is-arrowless"><avatar :jid="user.jid" :display-jid="true" :size="32" /></a>
           <div class="navbar-dropdown is-right">
-            <router-link class="navbar-item" to="/profile"><i class="fa fa-user-circle fa-fw mr-3" />Profile</router-link>
-            <hr class="navbar-divider">
             <router-link class="navbar-item" :to="{name: 'about'}" active-class="is-active"><i class="fa fa-info-circle fa-fw mr-3" />About</router-link>
             <a class="navbar-item" :href="bugUrl" target="_blank" rel="noreferrer"><i class="fa fa-bug fa-fw mr-3" />Bug</a>
             <hr class="navbar-divider">
