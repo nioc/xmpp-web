@@ -1,6 +1,6 @@
 {
   "name": "xmpp-web",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "description": "Lightweight web chat client for XMPP server",
   "homepage": "https://github.com/nioc/xmpp-web",
