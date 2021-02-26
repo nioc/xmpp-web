@@ -47,8 +47,16 @@ export default {
       }
     },
   },
-  async mounted () {
-    this.uri = await this.$xmpp.getJidAvatar(this.jid)
+  watch: {
+    jid: 'getJidAvatar',
+  },
+  created () {
+    this.getJidAvatar()
+  },
+  methods: {
+    async getJidAvatar () {
+      this.uri = await this.$xmpp.getJidAvatar(this.jid)
+    },
   },
 }
 </script>
