@@ -18,7 +18,7 @@
         <li>
           <form class="field has-addons" @submit.prevent="joinRoomByJid">
             <div class="control is-flex-grow-1">
-              <input v-model="roomJid" class="input is-dark" type="text" :placeholder="`room@conference.${$xmpp.defaultDomain}`" title="Enter full room Jid">
+              <input v-model="roomJid" class="input is-dark" type="text" :placeholder="roomPlaceholder" title="Enter a room jid for joining">
             </div>
             <div class="control" title="Join this room">
               <button type="submit" class="button is-dark" :disabled="!isValidRoomJid">
@@ -65,12 +65,19 @@ export default {
       return this.knownRooms
         .filter((room) => room.isBookmarked || this.$store.getters.isJoined(room.jid))
     },
-    isValidRoomJid () { return /\S+@\S+\S+/.test(this.roomJid) },
+    roomPlaceholder () { return this.$xmpp.defaultMuc ? `room@${this.$xmpp.defaultMuc}` : `room@conference.${this.$xmpp.defaultDomain}` },
+    isValidRoomJid () { return this.$xmpp.defaultMuc ? this.roomJid.length > 2 : /\S+@\S+\S+/.test(this.roomJid) },
   },
   methods: {
     joinRoomByJid () {
       if (this.roomJid === '') {
         return
+      }
+      if (!/\S+@\S+\S+/.test(this.roomJid)) {
+        if (!this.$xmpp.defaultMuc) {
+          return
+        }
+        this.roomJid = this.roomJid + '@' + this.$xmpp.defaultMuc
       }
       if (this.$route.name !== 'groupchat' || (!this.$route.params.jid || this.$route.params.jid !== this.roomJid)) {
         this.$router.push({ name: 'groupchat', params: { jid: this.roomJid } })

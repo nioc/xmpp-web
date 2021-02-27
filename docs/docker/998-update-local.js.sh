@@ -39,6 +39,10 @@ update_localjs() {
 
   sed -i -r "s|defaultDomain: 'domain-xmpp.ltd'|defaultDomain: '$APP_DEFAULT_DOMAIN'|g" $localjs
 
+  if [ "$APP_DEFAULT_MUC" != "" ]; then
+    sed -i -r "s|defaultMuc: null|defaultMuc: '$APP_DEFAULT_MUC'|g" $localjs
+  fi
+
   if [ "$APP_IS_STYLING_DISABLED" != "0" ]; then
     sed -i -r "s|isStylingEnabled: true|isStylingEnabled: false|g" $localjs
   fi

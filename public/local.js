@@ -11,5 +11,7 @@ var config = {
   hasHttpAutoDiscovery: false,
   resource: 'Web XMPP',
   defaultDomain: 'domain-xmpp.ltd',
+  defaultMuc: null,
+  // defaultMuc: 'conference.domain-xmpp.ltd',
   isStylingDisabled: false,
 }

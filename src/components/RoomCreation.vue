@@ -2,7 +2,7 @@
   <main class="section">
     <form class="field has-addons" @submit.prevent="createRoom">
       <div class="control has-icons-left is-flex-grow-1">
-        <input v-model="roomJid" autofocus class="input" type="text" :placeholder="`room@conference.${$xmpp.defaultDomain}`" title="Enter full room Jid">
+        <input v-model="roomJid" autofocus class="input" type="text" :placeholder="roomPlaceholder" title="Enter room Jid">
         <span class="icon is-small is-left">
           <i class="fa fa-tag" />
         </span>
@@ -34,10 +34,17 @@ export default {
     }
   },
   computed: {
-    hasValidJid () { return /\S+@\S+\S+/.test(this.roomJid) },
+    roomPlaceholder () { return this.$xmpp.defaultMuc ? `room@${this.$xmpp.defaultMuc}` : `room@conference.${this.$xmpp.defaultDomain}` },
+    hasValidJid () { return this.$xmpp.defaultMuc ? this.roomJid.length > 2 : /\S+@\S+\S+/.test(this.roomJid) },
   },
   methods: {
     async createRoom () {
+      if (!/\S+@\S+\S+/.test(this.roomJid)) {
+        if (!this.$xmpp.defaultMuc) {
+          return
+        }
+        this.roomJid = this.roomJid + '@' + this.$xmpp.defaultMuc
+      }
       this.isLoading = true
       try {
         this.error = ''

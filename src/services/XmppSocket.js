@@ -5,6 +5,7 @@ import axios from 'axios'
 const transports = window.config.transports
 const resource = window.config.resource
 const defaultDomain = window.config.defaultDomain
+const defaultMuc = window.config.defaultMuc
 const hasHttpAutoDiscovery = window.config.hasHttpAutoDiscovery
 
 export default {
@@ -16,6 +17,7 @@ export default {
   nick: null,
   isAnonymous: true,
   defaultDomain,
+  defaultMuc,
 
   // create XMPP client with credentials and context
   async create (jid, password, server, transportsUser, context) {
