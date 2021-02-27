@@ -141,9 +141,20 @@ export default new Vuex.Store({
           return
         }
       }
+      if (payload.message.stanzaId) {
+        const messages = state.messages.slice(0)
+        const index = messages.findIndex((knownMessage) => knownMessage.stanzaId === payload.message.stanzaId)
+        if (index !== -1) {
+          // update existing message
+          messages[index] = payload.message
+          state.messages = messages
+          return
+        }
+      }
       // add new message
       state.messages.push({
         id: payload.message.id,
+        stanzaId: payload.message.stanzaId,
         from: payload.message.from,
         to: payload.message.to,
         body: payload.message.body,

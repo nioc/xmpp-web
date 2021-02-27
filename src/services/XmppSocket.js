@@ -160,10 +160,20 @@ export default {
           message.body = ''
         }
       }
+      // retrieve stanza id (xep-0359)
+      let stanzaId
+      if (type === 'groupchat' && message.stanzaIds) {
+        const room = XMPP.JID.parse(message.from).bare
+        const stanzaIdItem = message.stanzaIds.find((stanzaId) => stanzaId.by === room)
+        if (stanzaIdItem) {
+          stanzaId = stanzaIdItem.id
+        }
+      }
       xmppSocket.context.$store.commit('storeMessage', {
         type,
         message: {
           id: message.id,
+          stanzaId,
           from: message.from ? XMPP.JID.parse(message.from) : xmppSocket.fullJid,
           to: XMPP.JID.parse(message.to),
           body: message.body,
@@ -509,7 +519,9 @@ export default {
           // message de not have text (stanza maybe)
           return
         }
-        if (this.context.$store.state.messages.some((message) => message.id === item.item.message.id)) {
+        if (item.item.message.id && this.context.$store.state.messages
+          .filter((message) => message.id)
+          .some((message) => message.id === item.item.message.id)) {
           // message already known
           return
         }
