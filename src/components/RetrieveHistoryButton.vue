@@ -1,5 +1,5 @@
 <template>
-  <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" @click="getPreviousMessages()">
+  <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" :disabled="isDisabled" @click="getPreviousMessages()">
     <i class="fa fa-history" aria-hidden="true" />
   </button>
 </template>
@@ -19,6 +19,7 @@ export default {
     ...mapState([
       'activeChat',
     ]),
+    isDisabled () { return this.firstMessageId === undefined },
   },
   watch: {
     activeChat: function () {
