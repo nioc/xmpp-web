@@ -72,6 +72,7 @@ export default {
     },
     async logout () {
       await this.$xmpp.disconnect()
+      this.$store.commit('clear')
       localStorage.clear()
       this.$router.replace('/login')
     },

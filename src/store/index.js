@@ -3,8 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
+const getDefaultState = () => {
+  return {
     activeChat: null,
     messages: [],
     contacts: [],
@@ -12,8 +12,14 @@ export default new Vuex.Store({
     knownRooms: [],
     roomsOccupants: [],
     httpFileUploadMaxSize: null,
-    hasNetwork: null,
     isOnline: false,
+  }
+}
+
+export default new Vuex.Store({
+  state: {
+    hasNetwork: null,
+    ...getDefaultState(),
   },
 
   getters: {
@@ -233,6 +239,14 @@ export default new Vuex.Store({
       if (index !== -1) {
         state.roomsOccupants[roomIndex].occupants.splice(index, 1)
       }
+    },
+
+    // clear state
+    clear (state) {
+      const defaultState = getDefaultState()
+      Object.keys(defaultState).forEach((key) => {
+        state[key] = defaultState[key]
+      })
     },
 
   },
