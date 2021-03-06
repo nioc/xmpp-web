@@ -22,6 +22,8 @@ COPY ./docs/docker/default.conf.template /etc/nginx/templates/default.conf.templ
 ENV APP_NAME=
 ENV APP_HTTP=http://localhost/http-bind
 ENV APP_WS=ws://localhost/xmpp-websocket
+ENV APP_REGISTERED_ACCESS=1
+ENV APP_GUEST_ACCESS=1
 ENV XMPP_ANON_HOST=
 ENV APP_IS_TRANSPORTS_USER_ALLOWED=0
 ENV APP_HTTP_AUTODISCOVERY=0

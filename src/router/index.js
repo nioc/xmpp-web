@@ -12,9 +12,17 @@ import GuestChat from '@/components/GuestChat.vue'
 
 Vue.use(Router)
 
-const router = new Router({
-  mode: 'hash',
-  routes: [
+const routes = [
+  {
+    // redirect unknown path to homepage
+    path: '*',
+    redirect: { name: 'home' },
+  },
+]
+
+if (window.config.hasRegisteredAccess) {
+  // set registered user routes
+  routes.push(
     {
       // home page containing child components for chats and MUC
       name: 'home',
@@ -90,6 +98,12 @@ const router = new Router({
       path: '/login',
       component: Login,
     },
+  )
+}
+
+if (window.config.hasGuestAccess) {
+  // set guest user routes
+  routes.push(
     {
       // guest home
       name: 'gest',
@@ -114,12 +128,28 @@ const router = new Router({
         requiresAuth: false,
       },
     },
-    {
-      // redirect unknown path to homepage
-      path: '*',
-      redirect: { name: 'home' },
-    },
-  ],
+  )
+  if (!window.config.hasRegisteredAccess) {
+    // set default home if registered access is disabled
+    routes.push(
+      {
+        name: 'home',
+        path: '/',
+        component: GuestHome,
+        props: (route) => ({
+          requestedJid: route.query.join,
+        }),
+        meta: {
+          requiresAuth: false,
+        },
+      },
+    )
+  }
+}
+
+const router = new Router({
+  mode: 'hash',
+  routes,
 })
 
 router.beforeEach((to, from, next) => {

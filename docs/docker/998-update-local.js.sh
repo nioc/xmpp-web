@@ -21,6 +21,14 @@ update_localjs() {
 
   sed -i -r "s|websocket: 'wss://chat.domain-web.ltd/xmpp-websocket'|websocket: '$APP_WS'|g" $localjs
 
+  if [ "$APP_REGISTERED_ACCESS" != "1" ]; then
+    sed -i -r "s|hasRegisteredAccess: true|hasRegisteredAccess: false|g" $localjs
+  fi
+
+  if [ "$APP_GUEST_ACCESS" != "1" ]; then
+    sed -i -r "s|hasGuestAccess: true|hasGuestAccess: false|g" $localjs
+  fi
+
   if [ "$XMPP_ANON_HOST" != "" ]; then
     sed -i -r "s|anonymousHost: null|anonymousHost: '$XMPP_ANON_HOST'|g" $localjs
   fi
