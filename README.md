@@ -74,7 +74,7 @@ XMPP Web can be installed:
 | `hasHttpAutoDiscovery`    | `APP_HTTP_AUTODISCOVERY`         | `false`                                      | Allow to retrieve a `.well-known/host-meta.json` if user log on a different domain
 | `resource`                | `APP_RESOURCE`                   | `"Web XMPP"`                                 | Resource (client) affected to user
 | `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid
-| `defaultMuc`              | `APP_DEFAULT_MUC`                | `null`                                       | MUC used if user do not provide a full room jid (join & create)
+| `defaultMuc`              | `APP_DEFAULT_MUC`                | `null`                                       | Autocomplete MUC address (ex: `conference.domain.ltd`) if user do not provide a full room jid (join & create)
 | `isStylingDisabled`       | `APP_IS_STYLING_DISABLED`        | `false`                                      | Set to `true` for disable messages styling
 | N/A                       | `XMPP_HTTP`                      | `"http://localhost:5280/http-bind"`          | BOSH endpoint proxyfied by Nginx (on a docker installation)
 | N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
