@@ -14,7 +14,7 @@
     <div id="messages-container" class="messages-container">
       <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{'is-flex-direction-row-reverse': isUser(message.from)}">
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
-        <message :message="message" />
+        <message :message="message" :display-nick="isRoom" />
       </div>
     </div>
     <sendbox :is-room="isRoom" />
