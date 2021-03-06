@@ -14,10 +14,10 @@ export default {
   },
   methods: {
     getInviteLink () {
-      const link = this.$router.resolve({ name: 'gest', query: { join: this.roomJid } }).href
+      const link = window.location.origin + window.location.pathname + this.$router.resolve({ name: 'gest', query: { join: this.roomJid } }).href
       this.$buefy.dialog.alert({
         title: 'Guest invitation link',
-        message: `<p>You can provide the following link to anyone (without registration):</p><p class="is-family-code is-select-all is-size-7">${window.location.origin + link}</p>`,
+        message: `<p>You can provide the following link to anyone (without registration):</p><p class="is-family-code is-select-all is-size-7">${link}</p>`,
       })
     },
   },

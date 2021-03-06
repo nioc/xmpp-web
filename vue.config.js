@@ -3,6 +3,7 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin({ branch: true })
 
 module.exports = {
+  publicPath: './',
   pwa: {
     workboxPluginMode: 'GenerateSW',
     workboxOptions: {

@@ -13,7 +13,7 @@ import GuestChat from '@/components/GuestChat.vue'
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history',
+  mode: 'hash',
   routes: [
     {
       // home page containing child components for chats and MUC
