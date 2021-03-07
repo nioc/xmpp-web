@@ -2,6 +2,7 @@
   <main class="is-flex is-flex-direction-column is-justify-content-space-between is-full-height has-background-shade-4 is-relative">
     <div class="toolbar has-border-bottom-shade-3">
       <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button is-primary-ghost has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
+      <router-link v-else :to="{name: 'guestRooms', params: {nick: userNick}}" class="button is-primary-ghost has-no-border is-shadowless" title="Leave this room and go back to rooms list"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
       <span class="is-flex is-align-items-center">
         <room-occupants v-if="isRoom" :room-jid="jid" />
@@ -173,7 +174,7 @@ export default {
       // choose valid path for navigation
       if (this.previousRoute && this.previousRoute.query.redirect === this.$route.fullPath) {
         if (this.$xmpp.isAnonymous) {
-          return this.$router.push({ name: 'gest' })
+          return this.$router.push({ name: 'guest' })
         }
         return this.$router.push({ name: 'home' })
       }

@@ -8,6 +8,7 @@ import RoomsList from '@/components/RoomsList.vue'
 import RoomCreation from '@/components/RoomCreation.vue'
 import About from '@/components/About.vue'
 import GuestHome from '@/components/GuestHome.vue'
+import GuestRooms from '@/components/GuestRooms.vue'
 import GuestChat from '@/components/GuestChat.vue'
 
 Vue.use(Router)
@@ -106,7 +107,7 @@ if (window.config.hasGuestAccess) {
   routes.push(
     {
       // guest home
-      name: 'gest',
+      name: 'guest',
       path: '/guest',
       component: GuestHome,
       props: (route) => ({
@@ -117,8 +118,21 @@ if (window.config.hasGuestAccess) {
       },
     },
     {
+      // guest rooms
+      name: 'guestRooms',
+      path: '/guest/rooms',
+      component: GuestRooms,
+      props: (route) => ({
+        requestedJid: route.params.requestedJid,
+        nick: route.params.nick,
+      }),
+      meta: {
+        requiresAuth: false,
+      },
+    },
+    {
       // guest access room
-      name: 'gestInRoom',
+      name: 'guestInRoom',
       path: '/guest/:jid',
       component: GuestChat,
       props: (route) => ({
