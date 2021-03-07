@@ -1,7 +1,7 @@
 <template>
   <span :class="{'has-jid': displayJid}">
     <figure :class="'image is-'+size+'x'+size">
-      <img class="is-rounded" :src="uri" :title="jid">
+      <img class="is-rounded" :style="style" :src="uri" :title="jid">
       <i v-if="presence" class="fa fa-circle presence-icon" :class="presenceClass" />
     </figure>
     <span v-if="displayJid" class="ml-3">{{ jid }}</span>
@@ -32,6 +32,7 @@ export default {
   data () {
     return {
       uri: null,
+      style: null,
     }
   },
   computed: {
@@ -55,7 +56,16 @@ export default {
   },
   methods: {
     async getJidAvatar () {
-      this.uri = await this.$xmpp.getJidAvatar(this.jid)
+      const avatar = await this.$xmpp.getJidAvatar(this.jid)
+      this.uri = avatar.uri
+      if (avatar.isDefault) {
+        const angle = this.jid
+          .split('')
+          .reduce((acc, letter) => {
+            return acc + letter.charCodeAt(0)
+          }, 0) % 360
+        this.style = `filter: hue-rotate(${angle}deg);`
+      }
     },
   },
 }

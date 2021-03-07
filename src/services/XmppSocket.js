@@ -468,24 +468,24 @@ export default {
     try {
       const uri = localStorage.getItem('avatar-' + jid)
       if (uri) {
-        return uri
+        return { uri, isDefault: false }
       }
       if (!this.client) {
-        return defaultAvatar
+        return { uri: defaultAvatar, isDefault: true }
       }
       const vCard = await this.client.getVCard(jid)
       if (!vCard.records) {
-        return defaultAvatar
+        return { uri: defaultAvatar, isDefault: true }
       }
       const avatar = vCard.records.find((record) => record.type === 'photo')
       if (avatar && avatar.mediaType && avatar.data) {
         const uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
         localStorage.setItem('avatar-' + jid, uri)
-        return uri
+        return { uri, isDefault: false }
       }
     } catch (error) {
     }
-    return defaultAvatar
+    return { uri: defaultAvatar, isDefault: true }
   },
 
   async sendPresence (presence) {
