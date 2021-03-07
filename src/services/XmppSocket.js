@@ -98,10 +98,7 @@ export default {
       // listen for websocket failure
       const _xmppSocket = this
       function retryWithoutWebsocket (error) {
-        if (!error || error.type !== 'close') {
-          return
-        }
-        console.error('socket not work, try bosh', transports)
+        console.error('socket not work, try bosh', error, transports)
         _xmppSocket.client.off('disconnected', retryWithoutWebsocket)
         transports.websocket = false
         _xmppSocket.connect()
