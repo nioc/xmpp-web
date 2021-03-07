@@ -31,5 +31,10 @@ export default {
     // remove navbar spacing
     document.body.classList.remove('has-navbar-fixed-top')
   },
+  beforeDestroy () {
+    if (this.$xmpp.client) {
+      this.$xmpp.client.leaveRoom(this.jid, this.$xmpp.nick)
+    }
+  },
 }
 </script>
