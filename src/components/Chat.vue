@@ -4,7 +4,7 @@
       <router-link v-if="!$xmpp.isAnonymous" :to="{name: 'home'}" class="button is-primary-ghost has-no-border is-shadowless" :class="{'is-hidden-tablet': jid}" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <router-link v-else :to="{name: 'guestRooms', params: {nick: userNick}}" class="button is-primary-ghost has-no-border is-shadowless" title="Leave this room and go back to rooms list"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
-      <span class="is-flex is-align-items-center">
+      <span class="is-flex is-align-items-center" style="min-width: 0;">
         <room-occupants v-if="isRoom" :room-jid="jid" />
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
         <room-configuration-button v-if="isRoom && !$xmpp.isAnonymous" :room-jid="jid" />
