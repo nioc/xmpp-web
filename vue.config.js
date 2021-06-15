@@ -1,5 +1,5 @@
-const { DefinePlugin } = require('webpack')
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
+const { DefinePlugin, ProvidePlugin } = require('webpack')
+const { GitRevisionPlugin } = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin({ branch: true })
 
 module.exports = {
@@ -43,9 +43,19 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new DefinePlugin({
-        gitVersion: JSON.stringify(gitRevisionPlugin.version() + '-' + gitRevisionPlugin.branch()),
+        webpackGitVersion: JSON.stringify(gitRevisionPlugin.version() + '-' + gitRevisionPlugin.branch()),
+      }),
+      new ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
       }),
     ],
+    resolve: {
+      alias: {
+        path: require.resolve('path-browserify'),
+        process: 'process/browser',
+      },
+    },
   },
   chainWebpack: config => {
     config.performance

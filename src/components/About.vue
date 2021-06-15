@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { version, description, license, homepage, xmppWeb } from '../../package.json'
+import pkg from '../../package.json'
 import axios from 'axios'
 import spdxLicenseList from 'spdx-license-list'
 
@@ -35,20 +35,20 @@ export default {
   data () {
     return {
       version: {
-        installed: version,
+        installed: pkg.version,
         latest: null,
         latestLink: null,
       },
-      description,
+      description: pkg.description,
       license: {
-        id: license,
+        id: pkg.license,
         name: null,
         url: null,
       },
-      homepage,
+      homepage: pkg.homepage,
       isUpToDate: true,
       // eslint-disable-next-line no-undef
-      gitVersion,
+      gitVersion: webpackGitVersion,
     }
   },
   mounted () {
@@ -58,7 +58,7 @@ export default {
   methods: {
     async getLastVersion () {
       try {
-        const response = await axios.get(xmppWeb.latestReleaseUrl)
+        const response = await axios.get(pkg.xmppWeb.latestReleaseUrl)
         this.version.latest = response.data.tag_name
         this.version.latestLink = response.data.html_url
         if (this.version.latest !== this.version.installed) {
@@ -69,7 +69,7 @@ export default {
       }
     },
     getLicense () {
-      Object.assign(this.license, spdxLicenseList[license])
+      Object.assign(this.license, spdxLicenseList[pkg.license])
     },
   },
 }

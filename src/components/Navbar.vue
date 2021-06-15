@@ -38,7 +38,7 @@
 import avatar from '@/components/Avatar'
 import presence from '@/components/Presence'
 import { mapState } from 'vuex'
-import { bugs } from '../../package.json'
+import pkg from '../../package.json'
 
 export default {
   name: 'Navbar',
@@ -52,7 +52,7 @@ export default {
         jid: localStorage.getItem('jid'),
         presence: 'chat',
       },
-      bugUrl: bugs.url,
+      bugUrl: pkg.bugs.url,
     }
   },
   computed: {
