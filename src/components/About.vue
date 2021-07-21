@@ -3,7 +3,7 @@
     <div class="container">
       <h2 class="title">About</h2>
       <h3 class="subtitle is-5">
-        <a :href="homepage" target="_blank" rel="noreferrer"><img class="image is-96x96" src="/img/icons/android-chrome-192x192.png">XMPP Web</a>
+        <a :href="homepage" target="_blank" rel="noreferrer"><img class="image is-96x96" src="img/icons/android-chrome-192x192.png">XMPP Web</a>
       </h3>
       <div class="content field is-grouped is-grouped-multiline">
         <div class="control">
