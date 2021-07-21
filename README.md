@@ -62,7 +62,7 @@ XMPP Web can be installed:
 
 ## Configuration
 
-| `local.js` attribute      | Environment                      | Default                                      | Description
+| `local.js` attribute      | Environment                      | Default (initial value)                      | Description
 | ------------------------- |----------------------------------| ---------------------------------------------|---------------------------
 | `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name
 | `transports.bosh`         | `APP_HTTP`                       | `"https://chat.domain-web.ltd/http-bind"`    | BOSH endpoint used by application (proxy or direct XMPP server)
