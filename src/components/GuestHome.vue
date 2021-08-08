@@ -23,6 +23,9 @@
               </button>
             </div>
           </div>
+          <div class="field is-flex is-justify-content-center">
+            <dark-mode-switch :show-label="true" />
+          </div>
         </form>
         <div v-if="error" class="message is-danger is-light mt-4">
           <div class="message-body has-text-danger">{{ error }}</div>
@@ -33,8 +36,12 @@
 </template>
 
 <script>
+import darkModeSwitch from '@/components/DarkModeSwitch'
 export default {
   name: 'GuestHome',
+  components: {
+    darkModeSwitch,
+  },
   props: {
     requestedJid: {
       type: String,

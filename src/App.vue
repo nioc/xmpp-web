@@ -9,6 +9,12 @@
 
 export default {
   name: 'App',
+  created () {
+    // handle user preference for light mode
+    if (localStorage.getItem('xmppWebLightMode')) {
+      document.documentElement.setAttribute('data-theme', 'light')
+    }
+  },
   mounted () {
     // handle network status
     this.$store.commit('setNetworkStatus', window.navigator.onLine)

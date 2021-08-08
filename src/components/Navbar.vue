@@ -11,6 +11,9 @@
     </div>
     <div id="navbar-menu" class="navbar-menu">
       <div class="navbar-end">
+        <div class="navbar-item">
+          <dark-mode-switch :has-label="false" />
+        </div>
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link is-arrowless">
             <presence v-if="isOnline" :presence="user.presence" :display-label="false" />
@@ -37,6 +40,7 @@
 <script>
 import avatar from '@/components/Avatar'
 import presence from '@/components/Presence'
+import darkModeSwitch from '@/components/DarkModeSwitch'
 import { mapState } from 'vuex'
 import { bugs } from '../../package.json'
 
@@ -45,6 +49,7 @@ export default {
   components: {
     avatar,
     presence,
+    darkModeSwitch,
   },
   data () {
     return {

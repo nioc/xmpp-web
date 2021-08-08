@@ -54,6 +54,9 @@
               <div v-if="error" class="message is-danger">
                 <div class="message-body has-text-danger">{{ error }}</div>
               </div>
+              <div class="field is-flex is-justify-content-center">
+                <dark-mode-switch :show-label="true" />
+              </div>
             </form>
           </div>
         </div>
@@ -64,9 +67,13 @@
 
 <script>
 import { mapState } from 'vuex'
+import darkModeSwitch from '@/components/DarkModeSwitch'
 
 export default {
   name: 'Login',
+  components: {
+    darkModeSwitch,
+  },
   data () {
     return {
       credentials: {
