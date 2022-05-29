@@ -181,6 +181,14 @@ export default {
           return this.abortChat()
         }
       }
+      if (!this.isRoom && this.messagesWithJid.length === 0) {
+        // request history
+        try {
+          await this.$xmpp.searchHistory(this.activeChat, undefined)
+        } catch (error) {
+          console.warn('History was not loaded', error.message)
+        }
+      }
       this.scrollToLastMessage()
     },
     abortChat () {
