@@ -1,5 +1,5 @@
 <template>
-  <span :class="{'has-jid': displayJid}">
+  <span :class="{ 'has-jid': displayJid }">
     <figure :class="'image is-'+size+'x'+size">
       <img class="is-rounded" :style="style" :src="uri" :title="jid">
       <i v-if="presence" class="fa fa-circle presence-icon" :class="presenceClass" />

@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-@import "~bulma/sass/utilities/_all";
+@import "/node_modules/bulma/sass/utilities/_all";
 
 $primary: #2da192;
 $primary-light: lighten($primary, 10);
@@ -83,9 +83,9 @@ $positions: (
 	}
 }
 
-@import "~bulma";
-@import "~buefy/src/scss/buefy";
-@import "~@creativebulma/bulma-divider";
+@import "/node_modules/bulma/bulma.sass";
+@import '/node_modules/@oruga-ui/theme-bulma/dist/scss/bulma';
+@import "/node_modules/@creativebulma/bulma-divider";
 
 html,
 body,
@@ -117,6 +117,12 @@ body,
 
 .modal-card-head, .modal-card-foot {
 	background-color: $shade-3;
+}
+
+.dialog .modal-card {
+	max-width: 460px;
+	min-width: 320px;
+	width: auto;
 }
 
 .table td {

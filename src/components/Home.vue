@@ -1,6 +1,6 @@
 <template>
   <div class="is-flex-tablet is-block-mobile is-full-height">
-    <aside class="is-full-height-scrollable is-block-mobile is-flex-shrink-0 has-background-shade-3" :class="{'is-hidden-mobile': !displayContact}">
+    <aside class="is-full-height-scrollable is-block-mobile is-flex-shrink-0 has-background-shade-3" :class="{ 'is-hidden-mobile': !displayContact }">
       <contacts />
     </aside>
     <router-view class="is-flex-grow-1" />
@@ -8,8 +8,7 @@
 </template>
 
 <script>
-import contacts from '@/components/Contacts'
-import { mapState } from 'vuex'
+import contacts from '../components/Contacts.vue'
 
 export default {
   name: 'Home',
@@ -29,14 +28,12 @@ export default {
     userJid () {
       return this.$xmpp.fullJid
     },
-    ...mapState(['hasNetwork']),
   },
   // watch network status for resuming session
   watch: {
-    hasNetwork: 'handleNetworkStatus',
     jid: function resetActiveChat () {
       if (this.jid === null) {
-        this.$store.commit('setActiveChat', {
+        this.$store.setActiveChat({
           activeChat: null,
         })
       }
@@ -53,17 +50,6 @@ export default {
     window.addEventListener('beforeunload', async () => {
       await this.$xmpp.disconnect()
     })
-  },
-  methods: {
-    // try to resume session when network is back
-    async handleNetworkStatus (hasNetwork) {
-      if (hasNetwork === true) {
-        try {
-          await this.$xmpp.connect()
-        } catch (error) {
-        }
-      }
-    },
   },
 }
 </script>

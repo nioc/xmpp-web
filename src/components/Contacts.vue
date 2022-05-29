@@ -1,5 +1,5 @@
 <template>
-  <aside class="section">
+  <aside class="section px-5">
     <div class="menu">
       <p class="menu-label">Contacts</p>
       <ul class="menu-list">
@@ -13,7 +13,7 @@
           <contact :jid="room.jid" :is-room="true" :unread-count="room.unreadCount" />
         </li>
         <li>
-          <router-link active-class="is-active" :to="{name: 'public muc'}" title="Join a room"><i class="fa fa-sign-in fa-fw mr-3" />Public rooms</router-link>
+          <router-link active-class="is-active" :to="{ name: 'public muc' }" title="Join a room"><i class="fa fa-sign-in fa-fw mr-3" />Public rooms</router-link>
         </li>
         <li>
           <form class="field has-addons" @submit.prevent="joinRoomByJid">
@@ -30,7 +30,7 @@
           </form>
         </li>
         <li>
-          <router-link :to="{name: 'room creation'}" class="button is-fullwidth is-dark" title="Create a room">
+          <router-link :to="{ name: 'room creation' }" class="button is-fullwidth is-dark" title="Create a room">
             <span class="icon">
               <i class="fa fa-plus-square" />
             </span>
@@ -43,8 +43,9 @@
 </template>
 
 <script>
-import contact from '@/components/Contact'
-import { mapState } from 'vuex'
+import contact from '../components/Contact.vue'
+import { mapState } from 'pinia'
+import { useStore } from '@/store'
 
 export default {
   name: 'Contacts',
@@ -57,13 +58,13 @@ export default {
     }
   },
   computed: {
-    ...mapState([
+    ...mapState(useStore, [
       'contacts',
       'knownRooms',
     ]),
     displayedRooms () {
       return this.knownRooms
-        .filter((room) => room.isBookmarked || this.$store.getters.isJoined(room.jid))
+        .filter((room) => room.isBookmarked || this.$store.isJoined(room.jid))
     },
     roomPlaceholder () { return this.$xmpp.defaultMuc ? `room@${this.$xmpp.defaultMuc}` : `room@conference.${this.$xmpp.defaultDomain}` },
     isValidRoomJid () { return this.$xmpp.defaultMuc ? this.roomJid.length > 2 : /\S+@\S+\S+/.test(this.roomJid) },

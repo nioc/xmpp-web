@@ -1,28 +1,34 @@
-import Vue from 'vue'
-import App from './App'
-import router from './router'
-import Buefy from 'buefy'
-import '@/assets/styles.scss'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import Oruga from '@oruga-ui/oruga-next'
+import { bulmaConfig } from '@oruga-ui/theme-bulma'
+import '@oruga-ui/oruga-next/dist/oruga.css'
+import './assets/styles.scss'
 import 'fork-awesome/css/fork-awesome.min.css'
-import store from '@/store'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { useStore } from './store'
 import xmppSocket from './services/XmppSocket'
-import Moment from 'vue-moment'
-import './registerServiceWorker'
 
-Vue.config.productionTip = false
-Vue.use(Buefy, {
-  defaultIconPack: 'fa',
-  defaultProgrammaticPromise: true,
-})
-Vue.use(Moment)
+import router from './router'
 
-Vue.prototype.$xmpp = xmppSocket
-Vue.prototype.$bus = new Vue()
+dayjs.extend(relativeTime)
 
-const app = new Vue({
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app')
+const pinia = createPinia()
+const app = createApp(App)
 
-store.$app = app
+app.use(Oruga, bulmaConfig)
+app.config.globalProperties.$xmpp = xmppSocket
+app.config.globalProperties.$dayjs = dayjs
+
+pinia.use(() => {
+  return { $dayjs: dayjs }
+} )
+app.use(pinia)
+app.use(router)
+
+const store = useStore()
+app.config.globalProperties.$store = store
+
+app.mount('#body')

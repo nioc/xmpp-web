@@ -7,18 +7,21 @@
 
 <script>
 
+import { mapActions } from 'pinia'
+import { useStore } from '@/store'
+
 export default {
   name: 'App',
   mounted () {
     // handle network status
-    this.$store.commit('setNetworkStatus', window.navigator.onLine)
+    this.setNetworkStatus(window.navigator.onLine)
     window.addEventListener('offline', this.notifyConnectivity)
     window.addEventListener('online', this.notifyConnectivity)
   },
   methods: {
-    // store network status
+    ...mapActions(useStore, ['setNetworkStatus']),
     notifyConnectivity (event) {
-      this.$store.commit('setNetworkStatus', (event.type === 'online'))
+      this.setNetworkStatus(event.type === 'online')
     },
   },
 }

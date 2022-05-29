@@ -10,7 +10,7 @@
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
-        <emoji-picker @emojiPicked="addEmoji" />
+        <emoji-picker @emoji-picked="addEmoji" />
         <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
         <div v-else class="file has-no-border is-size-4" title="Send a file">
           <label class="file-label">
@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import EmojiPicker from '@/components/EmojiPicker'
-import { mapState } from 'vuex'
+import EmojiPicker from '../components/EmojiPicker.vue'
+import { mapState } from 'pinia'
+import { useStore } from '@/store'
 import axios from 'axios'
 import filesize from 'filesize'
 
@@ -56,7 +57,7 @@ export default {
     userJid () {
       return this.$xmpp.fullJid
     },
-    ...mapState([
+    ...mapState(useStore, [
       'activeChat',
       'httpFileUploadMaxSize',
     ]),
@@ -108,9 +109,9 @@ export default {
       try {
         // reserve slot
         const httpUploadSlotResult = await this.$xmpp.getUploadSlot(this.userJid.domain, {
-          name: file.name,
+          filename: file.name,
           size: file.size,
-          mediaType: file.type,
+          'content-type': file.type,
         })
         // upload file on returned slot
         await axios.put(httpUploadSlotResult.upload.url, file, {

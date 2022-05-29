@@ -1,7 +1,4 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
+import { defineStore } from 'pinia'
 
 const getDefaultState = () => {
   return {
@@ -13,34 +10,40 @@ const getDefaultState = () => {
     roomsOccupants: [],
     httpFileUploadMaxSize: null,
     isOnline: false,
+    presence: 'chat',
   }
 }
 
-export default new Vuex.Store({
-  state: {
-    hasNetwork: null,
-    ...getDefaultState(),
+export const useStore = defineStore('main', {
+  state: () => {
+    return {
+      hasNetwork: null,
+      ...getDefaultState(),
+    }
   },
 
   getters: {
+
     publicRooms: (state) => {
       return state.knownRooms.filter((room) => room.isPublic)
     },
-    joinedRooms: (state) => {
-      return state.knownRooms.filter((room) => state.joinedRooms.includes(room.jid))
-    },
+
     bookmarkedRooms: (state) => {
       return state.knownRooms.filter((room) => room.isBookmarked)
     },
+
     getRoom: (state) => (jid) => {
       return state.knownRooms.find((room) => room.jid === jid) || {}
     },
+
     isBookmarked: (state) => (jid) => {
       return state.knownRooms.some((room) => room.jid === jid && room.isBookmarked)
     },
+
     isJoined: (state) => (jid) => {
       return state.joinedRooms.some((joinedRoomJid) => joinedRoomJid === jid)
     },
+
     getRoomOccupants: (state) => (jid) => {
       const roomOccupants = state.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === jid)
       if (roomOccupants) {
@@ -48,22 +51,45 @@ export default new Vuex.Store({
       }
       return []
     },
+
+    getChatState: (state) => (isRoom, jid) => {
+      if (isRoom) {
+        const roomOccupants = state.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === jid)
+        if (roomOccupants) {
+          if (roomOccupants.occupants.some(occupant => occupant.chatState === 'composing')) {
+            return 'composing'
+          }
+          if (roomOccupants.occupants.some(occupant => occupant.chatState === 'paused')) {
+            return 'paused'
+          }
+        }
+        return 'inactive'
+      }
+      const contact = state.contacts.find((contact) => contact.jid === jid)
+      return contact ? contact.chatState : 'inactive'
+    },
   },
 
-  mutations: {
+  actions: {
+
     // network status setter
-    setNetworkStatus (state, hasNetwork) {
-      state.hasNetwork = hasNetwork
+    setNetworkStatus (hasNetwork) {
+      this.hasNetwork = hasNetwork
     },
 
     // online client status setter
-    setOnline (state, isOnline) {
-      state.isOnline = isOnline
+    setOnline (isOnline) {
+      this.isOnline = isOnline
+    },
+
+    // user presence setter
+    setPresence (presence) {
+      this.presence = presence
     },
 
     // active chat setter
-    setActiveChat (state, payload) {
-      state.activeChat = payload.activeChat
+    setActiveChat (payload) {
+      this.activeChat = payload.activeChat
       // reset unread messages count for this chat
       function resetUnreadCount (collection) {
         const copy = collection.slice(0)
@@ -75,26 +101,26 @@ export default new Vuex.Store({
       }
       switch (payload.type) {
         case 'chat':
-          state.contacts = resetUnreadCount(state.contacts)
+          this.contacts = resetUnreadCount(this.contacts)
           break
         case 'groupchat':
-          state.knownRooms = resetUnreadCount(state.knownRooms)
+          this.knownRooms = resetUnreadCount(this.knownRooms)
           break
       }
     },
 
     // roster setter
-    setRoster (state, contacts) {
-      state.contacts = contacts
+    setRoster (contacts) {
+      this.contacts = contacts
     },
 
     // MUC rooms setter
-    setKnownRoom (state, room) {
-      const rooms = state.knownRooms.slice(0)
+    setKnownRoom (room) {
+      const rooms = this.knownRooms.slice(0)
       const index = rooms.findIndex((knownRoom) => knownRoom.jid === room.jid)
       if (index === -1) {
         // add room
-        state.knownRooms.push(room)
+        this.knownRooms.push(room)
         return
       }
       // update room
@@ -104,61 +130,54 @@ export default new Vuex.Store({
         }
         rooms[index][key] = room[key]
       }
-      state.knownRooms = rooms
+      this.knownRooms = rooms
     },
 
     // MUC joined rooms setter
-    setJoinedRoom (state, roomJid) {
-      const joinedRooms = state.joinedRooms.slice(0)
-      const index = joinedRooms.findIndex((knownRoomJid) => knownRoomJid === roomJid)
+    setJoinedRoom (roomJid) {
+      const index = this.joinedRooms.findIndex((knownRoomJid) => knownRoomJid === roomJid)
       if (index === -1) {
-        return state.joinedRooms.push(roomJid)
+        this.joinedRooms.push(roomJid)
       }
     },
 
+    removeJoinedRoom (roomJid) {
+      this.joinedRooms = this.joinedRooms.filter(knownRoomJid => knownRoomJid !== roomJid)
+    },
+
     // contact presence setter
-    setContactPresence (state, contactPresence) {
-      const contacts = state.contacts.slice(0)
-      const index = contacts.findIndex((contact) => contact.jid === contactPresence.jid)
+    setContactPresence (contactPresence) {
+      const index = this.contacts.findIndex((contact) => contact.jid === contactPresence.jid)
       if (index !== -1) {
-        contacts[index].presence = contactPresence.presence
-        state.contacts = contacts
+        this.contacts[index].presence = contactPresence.presence
+        this.contacts[index].status = contactPresence.status
       }
     },
 
     // messages setters
-    storePreviousMessages (state, newMessages) {
-      let messages = state.messages.slice(0)
-      messages = messages.concat(newMessages)
-      const vm = this.$app
-      messages.sort(function (a, b) {
-        return vm.$moment(a.delay).isAfter(vm.$moment(b.delay))
-      })
-      state.messages = messages
-    },
-    storeMessage (state, payload) {
+    storeMessage (payload) {
       if (payload.message.id) {
-        const messages = state.messages.slice(0)
+        const messages = this.messages.slice(0)
         const index = messages.findIndex((knownMessage) => knownMessage.id === payload.message.id)
         if (index !== -1) {
           // update existing message
           messages[index] = payload.message
-          state.messages = messages
+          this.messages = messages
           return
         }
       }
       if (payload.message.stanzaId) {
-        const messages = state.messages.slice(0)
+        const messages = this.messages.slice(0)
         const index = messages.findIndex((knownMessage) => knownMessage.stanzaId === payload.message.stanzaId)
         if (index !== -1) {
           // update existing message
           messages[index] = payload.message
-          state.messages = messages
+          this.messages = messages
           return
         }
       }
       // add new message
-      state.messages.push({
+      this.messages.push({
         id: payload.message.id,
         stanzaId: payload.message.stanzaId,
         from: payload.message.from,
@@ -169,12 +188,12 @@ export default new Vuex.Store({
       })
 
       // order messages by date
-      const messages = state.messages.slice(0)
-      const vm = this.$app
+      const messages = this.messages.slice(0)
+      const dayjs = this.$dayjs
       messages.sort((a, b) => {
-        return vm.$moment(a.delay).isAfter(vm.$moment(b.delay))
+        return dayjs(a.delay).isAfter(dayjs(b.delay))
       })
-      state.messages = messages
+      this.messages = messages
 
       // handle unread messages count
       function addUnreadCount (collection) {
@@ -189,66 +208,86 @@ export default new Vuex.Store({
         }
         return copy
       }
-      if (payload.message.from.bare === state.activeChat) {
+      if (payload.message.from.bare === this.activeChat) {
         // message is in the displayed chat, do not increment counter
         return
       }
       switch (payload.type) {
         case 'chat':
-          state.contacts = addUnreadCount(state.contacts)
+          this.contacts = addUnreadCount(this.contacts)
           break
         case 'groupchat':
-          state.knownRooms = addUnreadCount(state.knownRooms)
+          this.knownRooms = addUnreadCount(this.knownRooms)
           break
       }
     },
 
     // HTTP file upload max size setter (XEP-0363)
-    setHttpFileUploadMaxSize (state, httpFileUploadMaxSize) {
-      state.httpFileUploadMaxSize = httpFileUploadMaxSize
+    setHttpFileUploadMaxSize (httpFileUploadMaxSize) {
+      this.httpFileUploadMaxSize = httpFileUploadMaxSize
     },
 
-    setRoomOccupant (state, { roomJid, jid, presence }) {
-      if (!state.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === roomJid)) {
+    setRoomOccupant ({ roomJid, jid, presence }) {
+      if (!this.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === roomJid)) {
         // create room occupants list
-        state.roomsOccupants.push({
+        this.roomsOccupants.push({
           roomJid,
           occupants: [],
         })
       }
-      const roomIndex = state.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === roomJid)
+      const roomIndex = this.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === roomJid)
       const occupant = {
         jid,
         presence,
       }
-      const occupantIndex = state.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid)
+      const occupantIndex = this.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid)
       if (occupantIndex !== -1) {
         // remove previous room occupant
-        state.roomsOccupants[roomIndex].occupants.splice(occupantIndex, 1)
+        this.roomsOccupants[roomIndex].occupants[occupantIndex] = occupant
+        return
       }
       // add room occupant
-      state.roomsOccupants[roomIndex].occupants.push(occupant)
+      this.roomsOccupants[roomIndex].occupants.push(occupant)
     },
 
-    removeRoomOccupant (state, { roomJid, jid }) {
-      const roomIndex = state.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === roomJid)
+    removeRoomOccupant ({ roomJid, jid }) {
+      const roomIndex = this.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === roomJid)
       if (roomIndex === -1) {
         return
       }
-      const index = state.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid)
+      const index = this.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid)
       if (index !== -1) {
-        state.roomsOccupants[roomIndex].occupants.splice(index, 1)
+        this.roomsOccupants[roomIndex].occupants.splice(index, 1)
+      }
+    },
+
+    // chat state setter
+    setChatState ({ jid, type, chatState }) {
+      if (type === 'chat') {
+        const index = this.contacts.findIndex((contact) => contact.jid === jid.bare)
+        if (index !== -1) {
+          this.contacts[index].chatState = chatState
+        }
+        return
+      }
+      if (type === 'groupchat') {
+        const roomIndex = this.roomsOccupants.findIndex((roomOccupants) => roomOccupants.roomJid === jid.bare)
+        if (roomIndex === -1) {
+          return
+        }
+        const index = this.roomsOccupants[roomIndex].occupants.findIndex((occupant) => occupant.jid === jid.full)
+        if (index !== -1) {
+          this.roomsOccupants[roomIndex].occupants[index].chatState = chatState
+        }
       }
     },
 
     // clear state
-    clear (state) {
+    clear () {
       const defaultState = getDefaultState()
       Object.keys(defaultState).forEach((key) => {
-        state[key] = defaultState[key]
+        this[key] = defaultState[key]
       })
     },
-
   },
-  strict: process.env.NODE_ENV !== 'production',
 })

@@ -1,29 +1,30 @@
 <template>
-  <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{'is-loading': isLoadingPreviousMessages}" :disabled="isDisabled" @click="getPreviousMessages()">
+  <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{ 'is-loading': isLoadingPreviousMessages }" :disabled="isDisabled" @click="getPreviousMessages()">
     <i class="fa fa-history" aria-hidden="true" />
   </button>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
+import { useStore } from '@/store'
 
 export default {
   name: 'RetrieveHistoryButton',
   data () {
     return {
-      firstMessageId: null,
+      firstMessageId: undefined,
       isLoadingPreviousMessages: false,
     }
   },
   computed: {
-    ...mapState([
+    ...mapState(useStore, [
       'activeChat',
     ]),
-    isDisabled () { return this.firstMessageId === undefined },
+    isDisabled () { return this.firstMessageId === null },
   },
   watch: {
     activeChat: function () {
-      this.firstMessageId = null
+      this.firstMessageId = undefined
     },
   },
   methods: {

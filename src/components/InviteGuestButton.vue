@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import Modal from './../components/Modal.vue'
+
 export default {
+  name: 'InviteGuestButton',
   props: {
     roomJid: {
       type: String,
@@ -15,9 +18,13 @@ export default {
   methods: {
     getInviteLink () {
       const link = window.location.origin + window.location.pathname + this.$router.resolve({ name: 'guest', query: { join: this.roomJid } }).href
-      this.$buefy.dialog.alert({
-        title: 'Guest invitation link',
-        message: `<p>You can provide the following link to anyone (without registration):</p><p class="is-family-code is-select-all is-size-7">${link}</p>`,
+      this.$oruga.modal.open({
+        component: Modal,
+        trapFocus: true,
+        props: {
+          title: 'Guest invitation link',
+          message: `<p>You can provide the following link to anyone (without registration):</p><p class="is-family-code is-select-all is-size-7">${link}</p>`,
+        },
       })
     },
   },

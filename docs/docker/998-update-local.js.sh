@@ -17,8 +17,6 @@ update_localjs() {
     sed -i -r "s|name: 'XMPP web'|name: '$APP_NAME'|g" $localjs
   fi
 
-  sed -i -r "s|bosh: 'https://chat.domain-web.ltd/http-bind'|bosh: '$APP_HTTP'|g" $localjs
-
   sed -i -r "s|websocket: 'wss://chat.domain-web.ltd/xmpp-websocket'|websocket: '$APP_WS'|g" $localjs
 
   if [ "$APP_REGISTERED_ACCESS" != "1" ]; then

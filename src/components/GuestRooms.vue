@@ -41,7 +41,7 @@
                   <small class="content">{{ room.description }}</small>
                 </div>
                 <footer class="card-footer">
-                  <router-link :to="{name: 'guestInRoom', params: {jid: room.jid}}" class="card-footer-item" title="Join the room">
+                  <router-link :to="{ name: 'guestInRoom', params: { jid: room.jid } }" class="card-footer-item" title="Join the room">
                     <span class="icon">
                       <i class="fa fa-sign-in" /></span>
                     <span>Join</span>
@@ -57,8 +57,11 @@
 </template>
 
 <script>
-import avatar from '@/components/Avatar'
-import { mapGetters } from 'vuex'
+import avatar from '../components/Avatar.vue'
+import Modal from '../components/Modal.vue'
+import { mapState } from 'pinia'
+import { useStore } from '@/store'
+
 export default {
   name: 'GuestRooms',
   components: {
@@ -91,7 +94,7 @@ export default {
       return this.publicRooms
         .filter((room) => room.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
     },
-    ...mapGetters(['publicRooms']),
+    ...mapState(useStore, ['publicRooms']),
   },
   async created () {
     if (!this.nick) {
@@ -115,11 +118,18 @@ export default {
           return this.openRoom(this.requestedJid)
         }
         if (requestedRoom.message) {
-          this.$buefy.dialog.alert({
-            title: 'Error',
-            message: requestedRoom.message || 'Unable to join room',
-            type: 'is-danger',
-          })
+          await new Promise((resolve) => 
+            this.$oruga.modal.open({
+              component: Modal,
+              trapFocus: true,
+              props: {
+                title: 'Error',
+                message: requestedRoom.message || 'Unable to join room',
+                type: 'is-danger',
+              },
+              onClose: () => resolve(false),
+            }),
+          )
         }
       }
     } catch (error) {

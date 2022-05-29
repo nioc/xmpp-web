@@ -9,7 +9,7 @@
       </span>
       <span>Download file ({{ contentType }})</span>
     </a>
-    <div v-if="isImage" class="modal" :class="{'is-active': displayModal}">
+    <div v-if="isImage" class="modal" :class="{ 'is-active': displayModal }">
       <div class="modal-background" @click="displayModal = false" />
       <div class="modal-content image-container">
         <img :src="url" alt="">
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import mime from 'mime-types'
+import mime from 'mime'
 
 export default {
   name: 'MessageLink',
@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     contentType () {
-      return mime.lookup(this.url)
+      return mime.getType(this.url)
     },
   },
   mounted () {

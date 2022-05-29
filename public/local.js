@@ -3,7 +3,6 @@ var config = {
   name: 'XMPP web',
   transports: {
     websocket: 'wss://chat.domain-web.ltd/xmpp-websocket',
-    bosh: 'https://chat.domain-web.ltd/http-bind',
   },
   hasGuestAccess: true,
   hasRegisteredAccess: true,

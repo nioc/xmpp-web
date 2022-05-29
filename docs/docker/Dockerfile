@@ -20,7 +20,6 @@ COPY ./docs/docker/998-update-local.js.sh /docker-entrypoint.d/998-update-local.
 COPY ./docs/docker/default.conf.template /etc/nginx/templates/default.conf.template
 # set environment variables
 ENV APP_NAME=
-ENV APP_HTTP=http://localhost/http-bind
 ENV APP_WS=ws://localhost/xmpp-websocket
 ENV APP_REGISTERED_ACCESS=1
 ENV APP_GUEST_ACCESS=1
@@ -31,6 +30,5 @@ ENV APP_RESOURCE=
 ENV APP_DEFAULT_DOMAIN=localhost
 ENV APP_DEFAULT_MUC=
 ENV APP_IS_STYLING_DISABLED=0
-ENV XMPP_HTTP=http://localhost:5280/http-bind
 ENV XMPP_WS=http://localhost:5280/xmpp-websocket
 EXPOSE 80/tcp

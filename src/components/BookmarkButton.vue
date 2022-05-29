@@ -6,6 +6,7 @@
 <script>
 
 export default {
+  name: 'BookmarkButton',
   props: {
     jid: {
       type: String,
@@ -13,7 +14,7 @@ export default {
     },
   },
   computed: {
-    isBookmarked () { return this.$store.getters.isBookmarked(this.jid) },
+    isBookmarked () { return this.$store.isBookmarked(this.jid) },
   },
   methods: {
     async bookmarkRoom () {

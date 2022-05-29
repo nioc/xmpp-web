@@ -8,7 +8,7 @@
         </span>
       </div>
       <div class="control">
-        <button type="submit" class="button is-primary" :class="{'is-loading': isLoading}" :disabled="!hasValidJid">
+        <button type="submit" class="button is-primary" :class="{ 'is-loading': isLoading }" :disabled="!hasValidJid">
           <span class="icon">
             <i class="fa fa-plus-square" /></span>
           <span>Create</span>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import RoomConfiguration from '@/components/RoomConfiguration'
+import RoomConfiguration from '../components/RoomConfiguration.vue'
 
 export default {
   name: 'RoomCreation',
@@ -50,19 +50,17 @@ export default {
         this.error = ''
         const result = await this.$xmpp.createRoom(this.roomJid)
         if (result) {
-          const modal = this.$buefy.modal.open({
-            parent: this,
+          this.$oruga.modal.open({
             component: RoomConfiguration,
-            hasModalCard: true,
             trapFocus: true,
             props: {
               roomJid: this.roomJid,
               hasCancelButton: false,
             },
+            onClose: () => {
+              this.$router.push({ name: 'groupchat', params: { jid: this.roomJid } })
+            },
             canCancel: false,
-          })
-          modal.$on('saved', () => {
-            this.$router.push({ name: 'groupchat', params: { jid: this.roomJid } })
           })
         }
       } catch (error) {

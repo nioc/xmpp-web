@@ -1,22 +1,19 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Chat from '@/components/Chat.vue'
-import Navbar from '@/components/Navbar.vue'
-import Login from '@/components/Login.vue'
-import Home from '@/components/Home.vue'
-import RoomsList from '@/components/RoomsList.vue'
-import RoomCreation from '@/components/RoomCreation.vue'
-import About from '@/components/About.vue'
-import GuestHome from '@/components/GuestHome.vue'
-import GuestRooms from '@/components/GuestRooms.vue'
-import GuestChat from '@/components/GuestChat.vue'
-
-Vue.use(Router)
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Chat from '../components/Chat.vue'
+import Navbar from '../components/Navbar.vue'
+import Login from '../components/Login.vue'
+import Home from '../components/Home.vue'
+import RoomsList from '../components/RoomsList.vue'
+import RoomCreation from '../components/RoomCreation.vue'
+import About from '../components/About.vue'
+import GuestHome from '../components/GuestHome.vue'
+import GuestRooms from '../components/GuestRooms.vue'
+import GuestChat from '../components/GuestChat.vue'
 
 const routes = [
   {
     // redirect unknown path to homepage
-    path: '*',
+    path: '/:pathMatch(.*)*',
     redirect: { name: 'home' },
   },
 ]
@@ -49,6 +46,7 @@ if (window.config.hasRegisteredAccess) {
           props: true,
           meta: {
             requiresAuth: true,
+            displayContact: false,
           },
         },
         {
@@ -58,6 +56,7 @@ if (window.config.hasRegisteredAccess) {
           component: RoomsList,
           meta: {
             requiresAuth: true,
+            displayContact: false,
           },
         },
         {
@@ -67,6 +66,7 @@ if (window.config.hasRegisteredAccess) {
           component: RoomCreation,
           meta: {
             requiresAuth: true,
+            displayContact: false,
           },
         },
         {
@@ -80,6 +80,7 @@ if (window.config.hasRegisteredAccess) {
           }),
           meta: {
             requiresAuth: true,
+            displayContact: false,
           },
         },
         {
@@ -89,6 +90,7 @@ if (window.config.hasRegisteredAccess) {
           component: About,
           meta: {
             requiresAuth: true,
+            displayContact: false,
           },
         },
       ],
@@ -161,8 +163,8 @@ if (window.config.hasGuestAccess) {
   }
 }
 
-const router = new Router({
-  mode: 'hash',
+const router = createRouter({
+  history: createWebHashHistory(),
   routes,
 })
 

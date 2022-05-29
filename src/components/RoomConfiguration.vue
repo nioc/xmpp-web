@@ -10,19 +10,19 @@
         <div v-else>
           <label v-if="field.label" class="label has-text-light">{{ field.label }}</label>
           <div class="control" :title="field.description">
-            <b-switch v-if="field.type === 'boolean'" v-model="field.value" />
+            <o-switch v-if="field.type === 'boolean'" v-model="field.value" />
             <label v-else-if="field.type === 'list-single'" class="radio">
               <div v-for="option in field.options" :key="option.value" class="field">
-                <b-radio v-model="field.value" :native-value="option.value">
+                <o-radio v-model="field.value" :native-value="option.value">
                   {{ option.label }}
-                </b-radio>
+                </o-radio>
               </div>
             </label>
             <input v-else v-model="field.value" class="input" :type="field.type === 'text-private' ? 'password' : 'text'" :placeholder="field.description">
           </div>
         </div>
       </div>
-      <b-loading v-model="isLoading" :is-full-page="false" />
+      <o-loading v-model="isLoading" :is-full-page="false" />
     </section>
 
     <footer class="modal-card-foot">
@@ -46,6 +46,9 @@ export default {
       default: true,
     },
   },
+  emits: [
+    'close',
+  ],
   data () {
     return {
       form: {},
@@ -67,11 +70,7 @@ export default {
         this.form = {}
         this.form = await this.$xmpp.getRoomConfig(this.roomJid)
       } catch (error) {
-        if (error.error.text) {
-          this.error = error.error.text
-        } else {
-          this.error = 'Oups, an error occurs'
-        }
+        this.error = error.message ? error.message : 'Oups, an error occurs'
       }
       this.isLoading = false
     },
@@ -82,11 +81,7 @@ export default {
         this.$parent.$emit('saved')
         this.$emit('close')
       } catch (error) {
-        if (error.error.text) {
-          this.error = error.error.text
-        } else {
-          this.error = 'Oups, an error occurs'
-        }
+        this.error = error.message ? error.message : 'Oups, an error occurs'
       }
       this.isLoading = false
     },

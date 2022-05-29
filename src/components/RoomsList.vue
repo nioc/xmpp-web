@@ -31,8 +31,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import avatar from '@/components/Avatar'
+import { mapState } from 'pinia'
+import { useStore } from '@/store'
+import avatar from '../components/Avatar.vue'
 
 export default {
   name: 'RoomsList',
@@ -40,7 +41,7 @@ export default {
     avatar,
   },
   computed: {
-    ...mapGetters(['publicRooms']),
+    ...mapState(useStore, ['publicRooms']),
   },
   async mounted () {
     try {

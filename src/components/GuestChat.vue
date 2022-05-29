@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Chat from '@/components/Chat.vue'
+import Chat from '../components/Chat.vue'
 export default {
   name: 'Guest',
   components: {
@@ -31,9 +31,9 @@ export default {
     // remove navbar spacing
     document.body.classList.remove('has-navbar-fixed-top')
   },
-  beforeDestroy () {
+  async beforeUnmount () {
     if (this.$xmpp.client) {
-      this.$xmpp.client.leaveRoom(this.jid, this.$xmpp.nick)
+      await this.$xmpp.client.leaveRoom(this.jid, this.$xmpp.nick)
     }
   },
 }

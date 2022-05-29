@@ -1,12 +1,10 @@
-/* eslint-disable no-console */
-import * as XMPP from 'stanza'
-import defaultAvatar from '@/assets/defaultAvatar'
-import axios from 'axios'
+import { XmppClient as XMPP, NS } from './XmppClient'
+import defaultAvatar from '../assets/defaultAvatar'
+
 const transports = window.config.transports
 const resource = window.config.resource
 const defaultDomain = window.config.defaultDomain
 const defaultMuc = window.config.defaultMuc
-const hasHttpAutoDiscovery = window.config.hasHttpAutoDiscovery
 
 export default {
 
@@ -27,60 +25,24 @@ export default {
     } else {
       jid = 'anon'
     }
-    // set default domain if missing
-    if (!/\S+@\S+\S+/.test(jid)) {
-      jid += '@' + defaultDomain
-    }
 
     this.jid = jid
     this.context = context
 
     // use transports if user provided them
-    if (transportsUser.bosh) {
-      transports.bosh = transportsUser.bosh
-    }
     if (transportsUser.websocket) {
       transports.websocket = transportsUser.websocket
     }
 
-    // if active, try to get well-known/host-meta from domain
-    const userDomain = this.jid.split('@')[1]
-    if (hasHttpAutoDiscovery && userDomain !== defaultDomain) {
-      try {
-        const response = await axios.get('https://' + userDomain + '/.well-known/host-meta.json', { maxRedirects: 1 })
-        response.data.links.forEach(link => {
-          if (link.rel === 'urn:xmpp:alt-connections:xbosh' && link.href) {
-            transports.bosh = link.href
-          }
-          if (link.rel === 'urn:xmpp:alt-connections:websocket' && link.href) {
-            transports.websocket = link.href
-          }
-        })
-      } catch (error) {
-        console.warn('Auto-discovery failed:', error.message)
-      }
-    }
-
-    // create Stanza client
-    this.client = XMPP.createClient({
+    // create XMPP client
+    this.client = new XMPP({
+      service: transports.websocket,
+      domain: server,
+      resource: resource || 'Web XMPP',
       jid,
       password,
-      server,
-      resource: resource || 'Web XMPP',
-      transports: transports || { websocket: true, bosh: true },
     })
 
-    // debug stanza on dev mode
-    if (process.env.NODE_ENV !== 'production') {
-      this.client.on('*', (name, data) => {
-        switch (name) {
-          case 'raw:incoming':
-          // case 'raw:outgoing':
-            return
-        }
-        console.debug(name, data)
-      })
-    }
   },
 
   // connect client to XMPP server
@@ -95,53 +57,36 @@ export default {
     })
 
     const connectPromise = new Promise((resolve, reject) => {
-      // listen for websocket failure
-      const _xmppSocket = this
-      function retryWithoutWebsocket (error) {
-        console.error('socket not work, try bosh', error, transports)
-        _xmppSocket.client.off('disconnected', retryWithoutWebsocket)
-        transports.websocket = false
-        _xmppSocket.connect()
-          .then(() => {
-            clearTimeout(timeoutId)
-            resolve()
-          })
-          .catch((error) => {
-            clearTimeout(timeoutId)
-            reject(error)
-          })
-      }
-      if (transports.websocket) {
-        _xmppSocket.client.on('disconnected', retryWithoutWebsocket)
-      }
 
-      // listen for authentication failure
-      this.client.on('auth:failed', () => {
-        clearTimeout(timeoutId)
-        reject(new Error('Check your credentials'))
+      // listen for XMPP error
+      this.client.on('error', (error) => {
+        console.error('XMPP error', error.message)
       })
 
       // listen for authentication success
-      this.client.on('auth:success', () => {
-        // remove websocket failure listener
-        this.client.off('disconnected', retryWithoutWebsocket)
+      this.client.on('authenticated', (jid) => {
         if (!this.isAnonymous) {
+          localStorage.setItem('barejid', jid.bare)
           localStorage.setItem('jid', this.jid)
           localStorage.setItem('auth', true)
         }
         // resolve when listen is resolved
+        clearTimeout(timeoutId)
+        this.fullJid = jid
+        this.context.$store.setOnline(true)
         this.listen()
-          .then(() => {
-            clearTimeout(timeoutId)
-            resolve()
-          })
+        resolve()
       })
 
-      try {
-        this.client.connect()
-      } catch (error) {
-        reject(new Error('Error during login'))
-      }
+      this.client.connect()
+        .catch((error) => {
+          // listen for authentication failure
+          if (error.name === 'SASLError') {
+            clearTimeout(timeoutId)
+            return reject(new Error('Check your credentials'))
+          }
+          reject(new Error('Error during login'))
+        })
     })
 
     return Promise.race([
@@ -159,179 +104,159 @@ export default {
           message.body = ''
         }
       }
-      // retrieve stanza id (xep-0359)
-      let stanzaId
-      if (type === 'groupchat' && message.stanzaIds) {
-        const room = XMPP.JID.parse(message.from).bare
-        const stanzaIdItem = message.stanzaIds.find((stanzaId) => stanzaId.by === room)
-        if (stanzaIdItem) {
-          stanzaId = stanzaIdItem.id
-        }
-      }
-      xmppSocket.context.$store.commit('storeMessage', {
+      xmppSocket.context.$store.storeMessage({
         type,
-        message: {
-          id: message.id,
-          stanzaId,
-          from: message.from ? XMPP.JID.parse(message.from) : xmppSocket.fullJid,
-          to: XMPP.JID.parse(message.to),
-          body: message.body,
-          delay: (message.delay && message.delay.timestamp) ? message.delay.timestamp : new Date().toISOString(),
-          links: message.links || null,
-        },
+        message,
       })
     }
 
-    return new Promise((resolve) => {
-      // handle reconnection
-      this.client.on('stream:management:resumed', () => {
-        this.context.$store.commit('setOnline', true)
+
+
+    this.client.on('online', () => {
+      console.info('XMPP online')
+      this.context.$store.setOnline(true)
+    })
+    this.client.on('status', (status) => {
+      if (status === 'close' || status === 'disconnect') {
+        if (this.context.$store.isOnline) {
+          console.warn('XMPP connection is closed')
+          this.context.$store.setOnline(false)
+        }
+      }
+    })
+
+    // get contacts (rfc6121)
+    this.client.getRoster()
+      .then((rosterResult) => {
+        this.context.$store.setRoster(rosterResult)
+
+        // send presence to contacts (rfc6121)
+        this.client.sendPresence()
       })
+      .catch((rosterError) => console.error('getRoster', rosterError))
 
-      // handle session start
-      this.client.on('session:started', () => {
-        // store full Jid from server
-        this.fullJid = XMPP.JID.parse(this.client.jid)
-        this.context.$store.commit('setOnline', true)
-        resolve()
+    this.client.getDiscoInfo()
+      .catch((discoInfoError) => console.error('getDiscoInfo', discoInfoError))
 
-        this.client.on('disconnected', () => {
-          this.context.$store.commit('setOnline', false)
+    // enable carbons (XEP-0280: Message Carbons)
+    this.client.enableCarbons()
+      .catch((error) => console.error('carbon', error))
+
+    // get bookmarked rooms (XEP-0048: Bookmarks)
+    this.client.getBookmarks()
+      .then((mucBookmarks) => {
+        mucBookmarks.forEach((bookmark) => {
+          const room = this.setRoomAttributes(bookmark.jid, null, bookmark.password)
+          room.isBookmarked = true
+          room.name = bookmark.name
+          room.autojoin = bookmark.autojoin
+          // @TODO handle nick
+          this.context.$store.setKnownRoom(room)
+          if (bookmark.autojoin) {
+            // handle autojoin
+            this.joinRoom(bookmark.jid, null, { muc: { password: bookmark.password } })
+          }
         })
-
-        // get contacts (rfc6121)
-        this.client.getRoster()
-          .then((rosterResult) => {
-            this.context.$store.commit('setRoster', rosterResult.items)
-
-            // send presence to contacts (rfc6121)
-            this.client.sendPresence()
-          })
-          .catch((rosterError) => console.error('getRoster', rosterError))
-
-        // enable carbons (XEP-0280: Message Carbons)
-        this.client.enableCarbons()
-          .catch((error) => console.error('carbon', error))
-
-        // get bookmarked rooms (XEP-0048: Bookmarks)
-        this.client.getBookmarks()
-          .then((mucBookmarks) => {
-            mucBookmarks.forEach((bookmark) => {
-              const room = this.setRoomAttributes(bookmark.jid, null, bookmark.password)
+        // get rooms attributes
+        mucBookmarks.forEach((muc) => {
+          this.client.getDiscoInfo(muc.jid, '')
+            .then((mucDiscoInfoResult) => {
+              const room = this.setRoomAttributes(muc.jid, mucDiscoInfoResult, muc.password)
               room.isBookmarked = true
-              room.name = bookmark.name
-              room.autoJoin = bookmark.autoJoin
-              this.context.$store.commit('setKnownRoom', room)
-              if (bookmark.autoJoin) {
-                // handle autojoin
-                this.joinRoom(bookmark.jid, null, { muc: { password: bookmark.password } })
-              }
+              this.context.$store.setKnownRoom(room)
             })
-            // get rooms attributes
-            mucBookmarks.forEach((muc) => {
-              this.client.getDiscoInfo(muc.jid, '')
-                .then((mucDiscoInfoResult) => {
-                  const room = this.setRoomAttributes(muc.jid, mucDiscoInfoResult, muc.password)
-                  room.isBookmarked = true
-                  this.context.$store.commit('setKnownRoom', room)
-                })
-                .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
-            })
-          })
-          .catch((error) => console.error('getBookmarks', error))
-
-        // get HTTP file upload capacity (XEP-0363)
-        this.client.getUploadService()
-          .then((UploadServiceResult) => {
-            if (UploadServiceResult.maxSize) {
-              this.context.$store.commit('setHttpFileUploadMaxSize', UploadServiceResult.maxSize)
-            }
-          })
-          .catch((error) => {
-            console.warn(error.message)
-          })
-      })
-
-      // listen for contact messages
-      this.client.on('chat', (receivedMessage) => {
-        storeMessage(this, 'chat', receivedMessage)
-      })
-
-      // listen for room messages
-      this.client.on('groupchat', (receivedMessage) => {
-        storeMessage(this, 'groupchat', receivedMessage)
-      })
-
-      // listen for room presences
-      this.client.on('presence', (presence) => {
-        const jid = XMPP.JID.parse(presence.from)
-        const room = this.context.$store.getters.getRoom(jid.bare)
-        if (room.jid) {
-          if (jid.resource === '') {
-            // room presence
-            return
-          }
-          if (presence.type === 'unavailable') {
-            // occupant left room
-            this.context.$store.commit('removeRoomOccupant', {
-              roomJid: room.jid,
-              jid: jid.full,
-            })
-            return
-          }
-          this.context.$store.commit('setRoomOccupant', {
-            roomJid: room.jid,
-            jid: jid.full,
-            presence: presence.show,
-          })
-        }
-      })
-
-      // listen for room joined
-      this.client.on('muc:join', (receivedMUCPresence) => {
-        // @TODO add participants and role handling
-        const occupantJid = XMPP.JID.parse(receivedMUCPresence.from)
-        // @TODO better handle nick
-        if (occupantJid.resource === this.fullJid.local) {
-          this.context.$store.commit('setJoinedRoom', occupantJid.bare)
-        }
-      })
-
-      // listen for message sent by user (direct or carbon)
-      this.client.on('message:sent', (message) => {
-        if (!message.body) {
-          // no body in message (probably a chat state)
-          return
-        }
-        storeMessage(this, null, message)
-      })
-
-      // listen for contact chat state (writing, pause, ...)
-      this.client.on('chat:state', message => {
-        this.context.$bus.$emit('chatState', {
-          jid: XMPP.JID.parse(message.from).bare,
-          chatState: message.chatState,
+            .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
         })
       })
+      .catch((error) => console.error('getBookmarks', error))
 
-      // listen for presence
-      this.client.on('available', available => {
-        const fullJid = XMPP.JID.parse(available.from)
-        if (!available.show) {
-          // set default value to 'chat'
-          available.show = 'chat'
+    // get HTTP file upload capacity (XEP-0363)
+    this.client.getUploadService()
+      .then((UploadServiceResult) => {
+        if (UploadServiceResult.maxSize) {
+          this.context.$store.setHttpFileUploadMaxSize(UploadServiceResult.maxSize)
         }
-        if (fullJid.bare === this.jid) {
-          // user presence
-          if (fullJid.full === this.fullJid.full) {
-            // user presence on current resource, emit event
-            this.context.$bus.$emit('myPresence', available.show)
-          }
+      })
+      .catch((error) => {
+        console.warn(error.message)
+      })
+
+    // listen for contact/room messages
+    this.client.on('chat', (receivedMessage) => {
+      storeMessage(this, receivedMessage.type, receivedMessage)
+    })
+
+    // listen for message sent by user (direct or carbon)
+    this.client.on('messageSent', (message) => {
+      if (!message.body && !message.url) {
+        // no body in message (probably a chat state)
+        return
+      }
+      storeMessage(this, message.type, message)
+    })
+
+    // listen for contact chat state (writing, pause, ...)
+    this.client.on('chatState', chatState => {
+      this.context.$store.setChatState(chatState)
+    })
+
+    // listen for room creation
+    this.client.on('mucCreated', async (presence) => {
+      let room = {
+        jid: presence.from.bare,
+      }
+      this.context.$store.setKnownRoom(room)
+      // get room information
+      try {
+        const mucDiscoInfoResult = await this.client.getDiscoInfo(room.jid, '')
+        room = this.setRoomAttributes(room.jid, mucDiscoInfoResult, null)
+        this.context.$store.setKnownRoom(room)
+      } catch (error) {
+        console.error('presence/getDiscoInfo', error)
+      }
+    })
+
+    // listen for presence
+    this.client.on('presence', async (presence) => {
+      const fullJid = presence.from
+      if (fullJid.bare === this.fullJid.bare) {
+        // user presence
+        if (fullJid.full === this.fullJid.full) {
+          // user presence on current resource, emit event
+          this.context.$store.setPresence(presence.show)
+        }
+        return
+      }
+      // check if it is a MUC presence
+      if (presence.isMuc) {
+        if (fullJid.resource === '') {
+          // room presence
           return
         }
-        // contact presence commit to store
-        this.context.$store.commit('setContactPresence', { jid: fullJid.bare, presence: available.show })
-      })
+        if (presence.isSelf) {
+          if (presence.type === 'unavailable') {
+            this.context.$store.removeJoinedRoom(fullJid.bare)
+          } else {
+            this.context.$store.setJoinedRoom(fullJid.bare)
+          }
+        }
+        if (presence.type === 'unavailable') {
+          // occupant left room
+          this.context.$store.removeRoomOccupant({
+            roomJid: fullJid.bare,
+            jid: fullJid.full,
+          })
+          return
+        }
+        this.context.$store.setRoomOccupant({
+          roomJid: fullJid.bare,
+          jid: fullJid.full,
+          presence: presence.show,
+        })
+        return
+      }
+      // contact presence commit to store
+      this.context.$store.setContactPresence({ jid: fullJid.bare, presence: presence.show, status: presence.status })
     })
   },
 
@@ -346,22 +271,15 @@ export default {
   },
 
   async sendUrl (to, url, isMuc) {
-    await this.client.sendMessage({
-      from: this.fullJid.full,
-      to,
-      body: url,
-      type: isMuc ? 'groupchat' : 'chat',
-      links: [{ url }],
-    })
+    await this.client.sendMessage(to, isMuc ? 'groupchat' : 'chat', url, url)
   },
 
   async sendMessage (to, body, isMuc) {
-    await this.client.sendMessage({
-      from: this.fullJid.full,
-      to,
-      body,
-      type: isMuc ? 'groupchat' : 'chat',
-    })
+    await this.client.sendMessage(to, isMuc ? 'groupchat' : 'chat', body)
+  },
+
+  async sendChatState (to, isMuc, chatState) {
+    await this.client.sendChatState(to, isMuc ? 'groupchat' : 'chat', chatState)
   },
 
   setRoomAttributes (jid, mucDiscoInfoResult, password = null) {
@@ -478,12 +396,13 @@ export default {
         return { uri: defaultAvatar, isDefault: true }
       }
       const avatar = vCard.records.find((record) => record.type === 'photo')
-      if (avatar && avatar.mediaType && avatar.data) {
+      if (avatar && avatar.data) {
         const uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
         localStorage.setItem('avatar-' + jid, uri)
         return { uri, isDefault: false }
       }
     } catch (error) {
+      console.warn('getJidAvatar error', jid, error.message)
     }
     return { uri: defaultAvatar, isDefault: true }
   },
@@ -491,10 +410,10 @@ export default {
   async sendPresence (presence) {
     try {
       // send global presence
-      await this.client.sendPresence(presence)
+      await this.client.sendPresence(presence.show)
       // send presence to joined rooms
-      this.context.$store.state.joinedRooms.forEach((roomJid) => {
-        this.client.sendPresence({ to: roomJid, show: presence.show })
+      this.context.$store.joinedRooms.forEach((roomJid) => {
+        this.client.sendPresence(presence.show, undefined, roomJid)
       })
     } catch (error) {
       console.error('sendPresence error', error)
@@ -502,45 +421,8 @@ export default {
   },
 
   async searchHistory (jid, last = true) {
-    const options = {
-      with: jid,
-      paging: {
-        before: last,
-        max: 50,
-      },
-    }
     try {
-      const history = await this.client.searchHistory(options)
-      // get messages
-      const messages = []
-      history.results.forEach((item) => {
-        if (!item.item.message || (!item.item.message.body && !item.item.message.links)) {
-          // message de not have text (stanza maybe)
-          return
-        }
-        if (item.item.message.id && this.context.$store.state.messages
-          .filter((message) => message.id)
-          .some((message) => message.id === item.item.message.id)) {
-          // message already known
-          return
-        }
-        const message = {
-          id: item.item.message.id,
-          delay: item.item.delay.timestamp,
-          from: XMPP.JID.parse(item.item.message.from),
-          to: XMPP.JID.parse(item.item.message.to),
-          body: item.item.message.body || null,
-          links: item.item.message.links || null,
-        }
-        // clean body message if it contains only a link
-        if (message.links) {
-          if (message.links.some((link) => link.url === message.body)) {
-            message.body = ''
-          }
-        }
-        messages.push(message)
-      })
-      this.context.$store.commit('storePreviousMessages', messages)
+      const history = await this.client.searchHistory(jid, last, 10)
       return history.paging
     } catch (error) {
       console.error('searchHistory error', error)
@@ -568,7 +450,7 @@ export default {
         if (opts && opts.muc && opts.muc.password) {
           room.password = opts.muc.password
         }
-        this.context.$store.commit('setKnownRoom', room)
+        this.context.$store.setKnownRoom(room)
       }
       return {
         isSuccess: true,
@@ -601,7 +483,7 @@ export default {
         try {
           const serviceDiscoInfoResult = await this.client.getDiscoInfo(serverDiscoItem.jid, '')
 
-          if (serviceDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+          if (serviceDiscoInfoResult.features.includes(NS.MUC)) {
             // discoItems on every MUC service for listing rooms
             try {
               const MucDiscoItemsResult = await this.client.getDiscoItems(serverDiscoItem.jid, '')
@@ -610,7 +492,7 @@ export default {
               for (const MucDiscoItem of MucDiscoItemsResult.items) {
                 const room = await this.getRoom(MucDiscoItem.jid)
                 if (room.jid && room.jid !== serverDiscoItem.jid) {
-                  this.context.$store.commit('setKnownRoom', room)
+                  this.context.$store.setKnownRoom(room)
                   rooms.push(room)
                 }
               }
@@ -636,7 +518,7 @@ export default {
     }
     try {
       const mucDiscoInfoResult = await this.client.getDiscoInfo(jid, '')
-      if (mucDiscoInfoResult.features.includes(XMPP.Namespaces.NS_MUC)) {
+      if (mucDiscoInfoResult.features.includes(NS.MUC)) {
         const room = this.setRoomAttributes(jid, mucDiscoInfoResult)
         return room
       }
@@ -651,8 +533,8 @@ export default {
   },
 
   getRoomError (error) {
-    if (Object.prototype.hasOwnProperty.call(error, 'error') && Object.prototype.hasOwnProperty.call(error.error, 'condition')) {
-      switch (error.error.condition) {
+    if (Object.prototype.hasOwnProperty.call(error, 'message')) {
+      switch (error.message) {
         case 'not-authorized':
           return 'Valid password is required to join this room'
         case 'forbidden':
@@ -700,15 +582,15 @@ export default {
     }
   },
 
-  async bookmarkRoom (isAdd, jid, autoJoin = true, nick = null) {
+  async bookmarkRoom (isAdd, jid, autojoin = true, nick = null) {
     try {
-      const room = this.context.$store.getters.getRoom(jid)
+      const room = this.context.$store.getRoom(jid)
       if (isAdd) {
         // add bookmark
         const bookmark = {
           jid,
           name: room.name,
-          autoJoin,
+          autojoin,
         }
         if (room.password) {
           bookmark.password = room.password
@@ -719,7 +601,7 @@ export default {
           bookmark.nick = this.nick
         }
         await this.client.addBookmark(bookmark)
-        this.context.$store.commit('setKnownRoom', {
+        this.context.$store.setKnownRoom({
           jid,
           isBookmarked: true,
         })
@@ -727,7 +609,7 @@ export default {
       }
       // remove bookmark
       await this.client.removeBookmark(jid)
-      this.context.$store.commit('setKnownRoom', {
+      this.context.$store.setKnownRoom({
         jid,
         isBookmarked: false,
       })
@@ -738,52 +620,7 @@ export default {
   },
 
   async createRoom (roomJid) {
-    let timeoutId = null
-    const timeoutPromise = new Promise((resolve, reject) => {
-      timeoutId = setTimeout(() => {
-        clearTimeout(timeoutId)
-        reject(new Error('Server unreachable'))
-      }, 5000)
-    })
-
-    const createRoomPromise = new Promise((resolve, reject) => {
-      const _xmppSocket = this
-      function roomCreationAck (presence) {
-        const jid = XMPP.JID.parse(presence.from)
-        if (jid.bare === roomJid) {
-          if (presence.error) {
-            // handle error
-            this.off('presence', roomCreationAck)
-            clearTimeout(timeoutId)
-            return reject(new Error(_xmppSocket.getRoomError(presence)))
-          }
-          if (presence.muc && presence.muc.statusCodes) {
-            clearTimeout(timeoutId)
-            this.off('presence', roomCreationAck)
-            if (presence.muc.statusCodes.includes('201')) {
-              return resolve(true)
-            }
-            return reject(new Error('This room already exists'))
-          }
-        }
-      }
-      // listen for acknowledging
-      this.client.on('presence', roomCreationAck)
-    })
-
-    // ask room creation
-    await this.client.sendPresence({
-      to: `${roomJid}/${this.fullJid.local}`,
-      muc: {
-        namespace: XMPP.Namespaces.NS_MUC,
-        type: 'join',
-      },
-    })
-
-    return Promise.race([
-      createRoomPromise,
-      timeoutPromise,
-    ])
+    return this.client.joinRoom(roomJid, this.fullJid.local, {})
   },
 
   async getRoomConfig (roomJid) {

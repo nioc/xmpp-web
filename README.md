@@ -10,7 +10,7 @@ Lightweight web chat client for XMPP server.
 
 ## Key features
 
--   Connect to an XMPP server with WebSocket or [BOSH](https://xmpp.org/about/technology-overview.html#bosh),
+-   Connect to an XMPP server with WebSocket,
 -   Chat and groupchat (MUC as defined in XEP-0045),
 -   Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
 -   Send and receive files over HTTP (XEP-0066, XEP-0363),
@@ -40,7 +40,6 @@ XMPP Web can be installed:
     -   as standalone service:
         ``` bash
         docker run -it -p 80:80 --rm \
-        -e XMPP_HTTP=https://domain-xmpp.ltd:5281/http-bind \
         -e XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket \
         -e APP_DEFAULT_DOMAIN=domain-xmpp.ltd \
         --name xmpp-web-1 nioc/xmpp-web
@@ -54,7 +53,6 @@ XMPP Web can be installed:
             ports:
               - "80:80"
             environment: 
-              - XMPP_HTTP=https://domain-xmpp.ltd:5281/http-bind
               - XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket
               - APP_DEFAULT_DOMAIN=domain-xmpp.ltd
         ```
@@ -65,7 +63,6 @@ XMPP Web can be installed:
 | `local.js` attribute      | Environment                      | Default (initial value)                      | Description
 | ------------------------- |----------------------------------| ---------------------------------------------|---------------------------
 | `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name
-| `transports.bosh`         | `APP_HTTP`                       | `"https://chat.domain-web.ltd/http-bind"`    | BOSH endpoint used by application (proxy or direct XMPP server)
 | `transports.websocket`    | `APP_WS`                         | `"wss://chat.domain-web.ltd/xmpp-websocket"` | Websocket endpoint used by application  (proxy or direct XMPP server)
 | `hasRegisteredAccess`     | `APP_REGISTERED_ACCESS`          | `true`                                       | Set to `false` to disable registered users components (guest access only)
 | `hasGuestAccess`          | `APP_GUEST_ACCESS`               | `true`                                       | Set to `false` to disable guest users components
@@ -76,7 +73,6 @@ XMPP Web can be installed:
 | `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid
 | `defaultMuc`              | `APP_DEFAULT_MUC`                | `null`                                       | Autocomplete MUC address (ex: `conference.domain.ltd`) if user do not provide a full room jid (join & create)
 | `isStylingDisabled`       | `APP_IS_STYLING_DISABLED`        | `false`                                      | Set to `true` for disable messages styling
-| N/A                       | `XMPP_HTTP`                      | `"http://localhost:5280/http-bind"`          | BOSH endpoint proxyfied by Nginx (on a docker installation)
 | N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
 
 ## Credits
@@ -86,13 +82,13 @@ XMPP Web can be installed:
 See also the list of [contributors](https://github.com/nioc/xmpp-web/contributors) to this project.
 
 This project is powered by the following components:
--   [StanzaJS](https://github.com/legastero/stanza) (MIT)
--   [VueJS](https://vuejs.org/) (MIT)
--   [Vuex](https://vuex.vuejs.org/) (MIT)
+-   [xmpp.js](https://github.com/xmppjs/xmpp.js) (ISC)
+-   [Vue.js](https://vuejs.org/) (MIT)
+-   [Pinia](https://pinia.vuejs.org/) (MIT)
 -   [Vue Router](https://router.vuejs.org/) (MIT)
--   [Vue-moment](https://github.com/brockpetrie/vue-moment) (MIT)
+-   [Day.js](https://day.js.org/) (MIT)
 -   [Bulma](https://bulma.io/) (MIT)
--   [Buefy](https://buefy.github.io) (MIT)
+-   [Oruga](https://oruga.io/) (MIT)
 -   [Fork Awesome](https://forkaweso.me) (SIL OFL 1.1)
 
 ## License

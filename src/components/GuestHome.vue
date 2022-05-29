@@ -3,7 +3,7 @@
     <div class="is-flex is-justify-content-center is-full-height" style="overflow-y:auto;">
       <!-- Guest access not allowed message -->
       <div v-if="server === null" class="message is-danger is-light is-align-self-center">
-        <div class="message-body has-text-danger">Anonymous access is not allowed<br>Please <router-link :to="{name: 'login'}">login</router-link></div>
+        <div class="message-body has-text-danger">Anonymous access is not allowed<br>Please <router-link :to="{ name: 'login' }">login</router-link></div>
       </div>
       <!-- User nickname form -->
       <div v-else class="is-align-items-center is-align-self-center">
