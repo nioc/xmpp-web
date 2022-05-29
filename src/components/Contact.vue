@@ -14,7 +14,7 @@
       </span>
     </span>
     <!-- chat -->
-    <avatar v-else :jid="jid" :display-jid="true" :size="24" :presence="presence" />
+    <avatar v-else :jid="jid" :display-jid="true" :size="24" :presence="presence" :status="status" />
     <!-- common -->
     <span v-if="unreadCount > 0" class="tag ml-3 is-rounded is-danger">{{ unreadCount }}</span>
   </router-link>
@@ -37,6 +37,10 @@ export default {
       type: String,
       default: null,
     },
+    status: {
+      type: String,
+      default: null,
+    },
     isRoom: {
       type: Boolean,
       default: false,
@@ -47,7 +51,7 @@ export default {
     },
   },
   computed: {
-    title () { return this.isRoom ? `${this.jid}\n${this.room.name}` : this.jid },
+    title () { return this.isRoom ? `${this.jid}\n${this.room.name}` : this.status ? `${this.jid} / ${this.status}` : this.jid },
     roomName () { return this.room.name && this.room.name.length > 25 ? this.room.name.substring(0, 25) + '…' : this.room.name },
     room () { return this.isRoom ? this.$store.getRoom(this.jid) : null },
     isJoined () { return this.$store.isJoined(this.jid) },

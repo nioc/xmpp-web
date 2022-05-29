@@ -1,7 +1,7 @@
 <template>
   <span :class="{ 'has-jid': displayJid }">
     <figure :class="'image is-'+size+'x'+size">
-      <img class="is-rounded" :style="style" :src="uri" :title="jid">
+      <img class="is-rounded" :style="style" :src="uri" :title="title">
       <i v-if="presence" class="fa fa-circle presence-icon" :class="presenceClass" />
     </figure>
     <span v-if="displayJid" class="ml-3">{{ jid }}</span>
@@ -21,6 +21,10 @@ export default {
       default: false,
     },
     presence: {
+      type: String,
+      default: null,
+    },
+    status: {
       type: String,
       default: null,
     },
@@ -46,6 +50,12 @@ export default {
         default:
           return 'has-text-success'
       }
+    },
+    title () {
+      if (this.status !== null) {
+        return `${this.jid} / ${this.status}`
+      }
+      return this.jid
     },
   },
   watch: {

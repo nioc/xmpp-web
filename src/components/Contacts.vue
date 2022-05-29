@@ -4,7 +4,7 @@
       <p class="menu-label">Contacts</p>
       <ul class="menu-list">
         <li v-for="contact in contacts" :key="contact.jid">
-          <contact :jid="contact.jid" :is-room="false" :presence="contact.presence" :unread-count="contact.unreadCount" />
+          <contact :jid="contact.jid" :is-room="false" :presence="contact.presence" :status="contact.status" :unread-count="contact.unreadCount" />
         </li>
       </ul>
       <p class="menu-label">Rooms</p>
