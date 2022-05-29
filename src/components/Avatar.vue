@@ -4,7 +4,7 @@
       <img class="is-rounded" :style="style" :src="uri" :title="title">
       <i v-if="presence" class="fa fa-circle presence-icon" :class="presenceClass" />
     </figure>
-    <span v-if="displayJid" class="ml-3">{{ jid }}</span>
+    <span v-if="displayJid" class="ml-3">{{ name ? name : jid }}</span>
   </span>
 </template>
 
@@ -15,6 +15,10 @@ export default {
     jid: {
       type: String,
       required: true,
+    },
+    name: {
+      type: String,
+      default: null,
     },
     displayJid: {
       type: Boolean,

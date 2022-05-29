@@ -14,7 +14,7 @@
       </span>
     </span>
     <!-- chat -->
-    <avatar v-else :jid="jid" :display-jid="true" :size="24" :presence="presence" :status="status" />
+    <avatar v-else :jid="jid" :name="name" :display-jid="true" :size="24" :presence="presence" :status="status" />
     <!-- common -->
     <span v-if="unreadCount > 0" class="tag ml-3 is-rounded is-danger">{{ unreadCount }}</span>
   </router-link>
@@ -32,6 +32,10 @@ export default {
     jid: {
       type: String,
       required: true,
+    },
+    name: {
+      type: String,
+      default: null,
     },
     presence: {
       type: String,
