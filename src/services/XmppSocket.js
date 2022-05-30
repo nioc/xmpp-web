@@ -18,12 +18,22 @@ export default {
   defaultMuc,
 
   // create XMPP client with credentials and context
-  async create (jid, password, server, transportsUser, context) {
+  async create (jid, password, domain, transportsUser, context) {
     // handle anonymous authentication
     if (jid) {
       this.isAnonymous = false
     } else {
       jid = 'anon'
+    }
+
+    // set domain from user jid or by default
+    const jidParts = jid.split('@')
+    if (jidParts.length > 1) {
+      jid = jidParts[0]
+      domain = jidParts[1]
+    }
+    if (!domain) {
+      domain = defaultDomain
     }
 
     this.jid = jid
@@ -37,7 +47,7 @@ export default {
     // create XMPP client
     this.client = new XMPP({
       service: transports.websocket,
-      domain: server,
+      domain,
       resource: resource || 'Web XMPP',
       jid,
       password,
