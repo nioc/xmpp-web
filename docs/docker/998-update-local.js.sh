@@ -53,6 +53,10 @@ update_localjs() {
     sed -i -r "s|isStylingEnabled: true|isStylingEnabled: false|g" $localjs
   fi
 
+  if [ "$APP_HAS_SENDING_ENTER_KEY" != "0" ]; then
+    sed -i -r "s|hasSendingEnterKey: false|hasSendingEnterKey: true|g" $localjs
+  fi
+
   echo "done"
 }
 

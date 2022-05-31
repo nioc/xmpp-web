@@ -15,4 +15,5 @@ var config = {
   defaultMuc: null,
   // defaultMuc: 'conference.domain-xmpp.ltd',
   isStylingDisabled: false,
+  hasSendingEnterKey: false,
 }

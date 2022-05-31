@@ -60,7 +60,7 @@ XMPP Web can be installed:
 
 ## Configuration
 
-| `local.js` attribute      | Environment                      | Default (initial value)                      | Description
+| `local.js` attribute      | Environment (Docker)             | Default (initial value)                      | Description
 | ------------------------- |----------------------------------| ---------------------------------------------|---------------------------
 | `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name
 | `transports.websocket`    | `APP_WS`                         | `"wss://chat.domain-web.ltd/xmpp-websocket"` | Websocket endpoint used by application  (proxy or direct XMPP server)
@@ -73,6 +73,7 @@ XMPP Web can be installed:
 | `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid
 | `defaultMuc`              | `APP_DEFAULT_MUC`                | `null`                                       | Autocomplete MUC address (ex: `conference.domain.ltd`) if user do not provide a full room jid (join & create)
 | `isStylingDisabled`       | `APP_IS_STYLING_DISABLED`        | `false`                                      | Set to `true` for disable messages styling
+| `hasSendingEnterKey`      | `APP_HAS_SENDING_ENTER_KEY`      | `false`                                      | If `true`, `Enter` key sends message, it adds new line otherwise (`Control`+`Enter` always sends message)
 | N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
 
 ## Credits

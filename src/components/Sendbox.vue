@@ -3,7 +3,7 @@
     <form @submit.prevent="sendMessage">
       <div class="field is-flex is-align-items-center mr-3">
         <div class="control is-flex-grow-1">
-          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keyup.ctrl.enter="sendMessage" />
+          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
             <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
             <i v-if="fileIcon" class="fa fa-2x" :class="fileIcon" />
@@ -63,6 +63,12 @@ export default {
     ]),
   },
   methods: {
+    async handleEnterKey (event) {
+      if (window.config.hasSendingEnterKey) {
+        await this.sendMessage()
+        event.preventDefault()
+      }
+    },
     // send message
     async sendMessage () {
       try {
