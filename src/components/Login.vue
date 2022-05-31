@@ -9,7 +9,7 @@
               <p class="subtitle has-text-grey">Login</p>
               <div class="field">
                 <div class="control has-icons-left">
-                  <input v-model="credentials.jid" class="input is-medium" type="text" name="jid" placeholder="username@domain.ltd">
+                  <input v-model="credentials.jid" class="input is-medium" type="text" name="jid" :placeholder="jidPlaceholder">
                   <span class="icon is-small is-left">
                     <i class="fa fa-user" />
                   </span>
@@ -83,6 +83,9 @@ export default {
   computed: {
     isDisabled () {
       return this.isLoading || !this.credentials.jid || !this.credentials.password || !this.hasNetwork
+    },
+    jidPlaceholder () {
+      return (typeof window.config.defaultDomain === 'string' && window.config.defaultDomain !== '') ? `username@${window.config.defaultDomain}` : 'username@domain.ltd'
     },
     appName () {
       return (typeof window.config.name === 'string' && window.config.name !== '') ? window.config.name : 'XMPP webchat'
