@@ -13,6 +13,9 @@ import { useStore } from '@/store'
 export default {
   name: 'App',
   mounted () {
+    if (typeof window.config.name === 'string' && window.config.name !== '') {
+      document.title = window.config.name
+    }
     // handle network status
     this.setNetworkStatus(window.navigator.onLine)
     window.addEventListener('offline', this.notifyConnectivity)

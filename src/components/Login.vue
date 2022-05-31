@@ -5,7 +5,7 @@
         <div class="column is-4 is-offset-4">
           <div class="box has-background-shade-3">
             <form @submit.prevent="login">
-              <h3 class="title has-text-grey">XMPP webchat</h3>
+              <h3 class="title has-text-grey">{{ appName }}</h3>
               <p class="subtitle has-text-grey">Login</p>
               <div class="field">
                 <div class="control has-icons-left">
@@ -83,6 +83,9 @@ export default {
   computed: {
     isDisabled () {
       return this.isLoading || !this.credentials.jid || !this.credentials.password || !this.hasNetwork
+    },
+    appName () {
+      return (typeof window.config.name === 'string' && window.config.name !== '') ? window.config.name : 'XMPP webchat'
     },
     ...mapState(useStore, ['hasNetwork']),
   },
