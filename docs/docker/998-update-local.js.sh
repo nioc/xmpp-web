@@ -50,7 +50,7 @@ update_localjs() {
   fi
 
   if [ "$APP_IS_STYLING_DISABLED" != "0" ]; then
-    sed -i -r "s|isStylingEnabled: true|isStylingEnabled: false|g" $localjs
+    sed -i -r "s|isStylingDisabled: false|isStylingDisabled: true|g" $localjs
   fi
 
   if [ "$APP_HAS_SENDING_ENTER_KEY" != "0" ]; then

@@ -33,3 +33,16 @@ ENV APP_IS_STYLING_DISABLED=0
 ENV APP_HAS_SENDING_ENTER_KEY=0
 ENV XMPP_WS=http://localhost:5280/xmpp-websocket
 EXPOSE 80/tcp
+
+# Tag image
+ARG GIT_COMMIT=unspecified
+ARG BUILD_DATE
+ARG VERSION=unspecified
+LABEL org.label-schema.name="xmpp-web"
+LABEL org.label-schema.vendor="nioc"
+LABEL org.label-schema.license="AGPL-3.0-or-later"
+LABEL org.label-schema.vcs-url="https://github.com/nioc/xmpp-web"
+LABEL org.label-schema.vcs-ref=$GIT_COMMIT
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.version=$VERSION
+LABEL maintainer="nioc <dev@nioc.eu>"
