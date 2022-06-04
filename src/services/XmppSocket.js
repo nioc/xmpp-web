@@ -169,7 +169,7 @@ export default {
         })
         // get rooms attributes
         mucBookmarks.forEach((muc) => {
-          this.client.getDiscoInfo(muc.jid, '')
+          this.client.getDiscoInfo(muc.jid)
             .then((mucDiscoInfoResult) => {
               const room = this.setRoomAttributes(muc.jid, mucDiscoInfoResult, muc.password)
               room.isBookmarked = true
@@ -218,7 +218,7 @@ export default {
       this.context.$store.setKnownRoom(room)
       // get room information
       try {
-        const mucDiscoInfoResult = await this.client.getDiscoInfo(room.jid, '')
+        const mucDiscoInfoResult = await this.client.getDiscoInfo(room.jid)
         room = this.setRoomAttributes(room.jid, mucDiscoInfoResult, null)
         this.context.$store.setKnownRoom(room)
       } catch (error) {
@@ -482,7 +482,7 @@ export default {
 
     // discoItems on server
     try {
-      const serverDiscoItemsResult = await this.client.getDiscoItems(this.fullJid.domain, '')
+      const serverDiscoItemsResult = await this.client.getDiscoItems(this.fullJid.domain)
       if (serverDiscoItemsResult.items.length === 0) {
         console.info('There is no MUC service')
         return []
@@ -491,12 +491,12 @@ export default {
       // discoInfo on every service for finding MUC services
       for (const serverDiscoItem of serverDiscoItemsResult.items) {
         try {
-          const serviceDiscoInfoResult = await this.client.getDiscoInfo(serverDiscoItem.jid, '')
+          const serviceDiscoInfoResult = await this.client.getDiscoInfo(serverDiscoItem.jid)
 
           if (serviceDiscoInfoResult.features.includes(NS.MUC)) {
             // discoItems on every MUC service for listing rooms
             try {
-              const MucDiscoItemsResult = await this.client.getDiscoItems(serverDiscoItem.jid, '')
+              const MucDiscoItemsResult = await this.client.getDiscoItems(serverDiscoItem.jid)
 
               // discoInfo on every room for getting attributes
               for (const MucDiscoItem of MucDiscoItemsResult.items) {
@@ -507,11 +507,11 @@ export default {
                 }
               }
             } catch (error) {
-              console.warn('getDiscoItems on a MUC service error', error)
+              console.warn(`getDiscoItems on MUC service ${serverDiscoItem.jid} error:`, error.message)
             }
           }
         } catch (error) {
-          console.warn('getDiscoInfo on a service error', error)
+          console.warn(`getDiscoInfo on service ${serverDiscoItem.jid} error: `, error.message)
         }
       }
     } catch (error) {
@@ -527,7 +527,7 @@ export default {
       }
     }
     try {
-      const mucDiscoInfoResult = await this.client.getDiscoInfo(jid, '')
+      const mucDiscoInfoResult = await this.client.getDiscoInfo(jid)
       if (mucDiscoInfoResult.features.includes(NS.MUC)) {
         const room = this.setRoomAttributes(jid, mucDiscoInfoResult)
         return room
@@ -565,22 +565,6 @@ export default {
     }
     return 'Unable to join room'
   },
-
-  async getDiscoItems (jid, node) {
-    return await this.client.getDiscoItems(jid, node)
-  },
-
-  async getDiscoInfo (jid, node) {
-    return await this.client.getDiscoInfo(jid, node)
-  },
-
-  // async getUniqueRoomName (host) {
-  //   return await this.client.discoverBindings(host)
-  // },
-
-  // async getServices (jid, string) {
-  //   return this.client.getServices(jid, string)
-  // },
 
   // HTTP upload (XEP-0363)
   async getUploadSlot (uploadService, uploadRequest) {
