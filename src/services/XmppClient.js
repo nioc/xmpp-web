@@ -517,21 +517,40 @@ class XmppClient {
 
   // get HTTP file upload capacity (XEP-0363)
   async getUploadService() {
-    let maxSize = undefined
+    // get info from main domain
     const discoInfo = await this.getDiscoInfo()
-    if (discoInfo.features.includes(NS.HTTP_UPLOAD)) {
-      discoInfo.extensions.forEach(extension => {
-        if (extension.fields.map(field => field.value).includes(NS.HTTP_UPLOAD)) {
-          const maxFileSizeField = extension.fields.filter(field => field.name === 'max-file-size')
-          if (maxFileSizeField.length > 0) {
-            maxSize = parseInt(maxFileSizeField[0].value, 10)
-          }
+    let maxSize = this.getMaxFileSize(discoInfo)
+    if (maxSize === undefined) {
+      // main domain does not advertise upload service, get components (items)
+      const discoItems = await this.getDiscoItems()
+      for (let i = 0; i < discoItems.items.length; i++) {
+        try {
+          const discoInfo = await this.getDiscoInfo(discoItems.items[i].jid)
+          maxSize = this.getMaxFileSize(discoInfo)
+          if (maxSize) break
+        } catch (error) {
+          console.warn(error.message)
         }
-      })
+      }
     }
     return {
       maxSize,
     }
+  }
+
+  getMaxFileSize (discoInfo) {
+    if (discoInfo.features.includes(NS.HTTP_UPLOAD)) {
+      for (let i = 0; i < discoInfo.extensions.length; i++) {
+        const extension = discoInfo.extensions[i]
+        if (extension.fields.map(field => field.value).includes(NS.HTTP_UPLOAD)) {
+          const maxFileSizeField = extension.fields.filter(field => field.name === 'max-file-size')
+          if (maxFileSizeField.length > 0) {
+            return parseInt(maxFileSizeField[0].value, 10)
+          }
+        }
+      }
+    }
+    return undefined
   }
 
   async getUploadSlot(to, request) {
