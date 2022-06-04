@@ -58,5 +58,6 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'indent': ['error', 2, { 'SwitchCase': 1 }],
     'quotes': [2, 'single', 'avoid-escape'],
+    'no-trailing-spaces': 'error',
   },
 }

@@ -258,7 +258,7 @@ class XmppClient {
   }
 
   async getRoster(ver) {
-    const rosterMessage = 
+    const rosterMessage =
       xml(
         'iq', { type: 'get' },
         xml(
@@ -356,7 +356,7 @@ class XmppClient {
 
   // enabling carbon (XEP-0280)
   async enableCarbons () {
-    const carbonsMessage = 
+    const carbonsMessage =
       xml(
         'iq', { type: 'set' },
         xml(
@@ -369,7 +369,7 @@ class XmppClient {
 
   // Bookmarks (XEP-0048)
   async getBookmarks() {
-    const bookmarkRequest = 
+    const bookmarkRequest =
     xml(
       'iq', { type: 'get' },
       xml(
@@ -410,7 +410,7 @@ class XmppClient {
   }
 
   async setBookmarks(bookmarks) {
-    const setBookmarkRequest = 
+    const setBookmarkRequest =
     xml(
       'iq', { type: 'set' },
       xml(
@@ -463,7 +463,7 @@ class XmppClient {
     if (Object.hasOwnProperty.call(discoInfoCache, to)) {
       return discoInfoCache[to]
     }
-    const discoInfoMessage = 
+    const discoInfoMessage =
       xml(
         'iq', { type: 'get', from: xmppClient.jid.full, to },
         xml(
@@ -499,7 +499,7 @@ class XmppClient {
     if (to === undefined) {
       to = this.jid.domain
     }
-    const discoItemsMessage = 
+    const discoItemsMessage =
       xml(
         'iq', { type: 'get', from: xmppClient.jid.full, to },
         xml(
@@ -538,7 +538,7 @@ class XmppClient {
     if (to === undefined) {
       to = this.jid.domain
     }
-    const slotRequestMessage = 
+    const slotRequestMessage =
       xml(
         'iq', { type: 'get', from: xmppClient.jid.full, to },
         xml(
@@ -558,7 +558,7 @@ class XmppClient {
 
   // vcard-temp (XEP-0054)
   async getVCard(to) {
-    const getVCardMessage = 
+    const getVCardMessage =
     xml(
       'iq', { type: 'get', from: xmppClient.jid.full, to },
       xml(
@@ -581,7 +581,7 @@ class XmppClient {
 
   // Message Archive Management (XEP-0313)
   async searchHistory(jid, last, max = 50) {
-    const queryArchiveMessage = 
+    const queryArchiveMessage =
     xml(
       'iq', { type: 'set' },
       xml(
@@ -687,7 +687,7 @@ class XmppClient {
   }
 
   async getRoomConfig(roomJid) {
-    const getRoomConfigMessage = 
+    const getRoomConfigMessage =
     xml(
       'iq', {
         type: 'get',
@@ -733,7 +733,7 @@ class XmppClient {
   }
 
   async configureRoom(roomJid, form) {
-    const setRoomConfigMessage = 
+    const setRoomConfigMessage =
     xml(
       'iq', {
         type: 'set',

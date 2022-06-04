@@ -118,7 +118,7 @@ export default {
           return this.openRoom(this.requestedJid)
         }
         if (requestedRoom.message) {
-          await new Promise((resolve) => 
+          await new Promise((resolve) =>
             this.$oruga.modal.open({
               component: Modal,
               trapFocus: true,

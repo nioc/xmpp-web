@@ -125,7 +125,7 @@ export default {
           room = await this.$xmpp.getRoom(this.jid)
           if (!room.jid) {
             // handle room error
-            await new Promise((resolve) => 
+            await new Promise((resolve) =>
               this.$oruga.modal.open({
                 component: Modal,
                 trapFocus: true,
@@ -142,7 +142,7 @@ export default {
         }
         if (room.jid && room.isPasswordProtected) {
           // room is protected, asking password
-          const result = await new Promise((resolve) => 
+          const result = await new Promise((resolve) =>
             this.$oruga.modal.open({
               rootClass: 'dialog',
               trapFocus: true,
