@@ -12,6 +12,7 @@ export default defineConfig({
     vue(),
     GitRevision({ branch: true }),
     VitePWA({
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'img/icons/apple-touch-icon.png'],
       manifest: {
         name: 'XMPP Web',
@@ -62,6 +63,7 @@ export default defineConfig({
       ],
     },
     target: 'modules',
+    chunkSizeWarningLimit: 1000,
   },
   resolve: {
     alias: {

@@ -10,9 +10,10 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useStore } from './store'
 import xmppSocket from './services/XmppSocket'
-
+import { registerSW } from 'virtual:pwa-register'
 import router from './router'
 
+registerSW({ immediate: true })
 dayjs.extend(relativeTime)
 
 const pinia = createPinia()
