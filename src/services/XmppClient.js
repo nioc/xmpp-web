@@ -61,6 +61,7 @@ class XmppClient {
       'chatState': [],
     }
     this.jid = {}
+    this.uploadService = null
     this.xmpp = client({
       service: config.service || 'ws://localhost:5280/xmpp-websocket',
       domain: config.domain || 'localhost',
@@ -518,6 +519,7 @@ class XmppClient {
   // get HTTP file upload capacity (XEP-0363)
   async getUploadService() {
     // get info from main domain
+    this.uploadService = this.jid.domain
     const discoInfo = await this.getDiscoInfo()
     let maxSize = this.getMaxFileSize(discoInfo)
     if (maxSize === undefined) {
@@ -527,7 +529,10 @@ class XmppClient {
         try {
           const discoInfo = await this.getDiscoInfo(discoItems.items[i].jid)
           maxSize = this.getMaxFileSize(discoInfo)
-          if (maxSize) break
+          if (maxSize) {
+            this.uploadService = discoItems.items[i].jid
+            break
+          }
         } catch (error) {
           console.warn(error.message)
         }
@@ -554,8 +559,8 @@ class XmppClient {
   }
 
   async getUploadSlot(to, request) {
-    if (to === undefined) {
-      to = this.jid.domain
+    if (to === undefined || to === null) {
+      to = this.uploadService
     }
     const slotRequestMessage =
       xml(

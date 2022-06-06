@@ -114,7 +114,7 @@ export default {
     async postFile (file) {
       try {
         // reserve slot
-        const httpUploadSlotResult = await this.$xmpp.getUploadSlot(this.userJid.domain, {
+        const httpUploadSlotResult = await this.$xmpp.getUploadSlot(null, {
           filename: file.name,
           size: file.size,
           'content-type': file.type,
