@@ -54,7 +54,7 @@
     "eslint-plugin-vue": "^9.1.0",
     "prettier": "^2.6.1",
     "sass": "^1.52.2",
-    "vite": "^2.9.9",
+    "vite": "^2.9.13",
     "vite-plugin-git-revision": "^0.1.9",
     "vite-plugin-pwa": "^0.12.0"
   }
