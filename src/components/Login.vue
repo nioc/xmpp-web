@@ -24,7 +24,7 @@
                 </div>
               </div>
               <div class="field has-text-left pl-3">
-                <o-checkbox v-model="credentials.remember" type="is-primary" class="has-text-grey-light">
+                <o-checkbox v-model="credentials.remember" variant="primary" class="has-text-grey-light">
                   Store my password in browser
                 </o-checkbox>
               </div>
