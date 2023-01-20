@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Project xmlns="http://usefulinc.com/ns/doap#" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:xmpp="https://linkmauve.fr/ns/xmpp-doap#" xmlns:schema="https://schema.org/">
+    <name>XMPP Web</name>
+
+    <created>2019-11-01</created>
+
+    <shortdesc xml:lang="en">Lightweight web chat client for XMPP server</shortdesc>
+
+    <homepage rdf:resource="https://github.com/nioc/xmpp-web"/>
+    <download-page rdf:resource="https://github.com/nioc/xmpp-web/releases"/>
+    <bug-database rdf:resource="https://github.com/nioc/xmpp-web/issues"/>
+
+    <license rdf:resource="https://raw.githubusercontent.com/nioc/xmpp-web/master/LICENSE.md"/>
+
+    <language>en</language>
+
+    <schema:screenshot rdf:resource="https://raw.githubusercontent.com/nioc/xmpp-web/master/docs/screenshot-desktop-main.png"/>
+
+    <programming-language>JavaScript</programming-language>
+
+    <os>Browser</os>
+
+    <category rdf:resource="https://linkmauve.fr/ns/xmpp-doap#category-client"/>
+    <category rdf:resource="https://example.com/doap#category-web"/>
+
+    <maintainer>
+        <foaf:Person>
+            <foaf:name>nioc</foaf:name>
+            <foaf:homepage rdf:resource="https://www.nioc.eu"/>
+        </foaf:Person>
+    </maintainer>
+
+    <repository>
+        <GitRepository>
+            <browse rdf:resource="https://github.com/nioc/xmpp-web"/>
+            <location rdf:resource="https://github.com/nioc/xmpp-web.git"/>
+        </GitRepository>
+    </repository>
+
+    <implements rdf:resource="https://xmpp.org/rfcs/rfc4505.html"/>
+    <implements rdf:resource="https://xmpp.org/rfcs/rfc6120.html"/>
+    <implements rdf:resource="https://xmpp.org/rfcs/rfc6121.html"/>
+    <implements rdf:resource="https://xmpp.org/rfcs/rfc6122.html"/>
+
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0004.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0030.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0045.html"/>
+            <xmpp:status>partial</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0048.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0049.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0054.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0059.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0066.html"/>
+            <xmpp:status>partial</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0085.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0128.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0156.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0280.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0313.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0359.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0363.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+    <implements>
+        <xmpp:SupportedXep>
+            <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0393.html"/>
+            <xmpp:status>complete</xmpp:status>
+        </xmpp:SupportedXep>
+    </implements>
+
+    <release>
+        <Version>
+            <revision>0.9.4</revision>
+            <created>2023-01-20</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.4/xmpp-web-0.9.4.tar.gz"/>
+        </Version>
+        <Version>
+            <revision>0.9.3</revision>
+            <created>2022-06-06</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.3/xmpp-web-0.9.3.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.9.2</revision>
+            <created>2022-06-01</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.2/xmpp-web-0.9.2.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.9.1</revision>
+            <created>2022-05-30</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.1/xmpp-web-0.9.1.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.9.0</revision>
+            <created>2022-05-29</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.0/xmpp-web-0.9.0.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.8.2</revision>
+            <created>2021-06-13</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.8.2/xmpp-web-0.8.2.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.8.1</revision>
+            <created>2021-03-07</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.8.1/xmpp-web-0.8.1.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.8.0</revision>
+            <created>2021-03-06</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.8.0/xmpp-web-0.8.0.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.7.1</revision>
+            <created>2021-02-27</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.7.1/xmpp-web-0.7.1.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.7.0</revision>
+            <created>2021-02-26</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.7.0/xmpp-web-0.7.0.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.6.0</revision>
+            <created>2021-02-15</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.6.0/xmpp-web-0.6.0-beta-1.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.5.1</revision>
+            <created>2021-02-12</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.5.1/xmpp-web-0.5.1.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.5.0</revision>
+            <created>2020-08-29</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.5.0/xmpp-web-0.5.0.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.4.1</revision>
+            <created>2019-12-05</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.4.1/xmpp-web-0.4.1.tar.xz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.4.0</revision>
+            <created>2019-11-14</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.4.0/xmpp-web-0.4.0.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.3.0</revision>
+            <created>2019-11-04</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.3.0/xmpp-web-0.3.0.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.2.0</revision>
+            <created>2019-11-02</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.2.0/xmpp-web-0.2.0.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.1.0</revision>
+            <created>2019-11-01</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.1.0/xmpp-web-0.1.0.tar.gz"/>
+        </Version>
+    </release>
+</Project>
+</rdf:RDF>
