@@ -321,7 +321,7 @@ class XmppClient {
       },
       xml(
         'body', {},
-        url ? null : body,
+        url ? url : body,
       ),
       hasChatState ? xml('active', { xmlns: NS.CHAT_STATE }) : null,
       url ? xml(
