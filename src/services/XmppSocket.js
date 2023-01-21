@@ -6,6 +6,20 @@ const resource = window.config.resource
 const defaultDomain = window.config.defaultDomain
 const defaultMuc = window.config.defaultMuc
 
+function logError (error, defaultLevel) {
+  const args = Array.prototype.slice.call(arguments, 2)
+  if (error.name === 'StanzaError') {
+    console.warn('StanzaError', ...args.filter(arg => !(arg instanceof Error)))
+
+    return
+  }
+  if (defaultLevel === 'error') {
+    console.error(...args)
+  } else {
+    console.warn(...args)
+  }
+}
+
 export default {
 
   jid: null,
@@ -143,14 +157,14 @@ export default {
         // send presence to contacts (rfc6121)
         this.client.sendPresence()
       })
-      .catch((rosterError) => console.error('getRoster', rosterError))
+      .catch((rosterError) => logError(rosterError, 'error', 'getRoster', rosterError.message, rosterError))
 
     this.client.getDiscoInfo()
-      .catch((discoInfoError) => console.error('getDiscoInfo', discoInfoError))
+      .catch((discoInfoError) => logError(discoInfoError, 'error', 'getDiscoInfo', discoInfoError.message, discoInfoError))
 
     // enable carbons (XEP-0280: Message Carbons)
     this.client.enableCarbons()
-      .catch((error) => console.error('carbon', error))
+      .catch((error) => logError(error, 'error', 'carbon', error.message, error))
 
     // get bookmarked rooms (XEP-0048: Bookmarks)
     this.client.getBookmarks()
@@ -175,10 +189,10 @@ export default {
               room.isBookmarked = true
               this.context.$store.setKnownRoom(room)
             })
-            .catch((error) => console.error('getBookmarks/getDiscoInfo', error))
+            .catch((error) => logError(error, 'error', 'getBookmarks/getDiscoInfo', error.message, error))
         })
       })
-      .catch((error) => console.error('getBookmarks', error))
+      .catch((error) => logError(error, 'error', 'getBookmarks', error.message, error))
 
     // get HTTP file upload capacity (XEP-0363)
     this.client.getUploadService()
@@ -222,7 +236,7 @@ export default {
         room = this.setRoomAttributes(room.jid, mucDiscoInfoResult, null)
         this.context.$store.setKnownRoom(room)
       } catch (error) {
-        console.error('presence/getDiscoInfo', error)
+        logError(error, 'error', 'presence/getDiscoInfo', error.message, error)
       }
     })
 
@@ -275,7 +289,7 @@ export default {
       try {
         await this.client.disconnect()
       } catch (error) {
-        console.error('disconnect error', error)
+        logError(error, 'error', 'disconnect error', error.message, error)
       }
     }
   },
@@ -412,7 +426,7 @@ export default {
         return { uri, isDefault: false }
       }
     } catch (error) {
-      console.warn('getJidAvatar error', jid, error.message)
+      logError(error, 'warn', 'getJidAvatar error', jid, error.message)
     }
     return { uri: defaultAvatar, isDefault: true }
   },
@@ -426,7 +440,7 @@ export default {
         this.client.sendPresence(presence.show, undefined, roomJid)
       })
     } catch (error) {
-      console.error('sendPresence error', error)
+      logError(error, 'error', 'sendPresence error', error.message, error)
     }
   },
 
@@ -435,7 +449,7 @@ export default {
       const history = await this.client.searchHistory(jid, last, 10)
       return history.paging
     } catch (error) {
-      console.error('searchHistory error', error)
+      logError(error, 'error', 'searchHistory error', error.message, error)
     }
   },
 
@@ -466,7 +480,7 @@ export default {
         isSuccess: true,
       }
     } catch (error) {
-      console.error('joinRoom', error)
+      logError(error, 'error', 'joinRoom', error.message, error)
       return {
         isSuccess: false,
         message: this.getRoomError(error),
@@ -511,11 +525,11 @@ export default {
             }
           }
         } catch (error) {
-          console.warn(`getDiscoInfo on service ${serverDiscoItem.jid} error: `, error.message)
+          logError(error, 'warn', `getDiscoInfo on service ${serverDiscoItem.jid} error: `, error.message)
         }
       }
     } catch (error) {
-      console.error('getDiscoItems on server error', error)
+      logError(error, 'error', 'getDiscoItems on server error', error.message, error)
     }
     return rooms
   },
@@ -571,7 +585,7 @@ export default {
     try {
       return this.client.getUploadSlot(uploadService, uploadRequest)
     } catch (error) {
-      console.error('getUploadSlot error', error)
+      logError(error, 'error', 'getUploadSlot error', error.message, error)
       throw error
     }
   },
