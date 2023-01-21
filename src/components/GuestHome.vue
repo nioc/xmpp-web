@@ -55,6 +55,15 @@ export default {
   },
   computed: {
     hasValidNick () { return this.nick.length > 2 },
+    requestedFullJid () {
+      if (!this.requestedJid) {
+        return null
+      }
+      if (/\S+@\S+\S+/.test(this.requestedJid) || !this.$xmpp.defaultMuc) {
+        return this.requestedJid
+      }
+      return `${this.requestedJid}@${this.$xmpp.defaultMuc}`
+    },
   },
   mounted () {
     // remove navbar spacing
@@ -67,7 +76,7 @@ export default {
         await this.$xmpp.create(null, null, this.server, this.transportsUser, this)
         this.$xmpp.setNick(this.nick)
         await this.$xmpp.connect()
-        this.$router.push({ name: 'guestRooms', state: { nick: this.nick, requestedJid: this.requestedJid } })
+        this.$router.push({ name: 'guestRooms', state: { nick: this.nick, requestedJid: this.requestedFullJid } })
       } catch (error) {
         this.error = error.message
       }
