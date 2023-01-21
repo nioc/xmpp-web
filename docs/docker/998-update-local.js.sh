@@ -57,6 +57,10 @@ update_localjs() {
     sed -i -r "s|hasSendingEnterKey: false|hasSendingEnterKey: true|g" $localjs
   fi
 
+  if [ "$XMPP_CONNECT_TIMEOUT" != "" ]; then
+    sed -i -r "s|connectTimeout: 5000|connectTimeout: $XMPP_CONNECT_TIMEOUT|g" $localjs
+  fi
+
   echo "done"
 }
 

@@ -5,6 +5,7 @@ const transports = window.config.transports
 const resource = window.config.resource
 const defaultDomain = window.config.defaultDomain
 const defaultMuc = window.config.defaultMuc
+const connectTimeout = window.config.connectTimeout
 
 function logError (error, defaultLevel) {
   const args = Array.prototype.slice.call(arguments, 2)
@@ -71,7 +72,7 @@ export default {
 
   // connect client to XMPP server
   connect () {
-    const timeoutDuration = 5000
+    const timeoutDuration = connectTimeout || 5000
     let timeoutId = null
     const timeoutPromise = new Promise((resolve, reject) => {
       timeoutId = setTimeout(() => {

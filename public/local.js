@@ -16,4 +16,5 @@ var config = {
   // defaultMuc: 'conference.domain-xmpp.ltd',
   isStylingDisabled: false,
   hasSendingEnterKey: false,
+  connectTimeout: 5000,
 }
