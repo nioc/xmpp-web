@@ -3,7 +3,7 @@
 [![license: AGPLv3](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GitHub release](https://img.shields.io/github/release/nioc/xmpp-web.svg)](https://github.com/nioc/xmpp-web/releases/latest)
 [![GitHub downloads](https://img.shields.io/github/downloads/nioc/xmpp-web/total?label=github%20downloads)](https://github.com/nioc/xmpp-web/releases/latest)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nioc/xmpp-web/Docker%20Image%20CI?label=github%20build)](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nioc/xmpp-web/docker-image.yml?label=github%20build)](https://github.com/nioc/xmpp-web/actions/workflows/docker-image.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/nioc/xmpp-web)](https://hub.docker.com/r/nioc/xmpp-web/tags)
 [![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/nioc/xmpp-web?sort=date)](https://hub.docker.com/r/nioc/xmpp-web/tags)
 [![GitHub issues by-label](https://img.shields.io/github/issues/nioc/xmpp-web/help%20wanted?label=issues%20need%20help)](https://github.com/nioc/xmpp-web/labels/help%20wanted)
