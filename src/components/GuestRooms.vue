@@ -67,16 +67,6 @@ export default {
   components: {
     avatar,
   },
-  props: {
-    requestedJid: {
-      type: String,
-      default: null,
-    },
-    nick: {
-      type: String,
-      default: null,
-    },
-  },
   data () {
     return {
       isLoading: false,
@@ -86,6 +76,8 @@ export default {
         bosh: window.config.transports.bosh,
       },
       server: window.config.anonymousHost,
+      nick: null,
+      requestedJid: null,
     }
   },
   computed: {
@@ -97,9 +89,14 @@ export default {
     ...mapState(useStore, ['publicRooms']),
   },
   async created () {
-    if (!this.nick) {
-      // no nick return to guest home
+    if (history.state) {
+      this.requestedJid = history.state.requestedJid
+      this.nick = history.state.nick
+    }
+    if (!this.nick || !this.$xmpp.jid) {
+      // no nick or xmpp not initialized (may be refresh page / F5) return to guest home
       this.$router.push({ name: 'guest' })
+      return
     }
     this.isLoading = true
     try {

@@ -67,7 +67,7 @@ export default {
         await this.$xmpp.create(null, null, this.server, this.transportsUser, this)
         this.$xmpp.setNick(this.nick)
         await this.$xmpp.connect()
-        this.$router.push({ name: 'guestRooms', params: { nick: this.nick, requestedJid: this.requestedJid } })
+        this.$router.push({ name: 'guestRooms', state: { nick: this.nick, requestedJid: this.requestedJid } })
       } catch (error) {
         this.error = error.message
       }

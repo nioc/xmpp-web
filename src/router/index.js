@@ -124,10 +124,6 @@ if (window.config.hasGuestAccess) {
       name: 'guestRooms',
       path: '/guest/rooms',
       component: GuestRooms,
-      props: (route) => ({
-        requestedJid: route.params.requestedJid,
-        nick: route.params.nick,
-      }),
       meta: {
         requiresAuth: false,
       },
