@@ -6,11 +6,11 @@ on:
       - '*'
 
 jobs:
-  docker:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Read metadata
-        uses: docker/metadata-action@v3.6.2
+        uses: docker/metadata-action@v4
         id: meta
         with:
           images: nioc/xmpp-web
@@ -20,17 +20,26 @@ jobs:
             latest=true
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node.js 16
+      - name: Generate changelog from git commits
+        id: git-changelog
+        run: |
+          echo 'changelog<<EOF' >> $GITHUB_OUTPUT
+          git log $(git tag |tail -2 | head -1).. --pretty=format:"- %s %n%w(150,2,2)%b" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js 18
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18.x
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
 
       - name: Build front
-        run: npm install && npm run build
+        run: npm ci && npm run build
 
       - name: Create release archive
         shell: bash
@@ -44,6 +53,10 @@ jobs:
           draft: true
           files: xmpp-web-${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}.tar.gz
           body: |
+            ### Commits
+
+            ${{ steps.git-changelog.outputs.changelog }}
+
             ### Features
 
             ### Bug fixes
@@ -58,20 +71,20 @@ jobs:
           cp -a docs/docker image-build/docs/ -r
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push docker multi architecture image
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: image-build
           file: docs/docker/Dockerfile-multiarch
