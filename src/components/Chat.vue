@@ -13,6 +13,7 @@
       </span>
     </div>
     <div id="messages-container" class="messages-container">
+      <room-subject v-if="isRoom" :room-jid="jid" />
       <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{ 'is-flex-direction-row-reverse': isUser(message.from) }">
         <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
         <message :message="message" :display-nick="isRoom" />
@@ -30,6 +31,7 @@ import BookmarkButton from '../components/BookmarkButton.vue'
 import RoomConfigurationButton from '../components/RoomConfigurationButton.vue'
 import RetrieveHistoryButton from '../components/RetrieveHistoryButton.vue'
 import RoomOccupants from '../components/RoomOccupants.vue'
+import RoomSubject from '../components/RoomSubject.vue'
 import Sendbox from '../components/Sendbox.vue'
 import Modal from '../components/Modal.vue'
 import { mapState } from 'pinia'
@@ -45,6 +47,7 @@ export default {
     RoomConfigurationButton,
     RetrieveHistoryButton,
     RoomOccupants,
+    RoomSubject,
     Sendbox,
   },
   beforeRouteEnter (to, from, next) {

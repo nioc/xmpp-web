@@ -283,6 +283,13 @@ export default {
       // contact presence commit to store
       this.context.$store.setContactPresence({ jid: fullJid.bare, presence: presence.show, status: presence.status })
     })
+
+    // listen for room subject change
+    this.client.on('subjectChange', (subjectChange) => {
+      if (subjectChange.from && subjectChange.from.bare && subjectChange.subject) {
+        this.context.$store.setRoomSubject (subjectChange.from.bare, subjectChange.from.resource, subjectChange.subject)
+      }
+    })
   },
 
   async disconnect () {

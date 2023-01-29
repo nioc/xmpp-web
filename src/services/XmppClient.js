@@ -59,6 +59,7 @@ class XmppClient {
       'authenticated': [],
       'mucCreated': [],
       'chatState': [],
+      'subjectChange': [],
     }
     this.jid = {}
     this.uploadService = null
@@ -215,6 +216,16 @@ class XmppClient {
       }
 
       xmppClient.callbacks.chat.forEach((callback) => callback(message))
+    }
+
+    // check subject change (part of XEP-0045)
+    const subjectNode = stanza.getChild('subject')
+    if (subjectNode) {
+      const subject = {
+        from: xmppClient.parseJid(stanza.attrs.from),
+        subject: subjectNode.getText(),
+      }
+      xmppClient.callbacks.subjectChange.forEach((callback) => callback(subject))
     }
 
     // check chat state

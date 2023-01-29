@@ -52,6 +52,11 @@ export const useStore = defineStore('main', {
       return []
     },
 
+    getRoomSubject: (state) => (jid) => {
+      const room = state.knownRooms.find((room) => room.jid === jid)
+      return (room && room.subject) ? room.subject : null
+    },
+
     getChatState: (state) => (isRoom, jid) => {
       if (isRoom) {
         const roomOccupants = state.roomsOccupants.find((roomOccupants) => roomOccupants.roomJid === jid)
@@ -131,6 +136,20 @@ export const useStore = defineStore('main', {
         rooms[index][key] = room[key]
       }
       this.knownRooms = rooms
+    },
+
+    // MUC room subject setter
+    setRoomSubject (roomJid, author, subject) {
+      const room = this.getRoom(roomJid)
+      if (room.jid) {
+        this.setKnownRoom({
+          ...room,
+          subject: {
+            author,
+            subject,
+          },
+        })
+      }
     },
 
     // MUC joined rooms setter
