@@ -1,0 +1,17 @@
+# this dockerfile allow to develop application code without installing NodeJS on local computer (note: node_modules will not be on local).
+
+# build image: `docker build -f docs/docker/Dockerfile-dev -t nioc/xmpp-web:node-alpine-dev .`
+# start image: `docker run -it -p 3000:3000 --rm -v "$(pwd)":/app -v "/app/node_modules" --name xmpp-web-1 nioc/xmpp-web:node-alpine-dev`
+
+FROM node:lts-alpine
+
+# install app dependencies
+RUN apk add git
+WORKDIR /app
+COPY package*.json ./
+RUN npm install && chown node:node -R /app
+
+# start vite dev server
+EXPOSE 3000
+USER node
+CMD ["npm", "run", "dev"]

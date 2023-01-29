@@ -79,6 +79,11 @@ XMPP Web can be installed:
 | `connectTimeout`          | `XMPP_CONNECT_TIMEOUT`           | `5000`                                       | Timeout in ms before XMPP connection is considered as rejected
 | N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
 
+## Contributing
+
+If you have a suggestion for a feature you think would enhance this product, please submit a [feature request](https://github.com/nioc/xmpp-web/issues/new?labels=enhancement&template=feature_request.md).
+Pull requests are welcomed. See [contributing](CONTRIBUTING.md).
+
 ## Credits
 
 -   **[Nioc](https://github.com/nioc/)** - _Initial work_

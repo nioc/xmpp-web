@@ -14,7 +14,7 @@
   "author": "nioc <dev@nioc.eu>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite build && vite preview --port 8080",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs  --ignore-path .gitignore --ignore-pattern 'docs/*'",
