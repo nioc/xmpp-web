@@ -58,7 +58,15 @@ XMPP Web can be installed:
               - XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket
               - APP_DEFAULT_DOMAIN=domain-xmpp.ltd
         ```
--   From source (`git clone`, `npm build`, etc...)
+-   From source:
+    ``` bash
+    git clone https://github.com/nioc/xmpp-web.git xmpp-web
+    cd xmpp-web
+    nano public/local.js
+    npm ci
+    npm run build
+    ```
+    Then copy `dist` folder in your web server.
 
 ## Configuration
 
