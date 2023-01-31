@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Check the "conventional commits" message
+
+grep -E "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|BREAKING CHANGE)(\([[:space:][:alnum:]-]+\))?!?: .*" "$1" >/dev/null;
+if [ $? != 0 ]
+then
+  echo "Invalid conventional commit message"
+  exit 1
+fi

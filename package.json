@@ -17,6 +17,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite build && vite preview --port 8080",
+    "configure-git-hook": "cp docs/git-hooks/commit-msg .git/hooks/",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs  --ignore-path .gitignore --ignore-pattern 'docs/*'",
     "lint-fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore --ignore-pattern 'docs/*'"
   },

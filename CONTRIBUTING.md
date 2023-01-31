@@ -17,6 +17,7 @@ When writing some code, lint it with [provided rules](.eslintrc.cjs): `npm run l
 #### Commits message
 
 Read [conventional commits](https://www.conventionalcommits.org/) and write your commit messages accordingly.
+You can add provided git `commit-msg` [hook](docs/git-hooks/commit-msg) (which execute a basic message checking) with the following command: `npm run configure-git-hook`.
 
 #### Architecture
 
