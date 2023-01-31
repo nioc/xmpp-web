@@ -89,8 +89,8 @@ XMPP Web can be installed:
 
 ## Contributing
 
-If you have a suggestion for a feature you think would enhance this product, please submit a [feature request](https://github.com/nioc/xmpp-web/issues/new?labels=enhancement&template=feature_request.md).
-Pull requests are welcomed. See [contributing](CONTRIBUTING.md).
+If you have a suggestion for a feature you think would enhance this product, please submit a [feature request](https://github.com/nioc/xmpp-web/issues/new?labels=enhancement&template=feature_request.yml).
+Pull requests are welcomed (please create feature request for discussing it before), see [contributing](CONTRIBUTING.md).
 
 ## Credits
 

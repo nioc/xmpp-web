@@ -1,0 +1,150 @@
+name: Bug report
+description: Create a bug report to help us improve 
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report.
+        The information you provide will help us to solve your problems faster and better.
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description:  |
+        A clear and concise description of what the bug is.
+        You can paste screenshot if relevant.
+      placeholder: "ex: Displayed Jid is incorrect in contacts list"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the problem.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: false
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what **you expected to happen**.
+      placeholder: "ex: Contacts list should display the nickname if present or Jid (name@domain.ltd)"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log
+      description:  |
+        If applicable, please copy and paste any relevant console logs and/or websocket trames output.
+        This will be automatically formatted into code, so no need for backticks.
+        Pay attention to **remove/hide personal information** (server url, authentication, ...).
+      render: Text
+    validations:
+      required: false
+  - type: textarea
+    id: localjs
+    attributes:
+      label: local.js configuration
+      description:  |
+        Content of your `public/local.js` file. This will be automatically formatted into code, so no need for backticks.
+        Pay attention to **remove/hide personal information** (server url, authentication, ...).
+      render: js
+      placeholder: |
+        // eslint-disable-next-line no-unused-vars, no-var
+        var config = {
+          name: 'XMPP web',
+          transports: {
+            websocket: 'wss://chat.domain-web.ltd/xmpp-websocket',
+          },
+          hasGuestAccess: true,
+          hasRegisteredAccess: true,
+          anonymousHost: 'anon.domain-xmpp.ltd',
+          isTransportsUserAllowed: false,
+          hasHttpAutoDiscovery: false,
+          resource: 'Web XMPP',
+          defaultDomain: 'domain-xmpp.ltd',
+          defaultMuc: 'conference.domain-xmpp.ltd',
+          isStylingDisabled: false,
+          hasSendingEnterKey: false,
+          connectTimeout: 5000,
+        }
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: XMPP-web version
+      description:  |
+        What version of this application are you running?
+        You can find it in the `/about` page.
+      placeholder: "ex: 0.9.6"
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation
+      description: How this application has been installed?
+      options:
+        - Docker image
+        - Github release archive
+        - Build from source
+        - Ansible role
+        - I do not know
+    validations:
+      required: true
+  - type: dropdown
+    id: xmpp
+    attributes:
+      label: XMPP server(s)
+      description: What XMPP server are you using?
+      multiple: true
+      options:
+        - Prosody IM
+        - ejabberd
+        - Openfire
+        - Tigase XMPP Server
+        - other
+        - I do not know
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: Browser(s)
+      description: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Microsoft Edge
+        - Safari
+        - other
+    validations:
+      required: false
+  - type: dropdown
+    id: devices
+    attributes:
+      label: Device(s)
+      description: What devices are you using?
+      multiple: true
+      options:
+        - desktop
+        - mobile
+        - other
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Other information
+      description: Other diagnostic information that may be useful for troubleshooting.
+    validations:
+      required: false

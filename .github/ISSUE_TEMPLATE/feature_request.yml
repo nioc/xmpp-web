@@ -1,0 +1,97 @@
+name: Feature request
+description: Suggest an idea for this project 
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request report.
+        It’s up to you to make a solid case to convince us of the merits of this feature.
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Intended behavior
+      description:  |
+        Describe the intended behavior in a clear and concise description of what the feature should enhance in the application.
+        If this is related to a [XMPP specification](https://xmpp.org/extensions), link the relevant page.
+      placeholder: |
+        ex: I'm always frustrated when [...]
+        It should be more clear if [...]
+        This is a more complete implementation of [XEP-0045](https://xmpp.org/extensions/xep-0045.html).
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: |
+        Describe the solution you'd like in a clear and concise description of what you want to happen.
+        You can paste mock-ups if relevant.
+      placeholder: |
+        ex: App should listen the XMPP events which indicates [...]
+        Then, information would be displayed in the component [...]
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: "Describe in a clear and concise description of any alternative solutions or features you've considered."
+      placeholder: |
+        Another option is to request server for getting data [...]
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: From *your perspective*, what is the priority of this feature?
+      multiple: false
+      options:
+        - Could-have
+        - Should-have
+        - Must-have
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Users scope
+      description: What kind(s) of user access would be affected?
+      multiple: true
+      options:
+        - registered users
+        - guests
+    validations:
+      required: false
+  - type: dropdown
+    id: features
+    attributes:
+      label: Affected features
+      description: What application features/components would be affected?
+      multiple: true
+      options:
+        - login
+        - contacts list
+        - rooms list
+        - service discovery
+        - room management
+        - messages display
+        - message edition / send box
+        - presence
+    validations:
+      required: false
+  - type: dropdown
+    id: pr
+    attributes:
+      label: Pull request
+      description: |
+        Do you plan to handle this feature by submitting a pull request?
+        Before writing code, please **wait that we confirm** this feature is relevant for the application.
+        You should read the [contributing](../blob/master/CONTRIBUTING.md) guide.
+      multiple: false
+      options:
+        - "yes"
+        - "no"
+    validations:
+      required: true
