@@ -142,10 +142,26 @@
 
     <release>
         <Version>
+            <revision>0.9.6</revision>
+            <created>2023-01-29</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.6/xmpp-web-0.9.4.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
+            <revision>0.9.5</revision>
+            <created>2023-01-21</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.5/xmpp-web-0.9.4.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
             <revision>0.9.4</revision>
             <created>2023-01-20</created>
             <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.4/xmpp-web-0.9.4.tar.gz"/>
         </Version>
+    </release>
+    <release>
         <Version>
             <revision>0.9.3</revision>
             <created>2022-06-06</created>
