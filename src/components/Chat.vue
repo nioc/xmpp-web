@@ -10,6 +10,7 @@
         <room-configuration-button v-if="isRoom && !$xmpp.isAnonymous" :room-jid="jid" />
         <invite-guest-button v-if="isRoom" :room-jid="jid" />
         <retrieve-history-button />
+        <presence-controller v-if="$xmpp.isAnonymous" :is-navbar-item="false" :is-right="true" class="px-2 mx-2" />
       </span>
     </div>
     <div id="messages-container" class="messages-container">
@@ -34,6 +35,7 @@ import RoomOccupants from '../components/RoomOccupants.vue'
 import RoomSubject from '../components/RoomSubject.vue'
 import Sendbox from '../components/Sendbox.vue'
 import Modal from '../components/Modal.vue'
+import PresenceController from '../components/PresenceController.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 
@@ -49,6 +51,7 @@ export default {
     RoomOccupants,
     RoomSubject,
     Sendbox,
+    PresenceController,
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

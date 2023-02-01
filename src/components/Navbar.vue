@@ -11,15 +11,7 @@
     </div>
     <div id="navbar-menu" class="navbar-menu">
       <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link is-arrowless">
-            <presence v-if="isOnline" :presence="presence" :display-label="false" />
-            <presence v-else presence="off" :display-label="false" />
-          </a>
-          <div v-if="isOnline" class="navbar-dropdown is-right">
-            <a v-for="presenceOption in ['chat', 'away', 'dnd']" :key="presenceOption" class="navbar-item" :class="{ 'is-active': presenceOption === presence }" @click="setPresence(presenceOption)"><presence :presence="presenceOption" /></a>
-          </div>
-        </div>
+        <presence-controller :is-navbar-item="true" />
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link is-arrowless"><avatar :jid="userJid" :display-jid="true" :size="32" /></a>
           <div class="navbar-dropdown is-right">
@@ -36,7 +28,7 @@
 
 <script>
 import avatar from '../components/Avatar.vue'
-import presence from '../components/Presence.vue'
+import PresenceController from '../components/PresenceController.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 import { bugs } from '../../package.json'
@@ -45,7 +37,7 @@ export default {
   name: 'Navbar',
   components: {
     avatar,
-    presence,
+    PresenceController,
   },
   data () {
     return {
@@ -54,7 +46,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(useStore, ['isOnline', 'activeChat', 'presence']),
+    ...mapState(useStore, [
+      'activeChat',
+    ]),
   },
   mounted () {
     document.body.classList.add('has-navbar-fixed-top')
@@ -69,9 +63,6 @@ export default {
       this.$store.clear()
       localStorage.clear()
       this.$router.replace('/login')
-    },
-    setPresence (presence) {
-      this.$xmpp.sendPresence({ show: presence })
     },
   },
 }

@@ -45,7 +45,7 @@ export default {
         case 'off':
           return 'fa-exclamation'
         default:
-          return 'fa-circle'
+          return 'fa-comments-o'
       }
     },
     text () {
