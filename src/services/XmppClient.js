@@ -134,7 +134,7 @@ class XmppClient {
         presence.show = undefined
       } else {
         presence.show = stanza.getChildText('show') || 'chat'
-        presence.status =stanza.getChildText('status')
+        presence.status = stanza.getChildText('status')
       }
       // add MUC information
       const mucPresence = stanza.getChild('x', NS.MUC_USER)
@@ -179,7 +179,7 @@ class XmppClient {
       }
       message.body = body.getText()
       message.from = xmppClient.parseJid(stanza.attrs.from)
-      message.to = xmppClient.parseJid(stanza.attrs.to  || xmppClient.jid)
+      message.to = xmppClient.parseJid(stanza.attrs.to || xmppClient.jid)
       message.id = stanza.attrs.id
       message.type = stanza.attrs.type
       const stanzaIdNode = stanza.getChild('stanza-id')

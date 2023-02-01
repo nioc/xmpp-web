@@ -8,6 +8,7 @@ module.exports = {
     'eslint:recommended',
   ],
   'env': {
+    node: true,
     es2021: true,
     'vue/setup-compiler-macros': true,
   },
@@ -59,5 +60,7 @@ module.exports = {
     'indent': ['error', 2, { 'SwitchCase': 1 }],
     'quotes': [2, 'single', 'avoid-escape'],
     'no-trailing-spaces': 'error',
+    'space-infix-ops': 'error',
+    'no-multi-spaces': 'error',
   },
 }
