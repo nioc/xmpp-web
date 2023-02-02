@@ -10,20 +10,33 @@
 
 Lightweight web chat client for XMPP server.
 
+## Table of contents
+
+- [Key features](#key-features)
+- [Installation](#installation)
+  - [Ansible](#ansible)
+  - [Archive](#archive)
+  - [Docker image](#docker-image)
+  - [Build from source](#build-from-source)
+- [Configuration](#configuration)
+- [Contributing](#contributing)
+- [Credits](#credits)
+- [License](#license)
+
 ## Key features
 
--   Connect to an XMPP server with WebSocket,
--   Chat and groupchat (MUC as defined in XEP-0045),
--   Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
--   Send and receive files over HTTP (XEP-0066, XEP-0363),
--   Handle password protected room,
--   Display chat state notifications: is composing, is paused (XEP-0085),
--   Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
--   Pick emoji,
--   Room creation and configuration,
--   PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
--   Lightweight (600 KB gzipped at the first loading and then less than 10 KB)
--   Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
+- Connect to an XMPP server with WebSocket,
+- Chat and groupchat (MUC as defined in XEP-0045),
+- Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
+- Send and receive files over HTTP (XEP-0066, XEP-0363),
+- Handle password protected room,
+- Display chat state notifications: is composing, is paused (XEP-0085),
+- Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
+- Pick emoji,
+- Room creation and configuration,
+- PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
+- Lightweight (600 KB gzipped at the first loading and then less than 10 KB)
+- Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
 
 ![Screenshot desktop](/docs/screenshot-desktop-main.png)
 ![Screenshot mobile home](/docs/screenshot-mobile-main.png) ![Screenshot mobile chat](/docs/screenshot-mobile-chat.png)
@@ -31,42 +44,75 @@ Lightweight web chat client for XMPP server.
 
 ## Installation
 
-XMPP Web can be installed:
--   With provided [Ansible role](/docs/ansible/xmpp-web/README.md),
--   From archive:
-    -   download [latest release](https://github.com/nioc/xmpp-web/releases/latest),
-    -   unarchive,
-    -   create [Apache virtual host](/docs/apache.conf),
-    -   configure [`local.js`](public/local.js)),
--   From Docker image ([docker pull nioc/xmpp-web](https://hub.docker.com/r/nioc/xmpp-web), based on nginx):
-    -   as standalone service:
-        ``` bash
-        docker run -it -p 80:80 --rm \
-        -e XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket \
-        -e APP_DEFAULT_DOMAIN=domain-xmpp.ltd \
-        --name xmpp-web-1 nioc/xmpp-web
-        ```
-    -   in a docker-compose:
-        ``` yml
-        version: "3.4"
-        services:
-          xmpp-web:
-            image: nioc/xmpp-web:latest
-            ports:
-              - "80:80"
-            environment: 
-              - XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket
-              - APP_DEFAULT_DOMAIN=domain-xmpp.ltd
-        ```
--   From source:
-    ``` bash
-    git clone https://github.com/nioc/xmpp-web.git xmpp-web
-    cd xmpp-web
-    nano public/local.js
-    npm ci
-    npm run build
-    ```
-    Then copy `dist` folder in your web server.
+There are 4 different ways to install XMPP Web:
+
+- using [Docker image](#docker-image) (easiest, **strongly recommended**),
+- using [release archive](#archive),
+- build from [source code](#build-from-source) (latest code but hardest).
+- ~~from provided [Ansible role](#ansible)~~ (not maintained),
+
+### Ansible
+
+Long time ago, we provided an [Ansible role](/docs/ansible/xmpp-web/README.md).
+It had not been updated since 2020 and nobody used it, **it is not maintained anymore**.
+You can still use it but it will not set all the relevant configuration in `local.js`.
+
+### Archive
+
+You can download latest `.tar.gz` archive, unpack files in web directory and configure:
+
+- download [latest release](https://github.com/nioc/xmpp-web/releases/latest),
+- unarchive,
+- set files owner (example: `www-data` with Apache),
+- create [Apache virtual host](/docs/apache.conf),
+- configure [`local.js`](public/local.js).
+
+``` bash
+wget https://github.com/nioc/xmpp-web/releases/latest/download/xmpp-web-0.9.7.tar.gz \
+  -O /var/tmp/xmpp-web.tar.gz \
+  && cd /var/www \
+  && tar -xvzf /var/tmp/xmpp-web.tar.gz \
+  && chown www-data /var/www/xmpp-web/ -R
+```
+
+### Docker image
+
+On each release, we also build a [Docker image](https://hub.docker.com/r/nioc/xmpp-web) which is the latest stable Nginx (Alpine variant in order to keep lightweight) serving the generated assets. Configuration in `local.js` is set up according to environment variables (names and meanings are explained in [configuration](#configuration) section).
+
+This can be used:
+- as standalone service:
+  ``` bash
+  docker run -it -p 80:80 --rm \
+  -e XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket \
+  -e APP_DEFAULT_DOMAIN=domain-xmpp.ltd \
+  --name xmpp-web-1 nioc/xmpp-web
+  ```
+
+- in a `docker-compose.yml` file:
+  ``` yml
+  version: "3.4"
+  services:
+    xmpp-web:
+      image: nioc/xmpp-web:latest
+      ports:
+        - "80:80"
+      environment: 
+        - XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket
+        - APP_DEFAULT_DOMAIN=domain-xmpp.ltd
+  ```
+
+### Build from source
+
+If you want the latest code without waiting for the next release, you can clone this repo, build assets and copy `dist` files in web directory:
+``` bash
+git clone https://github.com/nioc/xmpp-web.git xmpp-web
+cd xmpp-web
+npm ci
+npm run build
+nano dist/local.js
+mv dist /var/www/xmpp-web
+chown www-data /var/www/xmpp-web/ -R
+```
 
 ## Configuration
 
@@ -95,19 +141,19 @@ Pull requests are welcomed (please create feature request for discussing it befo
 
 ## Credits
 
--   **[Nioc](https://github.com/nioc/)** - _Initial work_
+- **[Nioc](https://github.com/nioc/)** - _Initial work_
 
 See also the list of [contributors](https://github.com/nioc/xmpp-web/contributors) to this project.
 
 This project is powered by the following components:
--   [xmpp.js](https://github.com/xmppjs/xmpp.js) (ISC)
--   [Vue.js](https://vuejs.org/) (MIT)
--   [Pinia](https://pinia.vuejs.org/) (MIT)
--   [Vue Router](https://router.vuejs.org/) (MIT)
--   [Day.js](https://day.js.org/) (MIT)
--   [Bulma](https://bulma.io/) (MIT)
--   [Oruga](https://oruga.io/) (MIT)
--   [Fork Awesome](https://forkaweso.me) (SIL OFL 1.1)
+- [xmpp.js](https://github.com/xmppjs/xmpp.js) (ISC)
+- [Vue.js](https://vuejs.org/) (MIT)
+- [Pinia](https://pinia.vuejs.org/) (MIT)
+- [Vue Router](https://router.vuejs.org/) (MIT)
+- [Day.js](https://day.js.org/) (MIT)
+- [Bulma](https://bulma.io/) (MIT)
+- [Oruga](https://oruga.io/) (MIT)
+- [Fork Awesome](https://forkaweso.me) (SIL OFL 1.1)
 
 ## License
 
