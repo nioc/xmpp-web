@@ -17,4 +17,5 @@ var config = {
   isStylingDisabled: false,
   hasSendingEnterKey: false,
   connectTimeout: 5000,
+  pinnedMucs: [],
 }

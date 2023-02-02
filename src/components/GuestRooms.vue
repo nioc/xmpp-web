@@ -2,11 +2,22 @@
   <section class="is-full-height has-background-shade-3">
     <div class="is-flex is-justify-content-center is-full-height" style="overflow-y:auto;">
       <div v-if="displayRoomsList" class="container is-flex is-flex-direction-column">
-        <div class="field mt-5">
-          <div class="control has-icons-left">
-            <input v-model="search" class="input" type="text" name="room" placeholder="Room name" title="Filter rooms by name">
+        <div class="field has-addons mt-5">
+          <div class="control is-expanded has-icons-left">
+            <input v-model="search.text" class="input" type="text" name="room" placeholder="Search a room" title="Filter rooms by name or description">
             <span class="icon is-small is-left">
-              <i class="fa fa-comments" />
+              <i class="fa fa-search" />
+            </span>
+          </div>
+          <div class="control has-icons-left">
+            <span class="select">
+              <select v-model="search.language" title="Filter rooms by language">
+                <option value="" />
+                <option v-for="language in roomsLanguages" :key="language">{{ language }}</option>
+              </select>
+              <span class="icon is-small is-left">
+                <i class="fa fa-globe-e" />
+              </span>
             </span>
           </div>
         </div>
@@ -16,6 +27,9 @@
               <div class="card is-width-min-400">
                 <header class="card-header">
                   <span class="card-header-title">
+                    <span v-if="room.isPinned" class="icon has-text-danger mr-2" title="Pinned room">
+                      <i class="fa fa-map-pin" />
+                    </span>
                     <span v-if="room.lang" class="has-text-weight-light" title="Language">[{{ room.lang }}]</span>
                   </span>
                   <span class="px-4 py-3">
@@ -70,7 +84,10 @@ export default {
   data () {
     return {
       isLoading: false,
-      search: '',
+      search: {
+        text: '',
+        language: '',
+      },
       transportsUser: {
         websocket: window.config.transports.websocket,
         bosh: window.config.transports.bosh,
@@ -82,9 +99,28 @@ export default {
   },
   computed: {
     displayRoomsList () { return !this.isLoading && this.publicRooms.length > 0 },
+    roomsLanguages () {
+      return [...new Set(this.publicRooms.map((room) => room.lang))]
+        .filter(lang => lang !== '')
+    },
     filteredPublicRooms () {
+      const pinnedRooms = window.config.pinnedMucs || []
+      const searchText = this.search.text.toLowerCase()
+      const searchLanguage = this.search.language
       return this.publicRooms
-        .filter((room) => room.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1)
+        .filter((room) => (searchText === '' || room.name.toLowerCase().indexOf(searchText) > -1 || room.description.toLowerCase().indexOf(searchText) > -1) && (searchLanguage === '' || room.lang === searchLanguage))
+        .map((room) => {
+          return {
+            ...room,
+            isPinned: pinnedRooms.includes(room.jid),
+          }
+        })
+        .sort((a, b) => {
+          if (a.isPinned !== b.isPinned) {
+            return a.isPinned ? -1 : 1
+          }
+          return a.name.toLowerCase() > b.name.toLowerCase()
+        })
     },
     ...mapState(useStore, ['publicRooms']),
   },
