@@ -205,6 +205,9 @@ export default {
         }
         return this.$router.push({ name: 'home' })
       }
+      if (history.state && history.state.back) {
+        return this.$router.replace({ path: history.state.back })
+      }
       return this.$router.back()
     },
     // scroll to last message (called when messages changes)

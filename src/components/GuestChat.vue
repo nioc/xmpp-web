@@ -24,7 +24,7 @@ export default {
   },
   created () {
     if (this.$xmpp.nick === null) {
-      this.$router.back()
+      this.$router.replace({ name: 'guest', query: { join: this.jid } })
     }
   },
   mounted () {
