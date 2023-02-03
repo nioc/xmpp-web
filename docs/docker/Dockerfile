@@ -5,7 +5,7 @@ RUN apk add git
 WORKDIR /app
 COPY package*.json ./
 # install dependencies
-RUN npm install
+RUN npm ci
 # copy src and assets
 COPY . .
 # build
