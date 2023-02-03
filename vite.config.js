@@ -13,6 +13,16 @@ export default defineConfig({
     GitRevision({ branch: true }),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html}'],
+        globIgnores: ['**/*local.js'],
+        runtimeCaching: [
+          {
+            urlPattern: /^.*\/local\.js/,
+            handler: 'NetworkFirst',
+          },
+        ],
+      },
       includeAssets: ['favicon.ico', 'robots.txt', 'img/icons/apple-touch-icon.png'],
       manifest: {
         name: 'XMPP Web',
