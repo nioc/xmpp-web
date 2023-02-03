@@ -9,9 +9,8 @@ const connectTimeout = window.config.connectTimeout
 
 function logError (error, defaultLevel) {
   const args = Array.prototype.slice.call(arguments, 2)
-  if (error.name === 'StanzaError') {
-    console.warn('StanzaError', ...args.filter(arg => !(arg instanceof Error)))
-
+  if (['XMPPError', 'StanzaError'].includes(error.name)) {
+    console.warn(error.name, ...args.filter(arg => !(arg instanceof Error)))
     return
   }
   if (defaultLevel === 'error') {
