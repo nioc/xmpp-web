@@ -164,21 +164,17 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   // check if route require authentication
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (localStorage.getItem('auth') === null) {
       // user is not authenticated, route to login page
-      return next({
+      return {
         name: 'login',
         query: { redirect: to.fullPath },
-      })
+      }
     }
-    // valid auth, route to requested path
-    return next()
   }
-  // no auth required, route to requested path
-  return next()
 })
 
 export default router
