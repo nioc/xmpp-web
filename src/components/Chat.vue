@@ -8,7 +8,7 @@
         <room-occupants v-if="isRoom" :room-jid="jid" />
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
         <room-configuration-button v-if="isRoom && !$xmpp.isAnonymous" :room-jid="jid" />
-        <invite-guest-button v-if="isRoom" :room-jid="jid" />
+        <invite-guest-button v-if="hasGuestInviteLink" :room-jid="jid" />
         <retrieve-history-button />
         <presence-controller v-if="$xmpp.isAnonymous" :is-navbar-item="false" :is-right="true" class="px-2 mx-2" />
       </span>
@@ -97,6 +97,9 @@ export default {
       'activeChat',
       'messages',
     ]),
+    hasGuestInviteLink () {
+      return window.config.hasGuestAccess && this.isRoom
+    },
   },
   // watch route param to force component update
   watch: {
