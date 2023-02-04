@@ -3,11 +3,12 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import GitRevision from 'vite-plugin-git-revision'
 import { VitePWA } from 'vite-plugin-pwa'
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
 
 export default defineConfig({
   base: './',
+  server: {
+    port: 3000,
+  },
   plugins: [
     vue(),
     GitRevision({ branch: true }),
@@ -59,12 +60,6 @@ export default defineConfig({
       define: {
         global: 'globalThis',
       },
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          buffer: true,
-        }),
-        NodeModulesPolyfillPlugin(),
-      ],
     },
   },
   build: {
