@@ -1,5 +1,5 @@
 <template>
-  <div class="is-flex-tablet is-block-mobile is-full-height">
+  <div v-if="hasAuthConfirmed" class="is-flex-tablet is-block-mobile is-full-height">
     <aside class="is-full-height-scrollable is-block-mobile is-flex-shrink-0 has-background-shade-3" :class="{ 'is-hidden-mobile': !displayContact }">
       <contacts />
     </aside>
@@ -21,6 +21,11 @@ export default {
       default: null,
     },
   },
+  data () {
+    return {
+      hasAuthConfirmed: false,
+    }
+  },
   computed: {
     displayContact () {
       return this.$route.meta.displayContact
@@ -39,13 +44,14 @@ export default {
       }
     },
   },
-  mounted () {
+  created () {
     // check if user is connected
     if (this.userJid === null) {
       // user not connected, return to login page
       localStorage.removeItem('auth')
-      this.$router.replace({ name: 'login', query: { redirect: this.$route.fullPath } })
+      return this.$router.replace({ name: 'login', query: { redirect: this.$route.fullPath } })
     }
+    this.hasAuthConfirmed = true
     // disconnect before leaving page
     window.addEventListener('beforeunload', async () => {
       await this.$xmpp.disconnect()
