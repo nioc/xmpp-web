@@ -11,6 +11,7 @@
         <div :class="[isNavbarItem ? 'navbar-item' : 'dropdown-item']">
           <o-switch v-model="isAutoPresence" title="You will be seen away when the browser is not active" @change="setAutoPresence">Set away when inactive</o-switch>
         </div>
+        <notifications-switch :class="[isNavbarItem ? 'navbar-item' : 'dropdown-item']" />
       </div>
     </div>
   </div>
@@ -18,6 +19,7 @@
 
 <script>
 import presence from '../components/Presence.vue'
+import NotificationsSwitch from '../components/NotificationsSwitch.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 
@@ -25,6 +27,7 @@ export default {
   name: 'PresenceController',
   components: {
     presence,
+    NotificationsSwitch,
   },
   props: {
     isNavbarItem: {

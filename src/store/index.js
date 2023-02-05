@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import { useWebNotification, useDocumentVisibility } from '@vueuse/core'
+
+let showNotification = null
 
 const getDefaultState = () => {
   return {
@@ -11,6 +14,7 @@ const getDefaultState = () => {
     httpFileUploadMaxSize: null,
     isOnline: false,
     presence: 'chat',
+    hasNotificationsEnabled: false,
   }
 }
 
@@ -227,6 +231,16 @@ export const useStore = defineStore('main', {
         }
         return copy
       }
+      if (this.hasNotificationsEnabled) {
+        const visibility = useDocumentVisibility()
+        if (visibility.value === 'hidden' && showNotification !== null) {
+          showNotification({
+            body: 'You have received new message',
+            renotify: false,
+            tag: 'unread',
+          })
+        }
+      }
       if (payload.message.from.bare === this.activeChat) {
         // message is in the displayed chat, do not increment counter
         return
@@ -298,6 +312,19 @@ export const useStore = defineStore('main', {
         if (index !== -1) {
           this.roomsOccupants[roomIndex].occupants[index].chatState = chatState
         }
+      }
+    },
+
+    setNotificationStatus (hasNotificationsEnabled) {
+      this.hasNotificationsEnabled = hasNotificationsEnabled
+      if (hasNotificationsEnabled && showNotification === null) {
+        // trigger Notifications API for requesting user permission (only one time) and intialize showNotification function
+        ({ show: showNotification } = useWebNotification({
+          title: window.config.name,
+          icon: '/img/icons/android-chrome-192x192.png',
+          dir: 'auto',
+          lang: 'en',
+        }))
       }
     },
 

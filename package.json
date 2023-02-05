@@ -1,6 +1,6 @@
 {
   "name": "xmpp-web",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "private": true,
   "description": "Lightweight web chat client for XMPP server",
   "homepage": "https://github.com/nioc/xmpp-web",
@@ -28,6 +28,7 @@
     "@creativebulma/bulma-divider": "^1.1.0",
     "@oruga-ui/oruga-next": "^0.5.4",
     "@oruga-ui/theme-bulma": "^0.2.6",
+    "@vueuse/core": "^9.12.0",
     "@xmpp/client": "^0.13.1",
     "@xmpp/debug": "^0.13.0",
     "@xmpp/error": "^0.13.1",
