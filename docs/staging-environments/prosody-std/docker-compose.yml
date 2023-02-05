@@ -1,0 +1,49 @@
+version: "3.4"
+
+services:
+
+  prosody:
+    image: prosody/prosody:0.11.9
+    ports:
+      - "5222:5222" # client to server connections
+      - "5280:5280" # HTTP (including websocket)
+      - "5000:5000" # file transfer proxy
+    volumes:
+      - ./prosody.cfg.lua:/etc/prosody/prosody.cfg.lua:ro # Prosody configuration
+      - ./data:/var/lib/prosody # store Prosody data (ignored by git repo)
+      - ./modules:/usr/lib/prosody/custom-modules
+      - ./entrypoint.sh:/entrypoint.sh:ro # added to register user1 and user2
+    environment:
+      # the 3 following variables register admin@localhost, user1@localhost and user2@localhost users (password = JID local part)
+      - LOCAL=admin
+      - PASSWORD=admin
+      - DOMAIN=localhost
+    extra_hosts:
+      - "conference.localhost:127.0.0.1" # muc service
+      - "upload.localhost:127.0.0.1"  # file upload service
+      - "anon.localhost:127.0.0.1"  # anon host
+      - "proxy.localhost:127.0.0.1" # file proxy service
+
+  xmpp-web:
+    image: nioc/xmpp-web:latest
+    ports:
+      - "80:80"
+      # - "443:443"
+    environment:
+      - APP_NAME=XMPP Web Docker latest
+      # - APP_WS=ws://localhost/xmpp-websocket #default
+      - APP_REGISTERED_ACCESS=1 #1/0
+      - APP_GUEST_ACCESS=1 #1/0
+      - XMPP_ANON_HOST=anon.localhost
+      - APP_IS_TRANSPORTS_USER_ALLOWED=1 #1/0
+      - APP_HTTP_AUTODISCOVERY=0 #1/0
+      - APP_RESOURCE=Web XMPP Docker latest
+      - APP_DEFAULT_DOMAIN=localhost #mandatory
+      - APP_DEFAULT_MUC=conference.localhost
+      - APP_IS_STYLING_DISABLED=0 #1/0
+      - APP_HAS_SENDING_ENTER_KEY=0 #1/0
+      - XMPP_CONNECT_TIMEOUT=10000
+      - APP_PINNED_MUCS=['welcome@conference.localhost']
+      - XMPP_WS=http://prosody:5280/xmpp-websocket #mandatory, use XMPP service name as hostname
+    # volumes:
+    #   - ./certs:/etc/nginx/certs
