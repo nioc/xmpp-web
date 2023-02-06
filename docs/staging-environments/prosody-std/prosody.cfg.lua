@@ -80,9 +80,6 @@ modules_enabled = {
 		--"motd"; -- Send a message to users when they log in
 		--"legacyauth"; -- Legacy authentication. Only used by some old clients and bots.
 		"proxy65"; -- Enables a file transfer proxy service which clients behind NAT can use
-
-	-- Custom
-	"http_upload"; -- File upload in muc
 }
 
 -- These modules are auto-loaded, but should you want
@@ -90,7 +87,7 @@ modules_enabled = {
 modules_disabled = {
 	-- "offline"; -- Store offline messages
 	-- "c2s"; -- Handle client connections
-	-- "s2s"; -- Handle server-to-server connections
+	"s2s"; -- Handle server-to-server connections
 	-- "posix"; -- POSIX functionality, sends server to background, enables syslog, etc.
 }
 
@@ -106,7 +103,7 @@ c2s_require_encryption = false
 -- Force servers to use encrypted connections? This option will
 -- prevent servers from authenticating unless they are using encryption.
 
-s2s_require_encryption = true
+s2s_require_encryption = false
 
 -- Force certificate authentication for server-to-server connections?
 
@@ -125,6 +122,17 @@ disable_sasl_mechanisms = {}
 -- certificates for some domains by specifying a list here.
 
 --s2s_secure_domains = { "jabber.org" }
+
+-- Enable rate limits for incoming client and server connections
+
+-- limits = {
+--   c2s = {
+--     rate = "10kb/s";
+--   };
+--   s2sin = {
+--     rate = "30kb/s";
+--   };
+-- }
 
 -- Required for init scripts and prosodyctl
 -- pidfile = "/var/run/prosody/prosody.pid"
@@ -192,47 +200,39 @@ http_upload_quota = 209715200 -- 200 Mb in bytes
 consider_websocket_secure = true
 cross_domain_websocket = { "http://localhost", "https://localhost", "http://localhost:3000" }
 
-disco_items = {
-	{ "proxy.localhost", "SOCKS5 file transfert proxy" };
-	{ "conference.localhost", "Multi users chat" };
-	{ "upload.localhost", "File upload" };
-}
-
 VirtualHost "localhost"
 	name = "XMPP server"
 	enabled = true
 
-Component "proxy.localhost" "proxy65"
-	name = "SOCKS5 file transfert proxy service"
-	proxy65_address = "localhost"
-	proxy65_acl = { "localhost" }
-
-Component "conference.localhost" "muc"
-	modules_enabled = {
-			"muc_mam";
-			"vcard_muc";
-	}
-	name = "Conferences server"
-	restrict_room_creation = "local"
-	max_history_messages = 50
-
--- Component "upload.localhost" "http_upload"
-
 VirtualHost "anon.localhost"
 	authentication = "anonymous"
-
---VirtualHost "example.com"
---	certificate = "/path/to/example.crt"
+	disco_items = {
+		{ "upload.localhost", "File upload" };
+}
 
 ------ Components ------
 -- You can specify components to add hosts that provide special services,
 -- like multi-user conferences, and transports.
 -- For more information on components, see https://prosody.im/doc/components
 
----Set up a MUC (multi-user chat) room server on conference.example.com:
---Component "conference.example.com" "muc"
---- Store MUC messages in an archive and allow users to access it
---modules_enabled = { "muc_mam" }
+---Set up a MUC (multi-user chat) room server on conference.localhost:
+Component "conference.localhost" "muc"
+	modules_enabled = {
+		"muc_mam";
+		"vcard_muc";
+	}
+	name = "Conferences server"
+	restrict_room_creation = "local"
+	max_history_messages = 50
+
+---Set up a proxy on proxy.localhost:
+Component "proxy.localhost" "proxy65"
+	name = "SOCKS5 file transfert proxy service"
+	proxy65_address = "localhost"
+	proxy65_acl = { "localhost" }
+
+---Set up a HTTP file upload on upload.localhost:
+Component "upload.localhost" "http_upload"
 
 ---Set up an external component (default component port is 5347)
 --
