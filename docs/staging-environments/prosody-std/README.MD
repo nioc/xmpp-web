@@ -40,5 +40,5 @@ docker-compose -f 'docker-compose.yml' --project-name 'prosody-std' down
 | Jid             | Password |
 |-----------------|----------|
 | admin@localhost | admin    |
-| admin@localhost | user1    |
-| admin@localhost | user2    |
+| user1@localhost | user1    |
+| user2@localhost | user2    |
