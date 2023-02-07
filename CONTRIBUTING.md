@@ -81,3 +81,7 @@ If you are using Docker, you can use the [Dockerfile-dev](/docs/docker/Dockerfil
 6. Commit your changes (with a detailled message, using [conventional commits](https://www.conventionalcommits.org/)): `git commit -am 'feat(guest): Add an awesome feature for guest' -m 'Close #123'`
 7. Push to the branch: `git push origin feat#123-my_awesome_feature`
 8. Submit a pull request
+
+### XMPP server backend
+
+You can find some docker XMPP server setups in this [folder](/docs/staging-environments).
