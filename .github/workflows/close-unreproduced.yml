@@ -1,0 +1,39 @@
+# This workflow warns and then closes issues that have not met the reproducibility requirements for a specified amount of time.
+#
+# For more information, see:
+# https://github.com/actions/stale
+name: Close unreproduced issues
+
+on:
+  schedule:
+  - cron: '43 */12 * * *'
+  workflow_dispatch:
+
+jobs:
+  stale:
+
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/stale@v5
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        # stale delay:
+        days-before-stale: 2
+        days-before-pr-stale: -1
+        # close delay:
+        days-before-close: 13
+        days-before-pr-close: -1
+        # extra conditions
+        only-labels: 'need repro'
+        exempt-all-milestones: true
+        # stale changes:
+        stale-issue-label: 'stale'
+        stale-issue-message: 'This issue will be closed within two weeks if the requested reproduction data is not provided. Please refer to this [guide](https://github.com/nioc/xmpp-web/tree/master/docs/staging-environments/REPRODUCING.MD ).'
+        # close changes
+        close-issue-reason: not_planned
+        close-issue-label: 'wontfix'
+        close-issue-message: 'This issue has been closed since it cannot be reproduced without the data you were asked for.'
