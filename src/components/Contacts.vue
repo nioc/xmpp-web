@@ -7,6 +7,12 @@
           <contact :jid="contact.jid" :is-room="false" :name="contact.name" :presence="contact.presence" :status="contact.status" :unread-count="contact.unreadCount" />
         </li>
       </ul>
+      <p v-if="groups.length > 0" class="menu-label">Groups</p>
+      <ul class="menu-list">
+        <li v-for="group in groups" :key="group">
+          <group :group="group" />
+        </li>
+      </ul>
       <p class="menu-label">Rooms</p>
       <ul class="menu-list">
         <li v-for="room in displayedRooms" :key="room.jid">
@@ -44,6 +50,7 @@
 
 <script>
 import contact from '../components/Contact.vue'
+import group from '../components/Group.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 
@@ -51,6 +58,7 @@ export default {
   name: 'Contacts',
   components: {
     contact,
+    group,
   },
   data () {
     return {
@@ -61,6 +69,7 @@ export default {
     ...mapState(useStore, [
       'contacts',
       'knownRooms',
+      'groups',
     ]),
     displayedRooms () {
       return this.knownRooms

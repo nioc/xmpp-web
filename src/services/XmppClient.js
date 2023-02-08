@@ -278,7 +278,14 @@ class XmppClient {
         ),
       )
     const result = await this.xmpp.iqCaller.request(rosterMessage)
-    return result.getChild('query').getChildren('item').map(i => i.attrs)
+    return result.getChild('query')
+      .getChildren('item')
+      .map(item => {
+        return {
+          ...item.attrs,
+          groups: item.getChildren('group').map(i => i.text()),
+        }
+      })
   }
 
   async sendPresence(show, status, to) {
