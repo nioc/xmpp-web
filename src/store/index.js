@@ -8,6 +8,7 @@ const getDefaultState = () => {
     activeChat: null,
     messages: [],
     contacts: [],
+    groups: [],
     joinedRooms: [],
     knownRooms: [],
     roomsOccupants: [],
@@ -121,6 +122,15 @@ export const useStore = defineStore('main', {
     // roster setter
     setRoster (contacts) {
       this.contacts = contacts
+      contacts.forEach(contact => {
+        if (contact.groups) {
+          contact.groups.forEach(group => {
+            if (!this.groups.includes(group)) {
+              this.groups.push(group)
+            }
+          })
+        }
+      })
     },
 
     // MUC rooms setter
