@@ -218,6 +218,7 @@ export const useStore = defineStore('main', {
         body: payload.message.body,
         delay: payload.message.delay || null,
         links: payload.message.links || null,
+        status: null,
       })
 
       // order messages by date
@@ -262,6 +263,16 @@ export const useStore = defineStore('main', {
         case 'groupchat':
           this.knownRooms = addUnreadCount(this.knownRooms)
           break
+      }
+    },
+
+    setMessageStatus (id, code, message) {
+      const index = this.messages.findIndex((knownMessage) => knownMessage.id === id)
+      if (index !== -1) {
+        this.messages[index].status = {
+          code,
+          message,
+        }
       }
     },
 
