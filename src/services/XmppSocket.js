@@ -289,6 +289,15 @@ export default {
         this.context.$store.setRoomSubject (subjectChange.from.bare, subjectChange.from.resource, subjectChange.subject)
       }
     })
+
+    // listen for sent message errors
+    this.client.on('messageSentError', (error) => {
+      switch (error.type) {
+        case 'cancel':
+          this.context.$store.setMessageStatus(error.messageId, 'error', error.message)
+          break
+      }
+    })
   },
 
   async disconnect () {

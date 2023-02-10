@@ -8,6 +8,8 @@ const hasChatState = true
 const NS = {
   // rfc6121
   ROSTER: 'jabber:iq:roster',
+  // rfc3920
+  STANZA_ERROR: 'urn:ietf:params:xml:ns:xmpp-stanzas',
   // XEP-0045
   MUC: 'http://jabber.org/protocol/muc',
   MUC_USER: 'http://jabber.org/protocol/muc#user',
@@ -55,6 +57,7 @@ class XmppClient {
       'chat': [],
       'groupchat': [],
       'messageSent': [],
+      'messageSentError': [],
       'presence': [],
       'authenticated': [],
       'mucCreated': [],
@@ -120,6 +123,9 @@ class XmppClient {
           const forwarded = result.getChild('forwarded')
           const message = forwarded.getChild('message')
           xmppClient.parseMessage(message)
+        }
+        if (stanza.attrs.type === 'error') {
+          xmppClient.parseMessage(stanza)
         }
       }
     } else if (stanza.is('presence')) {
@@ -226,6 +232,19 @@ class XmppClient {
         subject: subjectNode.getText(),
       }
       xmppClient.callbacks.subjectChange.forEach((callback) => callback(subject))
+    }
+
+    // check message error
+    const errorNode = stanza.getChild('error')
+    if (errorNode) {
+      const error = {
+        messageId: stanza.attrs.id,
+        type: errorNode.attrs.type,
+        message: errorNode.getChildrenByFilter(child => child.attrs.xmlns === NS.STANZA_ERROR)
+          .map(child => child.name)
+          .join(', '),
+      }
+      xmppClient.callbacks.messageSentError.forEach((callback) => callback(error))
     }
 
     // check chat state

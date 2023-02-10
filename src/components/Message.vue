@@ -3,7 +3,11 @@
     <!-- eslint-disable-next-line vue/no-v-html -->
     <span v-if="message.body" v-html="body" />
     <message-link v-for="link in message.links" :key="link.url" :url="link.url" class="is-clickable" />
-    <div v-if="message.delay" class="content is-italic has-text-weight-light is-small"><b v-if="displayNick" class="pr-1">{{ nick }}</b><time :datetime="$dayjs(message.delay).format()" :title="$dayjs(message.delay).format()">{{ $dayjs(message.delay).fromNow() }}</time></div>
+    <div v-if="message.delay" class="content is-italic has-text-weight-light is-small">
+      <b v-if="displayNick" class="pr-1">{{ nick }}</b>
+      <time :datetime="$dayjs(message.delay).format()" :title="$dayjs(message.delay).format()">{{ $dayjs(message.delay).fromNow() }}</time>
+      <i v-if="message.status && message.status.code === 'error'" class="fa fa-times has-text-danger ml-2" :title="message.status.message" />
+    </div>
   </span>
 </template>
 
