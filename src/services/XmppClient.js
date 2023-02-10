@@ -69,7 +69,7 @@ class XmppClient {
     this.xmpp = client({
       service: config.service || 'ws://localhost:5280/xmpp-websocket',
       domain: config.domain || 'localhost',
-      resource: config.resource || 'Web XMPP',
+      resource: config.resource + (import.meta.env.DEV ? nanoid(5) : '') || 'Web XMPP',
       username: config.jid,
       password: config.password,
     })
