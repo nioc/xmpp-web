@@ -56,15 +56,20 @@
         </div>
       </div>
     </div>
+    <version />
   </section>
 </template>
 
 <script>
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
+import Version from '../components/Version.vue'
 
 export default {
   name: 'Login',
+  components: {
+    Version,
+  },
   data () {
     return {
       credentials: {

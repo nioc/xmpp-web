@@ -1,5 +1,5 @@
 <template>
-  <aside class="section px-5">
+  <aside class="section p-5 pb-2">
     <div class="menu">
       <p class="menu-label">Contacts</p>
       <ul class="menu-list">

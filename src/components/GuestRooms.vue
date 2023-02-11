@@ -65,6 +65,7 @@
             </li>
           </ul>
         </div>
+        <version />
       </div>
     </div>
   </section>
@@ -73,6 +74,7 @@
 <script>
 import avatar from '../components/Avatar.vue'
 import Modal from '../components/Modal.vue'
+import Version from '../components/Version.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 
@@ -80,6 +82,7 @@ export default {
   name: 'GuestRooms',
   components: {
     avatar,
+    Version,
   },
   data () {
     return {

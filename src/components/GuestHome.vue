@@ -1,5 +1,5 @@
 <template>
-  <section class="is-full-height has-background-shade-4">
+  <section class="hero is-full-height has-background-shade-4">
     <div class="is-flex is-justify-content-center is-full-height" style="overflow-y:auto;">
       <!-- Guest access not allowed message -->
       <div v-if="server === null" class="message is-danger is-light is-align-self-center">
@@ -7,7 +7,7 @@
       </div>
       <!-- User nickname form -->
       <div v-else class="is-align-self-center">
-        <div class="box has-background-shade-3" style="max-width: 400px;">
+        <div class="box has-background-shade-3 mx-1" style="max-width: 420px;">
           <form class="has-text-centered" @submit.prevent="join">
             <h3 class="title has-text-grey is-flex is-justify-content-center is-align-items-center"><img class="image is-48x48 is-inline mr-2" :src="logoSrc">{{ appName }}</h3>
             <p class="subtitle has-text-grey">Guest</p>
@@ -15,14 +15,14 @@
             <p v-if="description" class="content has-text-grey is-size-7" v-html="description" />
             <div class="field">
               <div class="control has-icons-left">
-                <input v-model="nick" autofocus class="input" type="text" name="nick" placeholder="Nickname">
+                <input v-model="nick" autofocus class="input is-medium" type="text" name="nick" placeholder="Nickname">
                 <span class="icon is-small is-left">
                   <i class="fa fa-user" />
                 </span>
               </div>
             </div>
             <div class="field">
-              <button type="submit" class="button is-block is-primary is-fullwidth" :disabled="!hasValidNick">
+              <button type="submit" class="button is-medium is-block is-primary is-fullwidth" :disabled="!hasValidNick">
                 <span class="icon" aria-hidden="true">
                   <i class="fa fa-sign-in" /></span>
                 <span>Join</span>
@@ -35,14 +35,19 @@
         </div>
       </div>
     </div>
+    <version />
   </section>
 </template>
 
 <script>
 import sanitizeHtml from 'sanitize-html'
+import Version from '../components/Version.vue'
 
 export default {
   name: 'GuestHome',
+  components: {
+    Version,
+  },
   props: {
     requestedJid: {
       type: String,
