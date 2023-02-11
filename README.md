@@ -18,6 +18,9 @@ Lightweight web chat client for XMPP server.
   - [Archive](#archive)
   - [Docker image](#docker-image)
   - [Build from source](#build-from-source)
+- [Upgrade](#upgrade)
+  - [Archive](#archive)
+  - [Docker image](#docker-image)
 - [Configuration](#configuration)
 - [Contributing](#contributing)
 - [Credits](#credits)
@@ -113,6 +116,16 @@ nano dist/local.js
 mv dist /var/www/xmpp-web
 chown www-data /var/www/xmpp-web/ -R
 ```
+
+## Upgrade
+
+### Archive
+
+Use the same method as installation or use the [update.sh](docs/update.sh) script. After that, do not forget to edit `local.js`.
+
+### Docker image
+
+Use `docker pull nioc/xmpp-web:latest` and check if there is some new environment variables to set.
 
 ## Configuration
 
