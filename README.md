@@ -145,7 +145,9 @@ Use `docker pull nioc/xmpp-web:latest` and check if there is some new environmen
 | `hasSendingEnterKey`      | `APP_HAS_SENDING_ENTER_KEY`      | `false`                                      | If `true`, `Enter` key sends message, it adds new line otherwise (`Control`+`Enter` always sends message)
 | `connectTimeout`          | `XMPP_CONNECT_TIMEOUT`           | `5000`                                       | Timeout in ms before XMPP connection is considered as rejected
 | `pinnedMucs`              | `APP_PINNED_MUCS`                | `[]`                                         | Jid MUC list to hightlight in guest rooms page, ex: `['welcome@conference.domain.ltd', 'vip@conference.domain.ltd']`
-| N/A                       | `XMPP_WS`                        | `"http://localhost:5280/xmpp-websocket"`     | Websocket endpoint proxyfied by Nginx (on a docker installation)
+| `logoUrl`                 | `APP_LOGO_URL`                   | `''`                                         | Custom logo URL for login/guest pages
+| `guestDescription`        | `APP_GUEST_DESCRIPTION`          | `''`                                         | Welcome text for guests (allows some HTML tags like `<p>`, `<a>`, `<b>`, see [allowed tags list](https://www.npmjs.com/package/sanitize-html#default-options))
+| N/A                       | `XMPP_WS`                        | `''`                                         | Websocket endpoint proxyfied by Nginx (on a docker installation)
 
 ## Contributing
 

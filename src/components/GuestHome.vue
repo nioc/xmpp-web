@@ -1,31 +1,37 @@
 <template>
-  <section class="is-full-height has-background-shade-3">
+  <section class="is-full-height has-background-shade-4">
     <div class="is-flex is-justify-content-center is-full-height" style="overflow-y:auto;">
       <!-- Guest access not allowed message -->
       <div v-if="server === null" class="message is-danger is-light is-align-self-center">
         <div class="message-body has-text-danger">Anonymous access is not allowed<br>Please <router-link :to="{ name: 'login' }">login</router-link></div>
       </div>
       <!-- User nickname form -->
-      <div v-else class="is-align-items-center is-align-self-center">
-        <form @submit.prevent="join">
-          <div class="field has-addons">
-            <div class="control has-icons-left">
-              <input v-model="nick" autofocus class="input" type="text" name="nick" placeholder="Nickname">
-              <span class="icon is-small is-left">
-                <i class="fa fa-user" />
-              </span>
+      <div v-else class="is-align-self-center">
+        <div class="box has-background-shade-3" style="max-width: 400px;">
+          <form class="has-text-centered" @submit.prevent="join">
+            <h3 class="title has-text-grey is-flex is-justify-content-center is-align-items-center"><img class="image is-48x48 is-inline mr-2" :src="logoSrc">{{ appName }}</h3>
+            <p class="subtitle has-text-grey">Guest</p>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <p v-if="description" class="content has-text-grey is-size-7" v-html="description" />
+            <div class="field">
+              <div class="control has-icons-left">
+                <input v-model="nick" autofocus class="input" type="text" name="nick" placeholder="Nickname">
+                <span class="icon is-small is-left">
+                  <i class="fa fa-user" />
+                </span>
+              </div>
             </div>
-            <div class="control">
-              <button type="submit" class="button is-primary" :disabled="!hasValidNick">
-                <span class="icon">
+            <div class="field">
+              <button type="submit" class="button is-block is-primary is-fullwidth" :disabled="!hasValidNick">
+                <span class="icon" aria-hidden="true">
                   <i class="fa fa-sign-in" /></span>
                 <span>Join</span>
               </button>
             </div>
-          </div>
-        </form>
-        <div v-if="error" class="message is-danger is-light mt-4">
-          <div class="message-body has-text-danger">{{ error }}</div>
+            <div v-if="error" class="message is-danger">
+              <div class="message-body has-text-danger">{{ error }}</div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -33,6 +39,8 @@
 </template>
 
 <script>
+import sanitizeHtml from 'sanitize-html'
+
 export default {
   name: 'GuestHome',
   props: {
@@ -63,6 +71,15 @@ export default {
         return this.requestedJid
       }
       return `${this.requestedJid}@${this.$xmpp.defaultMuc}`
+    },
+    appName () {
+      return (typeof window.config.name === 'string' && window.config.name !== '') ? window.config.name : 'XMPP webchat'
+    },
+    logoSrc () {
+      return window.config.logoUrl || '/img/icons/android-chrome-192x192.png'
+    },
+    description () {
+      return window.config.guestDescription ? sanitizeHtml(window.config.guestDescription) : null
     },
   },
   mounted () {

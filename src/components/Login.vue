@@ -5,7 +5,7 @@
         <div class="column is-4 is-offset-4">
           <div class="box has-background-shade-3">
             <form @submit.prevent="login">
-              <h3 class="title has-text-grey">{{ appName }}</h3>
+              <h3 class="title has-text-grey is-flex is-justify-content-center is-align-items-center"><img class="image is-48x48 is-inline mr-2" :src="logoSrc">{{ appName }}</h3>
               <p class="subtitle has-text-grey">Login</p>
               <div class="field">
                 <div class="control has-icons-left">
@@ -89,6 +89,9 @@ export default {
     },
     appName () {
       return (typeof window.config.name === 'string' && window.config.name !== '') ? window.config.name : 'XMPP webchat'
+    },
+    logoSrc () {
+      return window.config.logoUrl || '/img/icons/android-chrome-192x192.png'
     },
     ...mapState(useStore, ['hasNetwork']),
   },

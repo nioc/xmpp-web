@@ -18,4 +18,6 @@ var config = {
   hasSendingEnterKey: false,
   connectTimeout: 5000,
   pinnedMucs: [],
+  logoUrl: '',
+  guestDescription: '',
 }

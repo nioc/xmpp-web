@@ -61,6 +61,14 @@ update_localjs() {
     sed -i -r "s|pinnedMucs: \[\]|pinnedMucs: $APP_PINNED_MUCS|g" $localjs
   fi
 
+  if [ "$APP_LOGO_URL" != "" ]; then
+    sed -i -r "s|logoUrl: ''|logoUrl: '$APP_LOGO_URL'|g" $localjs
+  fi
+
+  if [ "$APP_GUEST_DESCRIPTION" != "" ]; then
+    sed -i -r "s|guestDescription: ''|guestDescription: '$APP_GUEST_DESCRIPTION'|g" $localjs
+  fi
+
   if [ "$XMPP_CONNECT_TIMEOUT" != "" ]; then
     sed -i -r "s|connectTimeout: 5000|connectTimeout: $XMPP_CONNECT_TIMEOUT|g" $localjs
   fi
