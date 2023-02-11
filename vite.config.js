@@ -1,8 +1,14 @@
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import GitRevision from 'vite-plugin-git-revision'
 import { VitePWA } from 'vite-plugin-pwa'
+
+process.env.VITE_GIT_BRANCH = require('child_process')
+  .execSync('git rev-parse --abbrev-ref HEAD')
+  .toString().trimEnd()
+process.env.VITE_GIT_VERSION = require('child_process')
+  .execSync('git describe --tags --dirty')
+  .toString().trimEnd()
 
 export default defineConfig({
   base: './',
@@ -11,7 +17,6 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    GitRevision({ branch: true }),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {

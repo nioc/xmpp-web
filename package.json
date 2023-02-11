@@ -54,7 +54,6 @@
     "prettier": "^2.6.1",
     "sass": "^1.52.2",
     "vite": "^4.1.1",
-    "vite-plugin-git-revision": "^0.1.9",
     "vite-plugin-pwa": "^0.14.1"
   }
 }
