@@ -57,11 +57,13 @@ jobs:
 
             ${{ steps.git-changelog.outputs.changelog }}
 
-            ### Features
+            ### :warning: Breaking changes
 
-            ### Bug fixes
+            ### :bulb: Features
 
-            ### Technical
+            ### :beetle: Bug fixes
+
+            ### :wrench: Technical
 
       - name: Prepare docker build context
         shell: bash
