@@ -18,11 +18,6 @@ services:
       - LOCAL=admin
       - PASSWORD=admin
       - DOMAIN=localhost
-    extra_hosts:
-      - "conference.localhost:127.0.0.1" # muc service
-      - "upload.localhost:127.0.0.1"  # file upload service
-      - "anon.localhost:127.0.0.1"  # anon host
-      - "proxy.localhost:127.0.0.1" # file proxy service
 
   xmpp-web:
     image: nioc/xmpp-web:latest
