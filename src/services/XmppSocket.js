@@ -285,10 +285,15 @@ export default {
 
     // listen for retracted messages
     this.client.on('messageRetracted', (retracted) => {
+      const index = this.context.$store.messages.findIndex((message) => message.from.bare === retracted.from && message.stanzaId === retracted.stanzaId)
+      if (index === -1) {
+        // original message is not found (unknown or retracted sent by a third party)
+        return
+      }
       this.context.$store.updateMessage({
         stanzaId: retracted.stanzaId,
         // replace body and links
-        body: `Moderated by ${retracted.by.resource} (${retracted.reason})`,
+        body: `Moderated by ${retracted.by.resource}` + (retracted.reason ? ` (${retracted.reason})` : ''),
         links: [],
         status: {
           code: 'moderated',

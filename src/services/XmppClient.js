@@ -238,9 +238,11 @@ class XmppClient {
       if (moderation.length > 0) {
         const retract = moderation[0].getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_RETRACTED)
         if (retract.length > 0) {
+          const reasonNode = moderation[0].getChild('reason')
           const retracted = {
             stanzaId: fasten[0].attrs.id,
-            reason: moderation[0].getChild('reason').getText(),
+            from: stanza.attrs.from,
+            reason: reasonNode ? reasonNode.getText() : null,
             by: this.parseJid(moderation[0].attrs.by),
           }
           xmppClient.callbacks.messageRetracted.forEach((callback) => callback(retracted))
