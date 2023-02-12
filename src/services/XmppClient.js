@@ -41,6 +41,11 @@ const NS = {
   UNIQUE_ID: 'urn:xmpp:sid:0',
   // XEP-0156
   DISCO_CONNECTION: 'urn:xmpp:alt-connections:websocket',
+  // XEP-422
+  MESSAGE_FASTENING: 'urn:xmpp:fasten:0',
+  // XEP-425
+  MESSAGE_MODERATION: 'urn:xmpp:message-moderate:0',
+  MESSAGE_RETRACTED: 'urn:xmpp:message-retract:0',
 }
 
 let xmppClient = null
@@ -58,6 +63,7 @@ class XmppClient {
       'groupchat': [],
       'messageSent': [],
       'messageSentError': [],
+      'messageRetracted': [],
       'presence': [],
       'authenticated': [],
       'mucCreated': [],
@@ -222,6 +228,24 @@ class XmppClient {
       }
 
       xmppClient.callbacks.chat.forEach((callback) => callback(message))
+    }
+
+    // check message fasten (XEP-0422)
+    const fasten = stanza.getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_FASTENING)
+    if (fasten.length > 0) {
+      // check MUC retracted message (XEP-0425)
+      const moderation = fasten[0].getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_MODERATION)
+      if (moderation.length > 0) {
+        const retract = moderation[0].getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_RETRACTED)
+        if (retract.length > 0) {
+          const retracted = {
+            stanzaId: fasten[0].attrs.id,
+            reason: moderation[0].getChild('reason').getText(),
+            by: this.parseJid(moderation[0].attrs.by),
+          }
+          xmppClient.callbacks.messageRetracted.forEach((callback) => callback(retracted))
+        }
+      }
     }
 
     // check subject change (part of XEP-0045)
