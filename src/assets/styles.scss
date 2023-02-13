@@ -193,6 +193,9 @@ body,
 .is-flex-direction-row-reverse .message-text {
 	border-radius: 9px 3px 9px 9px !important;
 }
+.is-msg-moderated {
+	opacity: 30%;
+}
 .sendbox textarea {
 	resize: none;
 	border: none;

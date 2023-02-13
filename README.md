@@ -37,6 +37,7 @@ Lightweight web chat client for XMPP server.
 - Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
 - Pick emoji,
 - Room creation and configuration,
+- Apply message moderation (XEP-0425),
 - PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
 - Lightweight (600 KB gzipped at the first loading and then less than 10 KB)
 - Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)

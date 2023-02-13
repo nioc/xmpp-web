@@ -266,6 +266,20 @@ export const useStore = defineStore('main', {
       }
     },
 
+    updateMessage (message) {
+      if (!message.stanzaId) {
+        return
+      }
+      const index = this.messages.findIndex((knownMessage) => knownMessage.stanzaId === message.stanzaId)
+      if (index === -1) {
+        return
+      }
+      this.messages[index] = {
+        ...this.messages[index],
+        ...message,
+      }
+    },
+
     setMessageStatus (id, code, message) {
       const index = this.messages.findIndex((knownMessage) => knownMessage.id === id)
       if (index !== -1) {

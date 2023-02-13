@@ -283,6 +283,25 @@ export default {
       this.context.$store.setContactPresence({ jid: fullJid.bare, presence: presence.show, status: presence.status })
     })
 
+    // listen for retracted messages
+    this.client.on('messageRetracted', (retracted) => {
+      const index = this.context.$store.messages.findIndex((message) => message.from.bare === retracted.from && message.stanzaId === retracted.stanzaId)
+      if (index === -1) {
+        // original message is not found (unknown or retracted sent by a third party)
+        return
+      }
+      this.context.$store.updateMessage({
+        stanzaId: retracted.stanzaId,
+        // replace body and links
+        body: `Moderated by ${retracted.by.resource}` + (retracted.reason ? ` (${retracted.reason})` : ''),
+        links: [],
+        status: {
+          code: 'moderated',
+          message: retracted.reason,
+        },
+      })
+    })
+
     // listen for room subject change
     this.client.on('subjectChange', (subjectChange) => {
       if (subjectChange.from && subjectChange.from.bare && subjectChange.subject) {
