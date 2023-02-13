@@ -15,10 +15,12 @@
     </div>
     <div id="messages-container" class="messages-container">
       <room-subject v-if="isRoom" :room-jid="jid" />
-      <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{ 'is-flex-direction-row-reverse': isUser(message.from) }">
-        <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
-        <message :message="message" :display-nick="isRoom" />
-      </div>
+      <TransitionGroup name="messages-list">
+        <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{ 'is-flex-direction-row-reverse': isUser(message.from) }">
+          <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
+          <message :message="message" :display-nick="isRoom" />
+        </div>
+      </TransitionGroup>
     </div>
     <sendbox :is-room="isRoom" />
   </main>

@@ -192,6 +192,12 @@ body,
 	padding: 0.25em 0.75em;
 	margin: 0 0.75em;
 }
+.messages-list-enter-active {
+  transition: opacity 0.3s ease-out;
+}
+.messages-list-enter-from {
+  opacity: 0;
+}
 .is-flex-direction-row-reverse .message-text {
 	border-radius: 9px 3px 9px 9px !important;
 }
