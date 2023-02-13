@@ -1,11 +1,11 @@
 <template>
-  <router-link :to="{ name: isRoom ? 'groupchat' : 'chat', params: { jid } }" class="has-unread" :title="title" exact exact-active-class="is-active">
+  <router-link :to="{ name: isRoom ? 'groupchat' : 'chat', params: { jid } }" class="has-unread is-relative" :title="title" exact exact-active-class="is-active">
     <!-- groupchat (room) -->
     <span v-if="isRoom" class="is-flex is-align-items-center">
       <avatar v-if="room.hasVCard" class="mr-3" :jid="jid" :display-jid="false" :size="24" />
-      <span :class="{ 'is-italic has-text-grey': !isJoined }">{{ roomName }}</span>
-      <i v-if="room.isBookmarked" class="fa fa-star has-text-warning ml-3" />
-      <span class="ml-3 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
+      <span v-show="isExpanded" :class="{ 'is-italic has-text-grey': !isJoined }">{{ roomName }}</span>
+      <i v-if="room.isBookmarked" v-show="isExpanded" class="fa fa-star has-text-warning ml-3" />
+      <span v-show="isExpanded" class="ml-3 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
         <i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" />
         <i v-if="room.isModerated" class="fa fa-shield fa-fw" title="Is moderated" />
         <i v-if="room.isAnonymous" class="fa fa-user-secret fa-fw" title="Allow anonymous (nick)" />
@@ -14,9 +14,9 @@
       </span>
     </span>
     <!-- chat -->
-    <avatar v-else :jid="jid" :name="name" :display-jid="true" :size="24" :presence="presence" :status="status" />
+    <avatar v-else :jid="jid" :name="name" :display-jid="isExpanded" :size="24" :presence="presence" :status="status" />
     <!-- common -->
-    <span v-if="unreadCount > 0" class="tag ml-3 is-rounded is-danger">{{ unreadCount }}</span>
+    <span v-if="unreadCount > 0" class="tag is-rounded is-danger" :class="isExpanded ? 'ml-3' : 'unread-count-attached'">{{ unreadCount }}</span>
   </router-link>
 </template>
 
@@ -53,6 +53,10 @@ export default {
       type: Number,
       default: 0,
     },
+    isExpanded: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     title () { return this.isRoom ? `${this.jid}\n${this.room.name}` : this.status ? `${this.jid} / ${this.status}` : this.jid },
@@ -70,5 +74,11 @@ export default {
 }
 .room-attributes {
   font-size: 0.8em;
+}
+.unread-count-attached {
+  position: absolute;
+  top: 4px;
+  left: 30px;
+  font-size: 0.5em;
 }
 </style>
