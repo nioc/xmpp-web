@@ -11,7 +11,7 @@
       <contacts :is-expanded="isExpanded" />
       <version v-if="isExpanded" />
     </aside>
-    <router-view class="is-flex-grow-1" />
+    <router-view :key="$route.fullPath" class="is-flex-grow-1" />
   </div>
 </template>
 

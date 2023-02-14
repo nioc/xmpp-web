@@ -33,7 +33,7 @@ Lightweight web chat client for XMPP server.
 - Retrieve contacts (roster) and bookmarked rooms (XEP-0048),
 - Send and receive files over HTTP (XEP-0066, XEP-0363),
 - Handle password protected room,
-- Display chat state notifications: is composing, is paused (XEP-0085),
+- Display and send chat state notifications: is composing, is paused (XEP-0085),
 - Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
 - Pick emoji,
 - Room creation and configuration,
