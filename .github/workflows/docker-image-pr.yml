@@ -1,0 +1,81 @@
+name: Publish a branch for review
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read metadata
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: nioc/xmpp-web
+          flavor: |
+            latest=false
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+      - name: Build front
+        run: npm ci && npm run build
+
+      - name: Create release archive
+        shell: bash
+        run: |
+          mv dist xmpp-web &&
+          tar zcvf xmpp-web-${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}.tar.gz xmpp-web
+
+      - name: Draft Github release with archive
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: true
+          files: xmpp-web-${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}.tar.gz
+          body: |
+            ### :warning: Disclaimer
+
+            This a draft prerelease for the ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }} branch.
+
+      - name: Prepare docker build context
+        shell: bash
+        run: |
+          mkdir -p image-build/docs &&
+          mv xmpp-web image-build/xmpp-web &&
+          cp -a docs/docker image-build/docs/ -r
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push docker multi architecture image
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          context: image-build
+          file: docs/docker/Dockerfile-multiarch
+          push: true
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          build-args: |
+            VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+            GIT_COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+            BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          tags: ${{ steps.meta.outputs.tags }}
