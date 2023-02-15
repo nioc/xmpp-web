@@ -33,10 +33,18 @@ export default {
 
   // create XMPP client with credentials and context
   async create (jid, password, domain, transportsUser, context) {
+    // clear previous session
+    this.nick = null
+    this.fullJid = null
+    this.jid = null
+    this.context = context
+    this.disconnect()
+
     // handle anonymous authentication
     if (jid) {
       this.isAnonymous = false
     } else {
+      this.isAnonymous = true
       jid = 'anon'
     }
 
@@ -51,7 +59,6 @@ export default {
     }
 
     this.jid = jid
-    this.context = context
 
     // use transports if user provided them
     if (transportsUser.websocket) {
@@ -323,6 +330,7 @@ export default {
     if (this.context && this.client) {
       try {
         await this.client.disconnect()
+        this.context.$store.clear()
       } catch (error) {
         logError(error, 'error', 'disconnect error', error.message, error)
       }
