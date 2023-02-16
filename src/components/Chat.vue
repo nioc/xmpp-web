@@ -98,6 +98,7 @@ export default {
     ...mapState(useStore, [
       'activeChat',
       'messages',
+      'isSendingInactiveChatStates',
     ]),
     hasGuestInviteLink () {
       return window.config.hasGuestAccess && this.isRoom
@@ -111,6 +112,22 @@ export default {
   mounted () {
     // handle route prop
     this.handleRoute()
+  },
+  async beforeUnmount () {
+    if (!this.userJid) {
+      // $xmpp is not loaded
+      return
+    }
+    if (!this.isSendingInactiveChatStates) {
+      // the user has not opted in
+      return
+    }
+    // notify leaving discussion
+    try {
+      await this.$xmpp.sendChatState(this.jid, this.isRoom, 'inactive')
+    } catch (error) {
+      console.warn(error.message)
+    }
   },
   methods: {
     // check if a jid is current user (including MUC nick)

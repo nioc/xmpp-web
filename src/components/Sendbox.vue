@@ -3,7 +3,7 @@
     <form @submit.prevent="sendMessage">
       <div class="field is-flex is-align-items-center mr-3">
         <div class="control is-flex-grow-1">
-          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" />
+          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
             <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
             <i v-if="fileIcon" class="fa fa-2x" :class="fileIcon" />
@@ -51,6 +51,8 @@ export default {
       file: null,
       fileThumbnail: null,
       fileIcon: null,
+      chatState: null,
+      pauseTimeoutId: null,
     }
   },
   computed: {
@@ -60,6 +62,7 @@ export default {
     ...mapState(useStore, [
       'activeChat',
       'httpFileUploadMaxSize',
+      'isSendingTypingChatStates',
     ]),
   },
   methods: {
@@ -81,6 +84,37 @@ export default {
       } catch (error) {
         console.error('send error', error)
       }
+    },
+    async onInput () {
+      if (!this.isSendingTypingChatStates) {
+        // the user has opted out
+        return
+      }
+      clearTimeout(this.pauseTimeoutId)
+      if (this.composingMessage) {
+        // prepare to go to paused after 15 seconds
+        this.pauseTimeoutId = setTimeout(async () => {
+          if (!this.userJid) {
+            return
+          }
+          this.chatState = 'paused'
+          try {
+            await this.$xmpp.sendChatState(this.activeChat, this.isRoom, this.chatState)
+          } catch (error) {
+            console.warn(`Can not send state chat (${error.message}), are you still connected?`)
+          }
+        }, 15000)
+        if (this.chatState === 'composing') {
+          // do not send composing chat state if already done
+          return
+        }
+        // user has started to typing something
+        this.chatState = 'composing'
+      } else {
+        // user is not typing anything (or clear composing) but is active on chat
+        this.chatState = 'active'
+      }
+      await this.$xmpp.sendChatState(this.activeChat, this.isRoom, this.chatState)
     },
     onFileChange (e) {
       const files = e.target.files || e.dataTransfer.files

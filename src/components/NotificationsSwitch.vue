@@ -1,6 +1,6 @@
 <template>
   <div v-if="isNotificationsSupported">
-    <o-switch v-model="hasNotificationsEnabledSwitch" title="Allow the browser to send you notifications when you miss messages">Notifications</o-switch>
+    <o-switch v-model="hasNotificationsEnabledSwitch" title="Allow the browser to send you notifications when you miss messages" class="has-no-wrap"><span class="icon mr-1"><i class="fa fa-bell-ringing fa-fw" aria-hidden="true" /></span>Notifications</o-switch>
   </div>
 </template>
 

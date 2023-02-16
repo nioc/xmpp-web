@@ -173,6 +173,10 @@ body,
 	user-select: all;
 }
 
+.has-no-wrap {
+	white-space: nowrap;
+}
+
 .messages-container {
 	overflow-y: auto;
 	scroll-behavior: smooth;

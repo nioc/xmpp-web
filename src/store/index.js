@@ -16,6 +16,8 @@ const getDefaultState = () => {
     isOnline: false,
     presence: 'chat',
     hasNotificationsEnabled: false,
+    isSendingTypingChatStates: true,
+    isSendingInactiveChatStates: false,
   }
 }
 
