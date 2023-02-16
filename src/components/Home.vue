@@ -55,9 +55,12 @@ export default {
       }
     },
   },
+  async beforeUnmount () {
+    await this.$xmpp.disconnect()
+  },
   created () {
     // check if user is connected
-    if (this.userJid === null) {
+    if (this.userJid === null || this.$xmpp.isAnonymous) {
       // user not connected, return to login page
       localStorage.removeItem('auth')
       return this.$router.replace({ name: 'login', query: { redirect: this.$route.fullPath } })
