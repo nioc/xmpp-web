@@ -92,6 +92,9 @@ $positions: (
 	}
 }
 
+$loading-background: rgba(24, 25, 29, 0.2);
+$loading-background-legacy:rgba(24, 25, 29, 0.2);
+
 @import "/node_modules/bulma/bulma.sass";
 @import '/node_modules/@oruga-ui/theme-bulma/dist/scss/bulma';
 @import "/node_modules/@creativebulma/bulma-divider";

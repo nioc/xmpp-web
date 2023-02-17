@@ -19,7 +19,7 @@ dayjs.extend(relativeTime)
 const pinia = createPinia()
 const app = createApp(App)
 
-app.use(Oruga, bulmaConfig)
+app.use(Oruga, { ...bulmaConfig, iconPack: 'fa' })
 app.config.globalProperties.$xmpp = xmppSocket
 app.config.globalProperties.$dayjs = dayjs
 

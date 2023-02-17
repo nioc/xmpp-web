@@ -5,6 +5,7 @@ import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
 import RoomsList from '../components/RoomsList.vue'
 import RoomCreation from '../components/RoomCreation.vue'
+import Profile from '../components/Profile.vue'
 import About from '../components/About.vue'
 import GuestHome from '../components/GuestHome.vue'
 import GuestRooms from '../components/GuestRooms.vue'
@@ -78,6 +79,16 @@ if (window.config.hasRegisteredAccess) {
             jid: route.params.jid,
             isRoom: true,
           }),
+          meta: {
+            requiresAuth: true,
+            displayContact: false,
+          },
+        },
+        {
+          // profile component
+          name: 'profile',
+          path: 'profile',
+          component: Profile,
           meta: {
             requiresAuth: true,
             displayContact: false,

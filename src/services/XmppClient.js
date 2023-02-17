@@ -644,6 +644,53 @@ class XmppClient {
   }
 
   // vcard-temp (XEP-0054)
+  getVCardAttributes () {
+    return [
+      {
+        id: 'PHOTO',
+        label: '',
+        placeholder: '',
+        type: 'avatar',
+      },
+      {
+        id: 'FN',
+        label: 'Full name',
+        placeholder: 'John Doe',
+        type: 'input',
+      },
+      {
+        id: 'NICKNAME',
+        label: 'Nickname',
+        placeholder: 'Jo',
+        type: 'input',
+      },
+      {
+        id: 'URL',
+        label: 'URL',
+        placeholder: 'https://mywebsite.ltd',
+        type: 'input',
+      },
+      {
+        id: 'BDAY',
+        label: 'Birthday',
+        placeholder: '1986-08-23',
+        type: 'input',
+      },
+      {
+        id: 'ROLE',
+        label: 'Role',
+        placeholder: 'Executive',
+        type: 'input',
+      },
+      {
+        id: 'TITLE',
+        label: 'Title',
+        placeholder: 'V.P. Research and Development',
+        type: 'input',
+      },
+    ]
+  }
+
   async getVCard(to) {
     const getVCardMessage =
     xml(
@@ -653,17 +700,90 @@ class XmppClient {
       ),
     )
     const result = await this.xmpp.iqCaller.request(getVCardMessage)
+    const attributes = this.getVCardAttributes()
+      .reduce((attributes, attribute) => {
+        attributes[attribute.id] = attribute
+        return attributes
+      }, {})
     const records = result.getChild('vCard').children.map(record => {
       const r = {
-        type: record.name.toLowerCase(),
+        name: record.name,
       }
-      if (r.type === 'photo') {
-        r.data = record.getChild('BINVAL') ? record.getChild('BINVAL').children[0] : null
-        r.mediaType = record.getChild('TYPE') ? record.getChild('TYPE').children[0] : 'image/png'
+      const dataType = attributes[record.name] ? attributes[record.name].type : null
+      switch (dataType) {
+        case 'avatar':
+          r.data = record.getChild('BINVAL') ? record.getChild('BINVAL').children[0] : null
+          r.mediaType = record.getChild('TYPE') ? record.getChild('TYPE').children[0] : 'image/png'
+          break
+        case 'input':
+          r.value = record.getText()
+          break
+        default:
+          Object.assign(r, record)
+          break
       }
       return r
     })
     return { records }
+  }
+
+  async setVCard (newVCard) {
+    // get original
+    const getVCardMessage =
+    xml(
+      'iq', { type: 'get', from: xmppClient.jid.full },
+      xml(
+        'vCard', { xmlns: NS.VCARD },
+      ),
+    )
+    const vCard = (await this.xmpp.iqCaller.request(getVCardMessage)).getChild('vCard')
+    // update handled records
+    // photo record
+    let type = null
+    let binVal = null
+    if (newVCard.PHOTO) {
+      const parts = newVCard.PHOTO.split(',')
+      type = /data:(.*);base64/.exec(parts[0])[1]
+      binVal = parts[1]
+    }
+    const updatedRecords = [
+      xml(
+        'PHOTO', {},
+        xml(
+          'TYPE', {}, type,
+        ),
+        xml(
+          'BINVAL', {}, binVal,
+        ),
+      ),
+      // other handled records
+      ...this.getVCardAttributes()
+        .filter(attribute => attribute.id !== 'PHOTO')
+        .map(attribute => {
+          return xml(
+            attribute.id, {}, newVCard[attribute.id],
+          )
+        }),
+    ]
+    const handledAttributes = this.getVCardAttributes()
+      .map(attribute => attribute.id)
+    vCard.children = vCard.children
+      // remove previous records to update
+      .filter(record => !handledAttributes.includes(record.name))
+      // add updated records
+      .concat(updatedRecords)
+    // prepare and send iq message
+    const setVCardMessage =
+    xml(
+      'iq', {
+        type: 'set',
+      },
+      vCard,
+    )
+    const result = await this.xmpp.iqCaller.request(setVCardMessage)
+    if (result.attrs.type !== 'result') {
+      throw new Error('Error during vCard update')
+    }
   }
 
   // Message Archive Management (XEP-0313)

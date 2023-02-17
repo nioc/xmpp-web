@@ -451,7 +451,7 @@ export default {
 
   async getJidAvatar (jid) {
     try {
-      const uri = localStorage.getItem('avatar-' + jid)
+      const uri = sessionStorage.getItem('avatar-' + jid)
       if (uri) {
         return { uri, isDefault: false }
       }
@@ -462,16 +462,50 @@ export default {
       if (!vCard.records) {
         return { uri: defaultAvatar, isDefault: true }
       }
-      const avatar = vCard.records.find((record) => record.type === 'photo')
+      const avatar = vCard.records.find((record) => record.name === 'PHOTO')
       if (avatar && avatar.data) {
         const uri = 'data:' + avatar.mediaType + ';base64,' + avatar.data
-        localStorage.setItem('avatar-' + jid, uri)
+        sessionStorage.setItem('avatar-' + jid, uri)
         return { uri, isDefault: false }
       }
     } catch (error) {
       logError(error, 'warn', 'getJidAvatar error', jid, error.message)
     }
     return { uri: defaultAvatar, isDefault: true }
+  },
+
+  async getProfile () {
+    try {
+      const vCard = await this.client.getVCard()
+      if (!vCard.records) {
+        return { }
+      }
+      return vCard.records
+        // transform each record
+        .map(attr => {
+          const value = (attr.name === 'PHOTO') ? 'data:' + attr.mediaType + ';base64,' + attr.data : attr.value
+          return {
+            name: attr.name,
+            value,
+          }
+        })
+        // transform in object
+        .reduce((acc, cur) => {
+          acc[cur.name] = cur.value
+          return acc
+        }, {})
+    } catch (error) {
+      logError(error, 'warn', 'getProfile error', error.message)
+      return {}
+    }
+  },
+
+  async updateProfile (profile) {
+    await this.client.setVCard(profile)
+    if (profile.PHOTO) {
+      sessionStorage.setItem('avatar-' + this.fullJid.bare, profile.PHOTO)
+    }
+    return
   },
 
   async sendPresence (presence) {
