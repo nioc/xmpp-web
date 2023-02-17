@@ -155,6 +155,13 @@
 
     <release>
         <Version>
+            <revision>0.10.0</revision>
+            <created>2023-02-17</created>
+            <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.10.0/xmpp-web-0.10.0.tar.gz"/>
+        </Version>
+    </release>
+    <release>
+        <Version>
             <revision>0.9.11</revision>
             <created>2023-02-12</created>
             <file-release rdf:resource="https://github.com/nioc/xmpp-web/releases/download/0.9.11/xmpp-web-0.9.11.tar.gz"/>
