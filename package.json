@@ -18,6 +18,11 @@
     "build": "vite build",
     "preview": "vite build && vite preview --port 8080",
     "configure-git-hook": "cp docs/git-hooks/commit-msg .git/hooks/",
+    "cy:open-e2e": "cypress open --e2e --config baseUrl=http://localhost:3000/ --browser electron",
+    "cy:run-e2e-dev": "cypress run --e2e --config baseUrl=http://localhost:3000/",
+    "cy:run-e2e-preview": "cypress run --e2e --config baseUrl=http://localhost:8080/",
+    "test:dev": "start-server-and-test dev http://localhost:3000 cy:run-e2e-dev",
+    "test:preview": "start-server-and-test preview http://localhost:8080 cy:run-e2e-preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs  --ignore-path .gitignore --ignore-pattern 'docs/*'",
     "lint-fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore --ignore-pattern 'docs/*'"
   },
@@ -47,13 +52,18 @@
     "vue-router": "^4.0.15"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.12.0",
     "@types/sanitize-html": "^2.6.2",
     "@vitejs/plugin-vue": "^4.0.0",
+    "cypress": "^13.1.0",
     "eslint": "^8.17.0",
     "eslint-plugin-vue": "^9.1.0",
+    "mock-socket": "^9.3.0",
     "prettier": "^2.6.1",
     "sass": "^1.52.2",
+    "start-server-and-test": "^2.0.0",
     "vite": "^4.1.1",
+    "vite-plugin-istanbul": "^5.0.0",
     "vite-plugin-pwa": "^0.14.1"
   }
 }

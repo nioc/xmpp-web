@@ -19,7 +19,7 @@
             <router-link class="navbar-item" :to="{ name: 'profile' }" active-class="is-active"><i class="fa fa-user fa-fw mr-3" />Profile</router-link>
             <a class="navbar-item" :href="bugUrl" target="_blank" rel="noreferrer"><i class="fa fa-bug fa-fw mr-3" />Bug</a>
             <hr class="navbar-divider">
-            <a class="navbar-item" @click="logout()"><i class="fa fa-sign-out fa-fw mr-3" />Logout</a>
+            <a id="logout" class="navbar-item" @click="logout()"><i class="fa fa-sign-out fa-fw mr-3" />Logout</a>
           </div>
         </div>
       </div>

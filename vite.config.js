@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
+import istanbul from 'vite-plugin-istanbul'
 
 process.env.VITE_GIT_BRANCH = require('child_process')
   .execSync('git rev-parse --abbrev-ref HEAD')
@@ -14,6 +15,12 @@ export default defineConfig({
   base: './',
   server: {
     port: 3000,
+    watch: {
+      ignored: [
+        '**/coverage/**',
+        '**/.nyc_output/**',
+      ],
+    },
   },
   plugins: [
     vue(),
@@ -59,6 +66,11 @@ export default defineConfig({
         ],
       },
     }),
+    istanbul({
+      extension: ['.js', '.ts', '.vue'],
+      cypress: true,
+      forceBuildInstrument: true,
+    }),
   ],
   optimizeDeps: {
     esbuildOptions: {
@@ -68,6 +80,7 @@ export default defineConfig({
     },
   },
   build: {
+    sourcemap: 'hidden',
     rollupOptions: {
       plugins: [
       ],
