@@ -1,0 +1,40 @@
+name: Lint and E2E tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+
+
+      - name: Install dependencies
+        uses: cypress-io/github-action@v6
+        with:
+          runTests: false
+
+      - name: Lint
+        run: npm run lint
+
+      - name: E2E tests
+        uses: cypress-io/github-action@v6
+        with:
+          install: false
+          config: baseUrl=http://localhost:3000/
+          start: npm run dev
+          wait-on: 'http://localhost:3000'
