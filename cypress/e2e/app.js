@@ -158,7 +158,7 @@ describe('XMPP Web for registered users', () => {
         .hash().should('eq', '#/rooms/new')
         .get('main input[title="Enter room Jid"]').as('roomName').should('exist')
         .get('main button[type="submit"]').should('be.disabled')
-        .get('@roomName').type('newRoom')
+        .get('@roomName').type(`newRoom@conference.@${jidDomain}`)
         .get('main button[type="submit"]').should('be.enabled')
     })
   })
