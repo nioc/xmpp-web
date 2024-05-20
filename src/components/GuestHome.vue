@@ -81,7 +81,7 @@ export default {
       return (typeof window.config.name === 'string' && window.config.name !== '') ? window.config.name : 'XMPP webchat'
     },
     logoSrc () {
-      return window.config.logoUrl || '/img/icons/android-chrome-192x192.png'
+      return window.config.logoUrl || 'img/icons/android-chrome-192x192.png'
     },
     description () {
       return window.config.guestDescription ? sanitizeHtml(window.config.guestDescription) : null
