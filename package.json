@@ -1,6 +1,6 @@
 {
   "name": "xmpp-web",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "private": true,
   "description": "Lightweight web chat client for XMPP server",
   "homepage": "https://github.com/nioc/xmpp-web",
@@ -37,7 +37,7 @@
     "@xmpp/client": "^0.13.1",
     "@xmpp/debug": "^0.13.0",
     "@xmpp/error": "^0.13.1",
-    "axios": "^1.7.1",
+    "axios": "^1.7.2",
     "bulma": "^0.9.4",
     "dayjs": "^1.11.11",
     "filesize": "^10.1.2",
