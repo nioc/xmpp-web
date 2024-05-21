@@ -203,7 +203,7 @@ class XmppClient {
       const extensions = stanza.getChildren('x')
       if (extensions.length > 0) {
         extensions.forEach(extension => {
-          if (extension.attrs.xmlns === NS.OUT_OF_BAND_DATA) {
+          if (extension.attrs && extension.attrs.xmlns === NS.OUT_OF_BAND_DATA) {
             if (!message.links) {
               message.links = []
             }
@@ -231,12 +231,12 @@ class XmppClient {
     }
 
     // check message fasten (XEP-0422)
-    const fasten = stanza.getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_FASTENING)
+    const fasten = stanza.getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.MESSAGE_FASTENING)
     if (fasten.length > 0) {
       // check MUC retracted message (XEP-0425)
-      const moderation = fasten[0].getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_MODERATION)
+      const moderation = fasten[0].getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.MESSAGE_MODERATION)
       if (moderation.length > 0) {
-        const retract = moderation[0].getChildrenByFilter(child => child.attrs.xmlns === NS.MESSAGE_RETRACTED)
+        const retract = moderation[0].getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.MESSAGE_RETRACTED)
         if (retract.length > 0) {
           const reasonNode = moderation[0].getChild('reason')
           const retracted = {
@@ -266,7 +266,7 @@ class XmppClient {
       const error = {
         messageId: stanza.attrs.id,
         type: errorNode.attrs.type,
-        message: errorNode.getChildrenByFilter(child => child.attrs.xmlns === NS.STANZA_ERROR)
+        message: errorNode.getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.STANZA_ERROR)
           .map(child => child.name)
           .join(', '),
       }
@@ -274,7 +274,7 @@ class XmppClient {
     }
 
     // check chat state
-    const chatStateNodes = stanza.getChildrenByFilter(child => child.attrs.xmlns === NS.CHAT_STATE)
+    const chatStateNodes = stanza.getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.CHAT_STATE)
     if (chatStateNodes.length > 0) {
       const chatState = {
         jid: xmppClient.parseJid(stanza.attrs.from),
