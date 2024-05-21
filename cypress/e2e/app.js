@@ -3,6 +3,7 @@
 
 import { MockServer } from '../support/mock-socket'
 import { WebSocket } from 'mock-socket'
+import { version } from '../../package.json'
 
 let url = 'wss://chat.domain-web.ltd/xmpp-websocket'
 const jidLocal = 'admin'
@@ -169,7 +170,7 @@ describe('XMPP Web for registered users', () => {
         .get('#navbar-menu a[href="#/about"]').click()
         .get('#navbar-burger').click()
         .hash().should('eq', '#/about')
-        .get('main .tags .tag:nth-child(2)').should('contain', '0.10.0')
+        .get('main .tags .tag:nth-child(2)').should('contain', version)
     })
   })
 
