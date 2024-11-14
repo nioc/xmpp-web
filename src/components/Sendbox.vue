@@ -79,6 +79,10 @@ export default {
           await this.postFile(this.file)
           return
         }
+        if (this.composingMessage.trim() === '') {
+          // do not send empty messages
+          return
+        }
         await this.$xmpp.sendMessage(this.activeChat, this.composingMessage, this.isRoom)
         this.composingMessage = ''
       } catch (error) {
