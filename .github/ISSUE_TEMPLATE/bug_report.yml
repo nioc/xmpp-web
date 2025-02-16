@@ -1,12 +1,15 @@
 name: Bug report
-description: Create a bug report to help us improve. For question, please ask it in [discussions](https://github.com/nioc/xmpp-web/discussions/categories/q-a)
+description: Create a bug report to help us improve (for question, please ask it in discussions)
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report.
+        If it's just a question, **please do not create an issue but ask it in [discussions](https://github.com/nioc/xmpp-web/discussions/categories/q-a)**.
+
+        Thanks for taking the time to fill out this bug report completely.
         The information you provide will help us to solve your problems faster and better.
+        In the absence of this information, the report will be closed immediately.
   - type: textarea
     id: description
     attributes:
