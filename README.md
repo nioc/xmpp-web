@@ -150,6 +150,9 @@ Use `docker pull nioc/xmpp-web:latest` and check if there is some new environmen
 | `pinnedMucs`              | `APP_PINNED_MUCS`                | `[]`                                         | Jid MUC list to hightlight in guest rooms page, ex: `['welcome@conference.domain.ltd', 'vip@conference.domain.ltd']`
 | `logoUrl`                 | `APP_LOGO_URL`                   | `''`                                         | Custom logo URL for login/guest pages
 | `guestDescription`        | `APP_GUEST_DESCRIPTION`          | `''`                                         | Welcome text for guests (allows some HTML tags like `<p>`, `<a>`, `<b>`, see [allowed tags list](https://www.npmjs.com/package/sanitize-html#default-options))
+| `sso.endpoint`            | `APP_SSO_ENDPOINT`               | `false`                                      | Public endpoint for SSO (must be secured: do not expose it without an authentication mechanism)
+| `sso.jidHeader`           | `APP_SSO_JID_HEADER`             | `"jid"`                                      | Header containing JID after SSO request
+| `sso.passwordHeader`      | `APP_SSO_PASSWORD_HEADER`        | `"password"`                                 | Header containing password after SSO request
 | N/A                       | `XMPP_WS`                        | `''`                                         | Websocket endpoint proxyfied by Nginx (on a docker installation)
 
 ## Contributing

@@ -73,6 +73,18 @@ update_localjs() {
     sed -i -r "s|connectTimeout: 5000|connectTimeout: $XMPP_CONNECT_TIMEOUT|g" $localjs
   fi
 
+  if [ "$APP_SSO_ENDPOINT" != "" ]; then
+    sed -i -r "s|endpoint: false|endpoint: '$APP_SSO_ENDPOINT'|g" $localjs
+  fi
+
+  if [ "$APP_SSO_JID_HEADER" != "" ]; then
+    sed -i -r "s|jidHeader: 'jid'|jidHeader: '$APP_SSO_JID_HEADER'|g" $localjs
+  fi
+
+  if [ "$APP_SSO_PASSWORD_HEADER" != "" ]; then
+    sed -i -r "s|passwordHeader: 'password'|passwordHeader: '$APP_SSO_PASSWORD_HEADER'|g" $localjs
+  fi
+
   echo "done"
 }
 

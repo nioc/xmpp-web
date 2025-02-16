@@ -63,6 +63,7 @@
 <script>
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
+import axios from 'axios'
 import Version from '../components/Version.vue'
 
 export default {
@@ -100,9 +101,22 @@ export default {
     },
     ...mapState(useStore, ['hasNetwork']),
   },
-  mounted () {
+  async mounted () {
     // remove navbar spacing
     document.body.classList.remove('has-navbar-fixed-top')
+    // get auth by SSO
+    if (window.config.sso && window.config.sso.endpoint && window.config.sso.jidHeader && window.config.sso.passwordHeader) {
+      try {
+        const ssoAuth = await axios.get(window.config.sso.endpoint)
+        this.credentials.jid = ssoAuth.headers[window.config.sso.jidHeader]
+        this.credentials.password = ssoAuth.headers[window.config.sso.passwordHeader]
+        if (this.credentials.jid && this.credentials.password) {
+          this.login()
+        }
+      } catch (error) {
+        console.warn(`SSO login failed (${error.message})`)
+      }
+    }
     // get stored credentials
     const jid = localStorage.getItem('jid')
     if (jid) {

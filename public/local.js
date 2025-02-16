@@ -19,5 +19,10 @@ var config = {
   connectTimeout: 5000,
   pinnedMucs: [],
   logoUrl: '',
+  sso: {
+    endpoint: false,
+    jidHeader: 'jid',
+    passwordHeader: 'password',
+  },
   guestDescription: '',
 }
