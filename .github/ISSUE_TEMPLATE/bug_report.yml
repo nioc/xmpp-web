@@ -1,5 +1,5 @@
 name: Bug report
-description: Create a bug report to help us improve 
+description: Create a bug report to help us improve. For question, please ask it in [discussions](https://github.com/nioc/xmpp-web/discussions/categories/q-a)
 labels: ["bug"]
 body:
   - type: markdown
