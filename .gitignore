@@ -25,3 +25,7 @@ coverage
 *.sln
 *.sw?
 xmpp-web.code-workspace
+
+# Local certificates
+certs/*
+!certs/.gitkeep
