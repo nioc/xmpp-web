@@ -102,7 +102,7 @@ export default {
             line = lineTemp
           }
           // link
-          line = line.replace(/(.*)((?:https?|mailto):\/\/[a-z0-9/:%_+.,#?!@&=-]+)(.*)/g, '$1<a href="$2" target="_blank" rel="noreferrer">$2</a>$3')
+          line = line.replace(/((?:https?|mailto):\/\/[a-z0-9/:%_+.,#?!@&=-]+)/gi, '<a href="$1" target="_blank" rel="noreferrer">$1</a>')
           // bold
           line = line.replace(/([^*]*)\*([^*]*)\*([^*]*)/g, '$1<strong>$2</strong>$3')
           // italic
