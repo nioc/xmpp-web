@@ -1,6 +1,8 @@
 server {
   listen 80;
 
+  include /etc/nginx/mime.types;
+
   # enable gzip
   gzip on;
   gzip_vary on;
