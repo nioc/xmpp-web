@@ -102,16 +102,23 @@ export default {
             line = lineTemp
           }
           // link
-          line = line.replace(/((?:https?|mailto):\/\/[a-z0-9/:%_+.,#?!@&=-]+)/gi, '<a href="$1" target="_blank" rel="noreferrer">$1</a>')
-          // bold
+          const links = {}
+          line.match(/((?:https?|mailto):\/\/[a-z0-9/:%_+.,#?!@&=-]+)/gi)?.forEach((link, index) => {
+            links[index] = link
+            line = line.replaceAll(link, `<a href="${index}">${index}</a>`)
+          })
+          // bold (between *)
           line = line.replace(/([^*]*)\*([^*]*)\*([^*]*)/g, '$1<strong>$2</strong>$3')
-          // italic
+          // italic (between _)
           line = line.replace(/([^_]*)_([^_]*)_([^_]*)/g, '$1<i>$2</i>$3')
-          // striked
+          // striked (between ~)
           line = line.replace(/([^~]*)~([^~]*)~([^~]*)/g, '$1<strike>$2</strike>$3')
-          // finally bind inline code tags (to avoid styling inside code tag)
+          // finally bind inline code tags and links (to avoid styling)
           for (const code in codes) {
             line = line.replace(new RegExp(`(.*)<code ${code} />(.*)`, 'g'), `$1<code>${codes[code]}</code>$2`)
+          }
+          for (const link in links) {
+            line = line.replace(`<a href="${link}">${link}</a>`, `<a href="${links[link]}" target="_blank" rel="noreferrer">${links[link]}</a>`)
           }
           return line
         })
