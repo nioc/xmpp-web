@@ -29,3 +29,4 @@ xmpp-web.code-workspace
 # Local certificates
 certs/*
 !certs/.gitkeep
+stats.html

@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import istanbul from 'vite-plugin-istanbul'
 import mkcert from 'vite-plugin-mkcert'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 process.env.VITE_GIT_BRANCH = require('child_process')
   .execSync('git rev-parse --abbrev-ref HEAD')
@@ -75,6 +76,10 @@ export default defineConfig({
       extension: ['.js', '.ts', '.vue'],
       cypress: true,
       forceBuildInstrument: true,
+    }),
+    visualizer({
+      open: true,
+      gzipSize: true,
     }),
   ],
   optimizeDeps: {
