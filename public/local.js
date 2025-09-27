@@ -2,7 +2,7 @@
 var config = {
   name: 'XMPP web',
   transports: {
-    websocket: 'wss://xmpp.kittycob.dev:5281/xmpp-websocket',
+    websocket: 'wss://chat.domain-web.ltd/xmpp-websocket',
   },
   hasGuestAccess: true,
   hasRegisteredAccess: true,
@@ -11,7 +11,7 @@ var config = {
   isTransportsUserAllowed: false,
   hasHttpAutoDiscovery: false,
   resource: 'Web XMPP',
-  defaultDomain: 'xmpp.kittycob.dev',
+  defaultDomain: 'domain-xmpp.ltd',
   defaultMuc: null,
   // defaultMuc: 'conference.domain-xmpp.ltd',
   isStylingDisabled: false,
