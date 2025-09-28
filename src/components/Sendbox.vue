@@ -160,6 +160,7 @@ export default {
         // upload file on returned slot
         await axios.put(httpUploadSlotResult.upload.url, file, {
           headers: {
+            ...httpUploadSlotResult.upload.auth && { 'Authorization': httpUploadSlotResult.upload.auth },
             'Content-Type': file.type,
           },
         })

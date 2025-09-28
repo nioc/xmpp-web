@@ -635,6 +635,7 @@ class XmppClient {
     const result = await this.xmpp.iqCaller.request(slotRequestMessage)
     const upload = {
       url: result.getChildrenByFilter(child => child.name === 'put', true)[0].attrs.url,
+      auth: result.getChildrenByFilter(child => child.name === 'header', true)[0]?.children[0],
     }
     const download = result.getChildrenByFilter(child => child.name === 'get', true)[0].attrs.url
     return {
