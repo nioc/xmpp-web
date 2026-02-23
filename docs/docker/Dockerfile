@@ -1,15 +1,23 @@
 # build stage
 FROM node:lts-alpine as build-stage
 RUN apk add git
+# enable pnpm from nodejs corepack
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable pnpm
 # copy package
 WORKDIR /app
-COPY package*.json ./
-# install dependencies
-RUN npm ci
+COPY pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+  pnpm fetch --frozen-lockfile --prod ;
+# copy package.json and install packages
+COPY package.json ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+  pnpm install --frozen-lockfile --offline --prod ;
 # copy src and assets
 COPY . .
 # build
-RUN npm run build
+RUN pnpm run build
 
 # production stage
 FROM nginx:stable-alpine as production-stage

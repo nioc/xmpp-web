@@ -24,6 +24,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Generate changelog from git commits
         id: git-changelog
         run: |
@@ -31,15 +34,16 @@ jobs:
           git log $(git tag |tail -2 | head -1).. --pretty=format:"- %s %n%w(150,2,2)%b" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json'
+          node-version: 24
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Build front
-        run: npm ci && npm run build
+        run: pnpm install --frozen-lockfile && pnpm run build
 
       - name: Create release archive
         shell: bash

@@ -5,13 +5,14 @@ import { VitePWA } from 'vite-plugin-pwa'
 import istanbul from 'vite-plugin-istanbul'
 import mkcert from 'vite-plugin-mkcert'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { execSync } from 'child_process'
 
-process.env.VITE_GIT_BRANCH = require('child_process')
-  .execSync('git rev-parse --abbrev-ref HEAD')
-  .toString().trimEnd()
-process.env.VITE_GIT_VERSION = require('child_process')
-  .execSync('git describe --tags --dirty')
-  .toString().trimEnd()
+process.env.VITE_GIT_BRANCH = execSync('git rev-parse --abbrev-ref HEAD')
+  .toString()
+  .trimEnd()
+process.env.VITE_GIT_VERSION = execSync('git describe --tags --dirty')
+  .toString()
+  .trimEnd()
 
 export default defineConfig({
   base: './',
@@ -95,12 +96,18 @@ export default defineConfig({
       plugins: [
       ],
     },
-    target: 'modules',
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 2000,
   },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: ['legacy-js-api', 'color-functions', 'global-builtin', 'import', 'if-function'],
+      },
     },
   },
 })

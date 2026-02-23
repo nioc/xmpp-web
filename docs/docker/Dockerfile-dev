@@ -8,10 +8,11 @@ FROM node:lts-alpine
 # install app dependencies
 RUN apk add git
 WORKDIR /app
-COPY package*.json ./
-RUN npm install && chown node:node -R /app
+COPY pnpm-lock.yaml ./
+COPY package.json ./
+RUN pnpm install --frozen-lockfile && chown node:node -R /app
 
 # start vite dev server
 EXPOSE 3000
 USER node
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "run", "dev"]

@@ -73,7 +73,7 @@ You can download latest `.tar.gz` archive, unpack files in web directory and con
 - create [Apache virtual host](/docs/apache.conf),
 - configure [`local.js`](public/local.js).
 
-``` bash
+```bash
 wget https://github.com/nioc/xmpp-web/releases/latest/download/xmpp-web-0.9.7.tar.gz \
   -O /var/tmp/xmpp-web.tar.gz \
   && cd /var/www \
@@ -86,8 +86,10 @@ wget https://github.com/nioc/xmpp-web/releases/latest/download/xmpp-web-0.9.7.ta
 On each release, we also build a [Docker image](https://hub.docker.com/r/nioc/xmpp-web) which is the latest stable Nginx (Alpine variant in order to keep lightweight) serving the generated assets. Configuration in `local.js` is set up according to environment variables (names and meanings are explained in [configuration](#configuration) section).
 
 This can be used:
+
 - as standalone service:
-  ``` bash
+
+  ```bash
   docker run -it -p 80:80 --rm \
   -e XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket \
   -e APP_DEFAULT_DOMAIN=domain-xmpp.ltd \
@@ -95,14 +97,14 @@ This can be used:
   ```
 
 - in a `docker-compose.yml` file:
-  ``` yml
+  ```yml
   version: "3.4"
   services:
     xmpp-web:
       image: nioc/xmpp-web:latest
       ports:
         - "80:80"
-      environment: 
+      environment:
         - XMPP_WS=https://domain-xmpp.ltd:5281/xmpp-websocket
         - APP_DEFAULT_DOMAIN=domain-xmpp.ltd
   ```
@@ -110,11 +112,12 @@ This can be used:
 ### Build from source
 
 If you want the latest code without waiting for the next release, you can clone this repo, build assets and copy `dist` files in web directory:
-``` bash
+
+```bash
 git clone https://github.com/nioc/xmpp-web.git xmpp-web
 cd xmpp-web
-npm ci
-npm run build
+pnpm install --frozen-lockfile
+pnpm run build
 nano dist/local.js
 mv dist /var/www/xmpp-web
 chown www-data /var/www/xmpp-web/ -R
@@ -132,28 +135,28 @@ Use `docker pull nioc/xmpp-web:latest` and check if there is some new environmen
 
 ## Configuration
 
-| `local.js` attribute      | Environment (Docker)             | Default (initial value)                      | Description
-| ------------------------- |----------------------------------| ---------------------------------------------|---------------------------
-| `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name
-| `transports.websocket`    | `APP_WS`                         | `"wss://chat.domain-web.ltd/xmpp-websocket"` | Websocket endpoint used by application  (proxy or direct XMPP server)
-| `hasRegisteredAccess`     | `APP_REGISTERED_ACCESS`          | `true`                                       | Set to `false` to disable registered users components (guest access only)
-| `hasGuestAccess`          | `APP_GUEST_ACCESS`               | `true`                                       | Set to `false` to disable guest users components
-| `anonymousHost`           | `XMPP_ANON_HOST`                 | `null`                                       | Virtual host used for guest access (anonymous)
-| `isTransportsUserAllowed` | `APP_IS_TRANSPORTS_USER_ALLOWED` | `false`                                      | Allow user to set endpoints on the fly in login component
-| `hasHttpAutoDiscovery`    | `APP_HTTP_AUTODISCOVERY`         | `false`                                      | Allow to retrieve a `.well-known/host-meta.json` if user log on a different domain
-| `resource`                | `APP_RESOURCE`                   | `"Web XMPP"`                                 | Resource (client) affected to user
-| `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid
-| `defaultMuc`              | `APP_DEFAULT_MUC`                | `null`                                       | Autocomplete MUC address (ex: `conference.domain.ltd`) if user do not provide a full room jid (join & create)
-| `isStylingDisabled`       | `APP_IS_STYLING_DISABLED`        | `false`                                      | Set to `true` for disable messages styling
-| `hasSendingEnterKey`      | `APP_HAS_SENDING_ENTER_KEY`      | `false`                                      | If `true`, `Enter` key sends message, it adds new line otherwise (`Control`+`Enter` always sends message)
-| `connectTimeout`          | `XMPP_CONNECT_TIMEOUT`           | `5000`                                       | Timeout in ms before XMPP connection is considered as rejected
-| `pinnedMucs`              | `APP_PINNED_MUCS`                | `[]`                                         | Jid MUC list to hightlight in guest rooms page, ex: `['welcome@conference.domain.ltd', 'vip@conference.domain.ltd']`
-| `logoUrl`                 | `APP_LOGO_URL`                   | `''`                                         | Custom logo URL for login/guest pages
-| `guestDescription`        | `APP_GUEST_DESCRIPTION`          | `''`                                         | Welcome text for guests (allows some HTML tags like `<p>`, `<a>`, `<b>`, see [allowed tags list](https://www.npmjs.com/package/sanitize-html#default-options))
-| `sso.endpoint`            | `APP_SSO_ENDPOINT`               | `false`                                      | Public endpoint for SSO (must be secured: do not expose it without an authentication mechanism)
-| `sso.jidHeader`           | `APP_SSO_JID_HEADER`             | `"jid"`                                      | Header containing JID after SSO request
-| `sso.passwordHeader`      | `APP_SSO_PASSWORD_HEADER`        | `"password"`                                 | Header containing password after SSO request
-| N/A                       | `XMPP_WS`                        | `''`                                         | Websocket endpoint proxyfied by Nginx (on a docker installation)
+| `local.js` attribute      | Environment (Docker)             | Default (initial value)                      | Description                                                                                                                                                    |
+| ------------------------- | -------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                    | `APP_NAME`                       | `"XMPP web"`                                 | Application name                                                                                                                                               |
+| `transports.websocket`    | `APP_WS`                         | `"wss://chat.domain-web.ltd/xmpp-websocket"` | Websocket endpoint used by application (proxy or direct XMPP server)                                                                                           |
+| `hasRegisteredAccess`     | `APP_REGISTERED_ACCESS`          | `true`                                       | Set to `false` to disable registered users components (guest access only)                                                                                      |
+| `hasGuestAccess`          | `APP_GUEST_ACCESS`               | `true`                                       | Set to `false` to disable guest users components                                                                                                               |
+| `anonymousHost`           | `XMPP_ANON_HOST`                 | `null`                                       | Virtual host used for guest access (anonymous)                                                                                                                 |
+| `isTransportsUserAllowed` | `APP_IS_TRANSPORTS_USER_ALLOWED` | `false`                                      | Allow user to set endpoints on the fly in login component                                                                                                      |
+| `hasHttpAutoDiscovery`    | `APP_HTTP_AUTODISCOVERY`         | `false`                                      | Allow to retrieve a `.well-known/host-meta.json` if user log on a different domain                                                                             |
+| `resource`                | `APP_RESOURCE`                   | `"Web XMPP"`                                 | Resource (client) affected to user                                                                                                                             |
+| `defaultDomain`           | `APP_DEFAULT_DOMAIN`             | `"domain-xmpp.ltd"`                          | Domain used if user do not provide a full jid                                                                                                                  |
+| `defaultMuc`              | `APP_DEFAULT_MUC`                | `null`                                       | Autocomplete MUC address (ex: `conference.domain.ltd`) if user do not provide a full room jid (join & create)                                                  |
+| `isStylingDisabled`       | `APP_IS_STYLING_DISABLED`        | `false`                                      | Set to `true` for disable messages styling                                                                                                                     |
+| `hasSendingEnterKey`      | `APP_HAS_SENDING_ENTER_KEY`      | `false`                                      | If `true`, `Enter` key sends message, it adds new line otherwise (`Control`+`Enter` always sends message)                                                      |
+| `connectTimeout`          | `XMPP_CONNECT_TIMEOUT`           | `5000`                                       | Timeout in ms before XMPP connection is considered as rejected                                                                                                 |
+| `pinnedMucs`              | `APP_PINNED_MUCS`                | `[]`                                         | Jid MUC list to hightlight in guest rooms page, ex: `['welcome@conference.domain.ltd', 'vip@conference.domain.ltd']`                                           |
+| `logoUrl`                 | `APP_LOGO_URL`                   | `''`                                         | Custom logo URL for login/guest pages                                                                                                                          |
+| `guestDescription`        | `APP_GUEST_DESCRIPTION`          | `''`                                         | Welcome text for guests (allows some HTML tags like `<p>`, `<a>`, `<b>`, see [allowed tags list](https://www.npmjs.com/package/sanitize-html#default-options)) |
+| `sso.endpoint`            | `APP_SSO_ENDPOINT`               | `false`                                      | Public endpoint for SSO (must be secured: do not expose it without an authentication mechanism)                                                                |
+| `sso.jidHeader`           | `APP_SSO_JID_HEADER`             | `"jid"`                                      | Header containing JID after SSO request                                                                                                                        |
+| `sso.passwordHeader`      | `APP_SSO_PASSWORD_HEADER`        | `"password"`                                 | Header containing password after SSO request                                                                                                                   |
+| N/A                       | `XMPP_WS`                        | `''`                                         | Websocket endpoint proxyfied by Nginx (on a docker installation)                                                                                               |
 
 ## Contributing
 
@@ -167,6 +170,7 @@ Pull requests are welcomed (please create feature request for discussing it befo
 See also the list of [contributors](https://github.com/nioc/xmpp-web/contributors) to this project.
 
 This project is powered by the following components:
+
 - [xmpp.js](https://github.com/xmppjs/xmpp.js) (ISC)
 - [Vue.js](https://vuejs.org/) (MIT)
 - [Pinia](https://pinia.vuejs.org/) (MIT)

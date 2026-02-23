@@ -11,16 +11,20 @@ let jidDomain = 'domain-xmpp.ltd'
 
 let mockServer
 
+const onBeforeLoad = (win) => {
+  // stub websocket requests
+  cy.stub(win, 'WebSocket').callsFake(url => {
+    return new WebSocket(url)
+  }).as('WebSocket')
+}
+
 describe('XMPP Web for registered users', () => {
   before(() => {
     cy.clearAllCookies()
       .clearAllLocalStorage()
       .clearAllSessionStorage()
       .visit('/', {
-        onBeforeLoad: (win) => {
-        // stub websocket requests
-          cy.stub(win, 'WebSocket').callsFake(url => new WebSocket(url))
-        },
+        onBeforeLoad,
         onLoad: (win) => {
         // get config
           url = win.config.transports.websocket
@@ -37,7 +41,10 @@ describe('XMPP Web for registered users', () => {
       cy.get('button[type="submit"]').should('be.disabled')
     })
     it('can login and route to main page', () => {
-      cy.get('input[name="jid"]').type(jidLocal)
+      cy.visit('/', {
+        onBeforeLoad,
+      })
+        .get('input[name="jid"]').type(jidLocal)
         .get('button[type="submit"]').should('be.disabled')
         .get('input[name="password"]').type('pwd')
         .get('button[type="submit"]').should('be.enabled')
@@ -47,23 +54,22 @@ describe('XMPP Web for registered users', () => {
     })
     it('does not store credentials', () => {
       cy.visit('/', {
-        onBeforeLoad: (win) => {
-          cy.stub(win, 'WebSocket').callsFake(url => new WebSocket(url))
-        },
+        onBeforeLoad,
       })
         .hash().should('eq', '#/login?redirect=/')
     })
     it('can login and store credentials', () => {
-      cy.get('input[name="jid"]').clear().type('myuser')
+      cy.visit('/', {
+        onBeforeLoad,
+      })
+        .get('input[name="jid"]').clear().type('myuser')
         .get('input[name="password"]').type('pwd')
         .get('input[type="checkbox"]').check()
         .get('button[type="submit"]').click()
         .hash().should('eq', '#/')
         .get('#navbar-menu', { includeShadowDom: true }).should('contain', `${jidLocal}@${jidDomain}`)
       cy.visit('/', {
-        onBeforeLoad: (win) => {
-          cy.stub(win, 'WebSocket').callsFake(url => new WebSocket(url))
-        },
+        onBeforeLoad,
       })
         .hash().should('eq', '#/')
     })
