@@ -68,6 +68,7 @@ class XmppClient {
       'authenticated': [],
       'mucCreated': [],
       'chatState': [],
+      'reactions': [],
       'subjectChange': [],
     }
     this.jid = {}
@@ -258,6 +259,16 @@ class XmppClient {
         subject: subjectNode.getText(),
       }
       xmppClient.callbacks.subjectChange.forEach((callback) => callback(subject))
+    }
+
+    // handle reactions (part of XEP-0444)
+    const reaction = stanza.getChild('reactions')
+    if (reaction) {
+      const fromJid = xmppClient.parseJid(stanza.attrs.from)
+      const from = stanza.attrs.type === 'groupchat' ? fromJid.resource : fromJid.local
+      const originalMessageId = reaction.attrs.id
+      const reactions = reaction.getChildren('reaction').map((reaction) => reaction.text())
+      xmppClient.callbacks.reactions.forEach((callback) => callback(originalMessageId, from, reactions))
     }
 
     // check message error

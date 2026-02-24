@@ -196,7 +196,7 @@ export const useStore = defineStore('main', {
         const index = messages.findIndex((knownMessage) => knownMessage.id === payload.message.id)
         if (index !== -1) {
           // update existing message
-          messages[index] = payload.message
+          messages[index] = { ...messages[index], ...payload.message }
           this.messages = messages
           return
         }
@@ -206,7 +206,7 @@ export const useStore = defineStore('main', {
         const index = messages.findIndex((knownMessage) => knownMessage.stanzaId === payload.message.stanzaId)
         if (index !== -1) {
           // update existing message
-          messages[index] = payload.message
+          messages[index] = { ...messages[index], ...payload.message }
           this.messages = messages
           return
         }
@@ -221,6 +221,7 @@ export const useStore = defineStore('main', {
         delay: payload.message.delay || null,
         links: payload.message.links || null,
         status: null,
+        reactions: [],
       })
 
       // order messages by date

@@ -18,7 +18,10 @@
       <TransitionGroup name="messages-list">
         <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{ 'is-flex-direction-row-reverse': isUser(message.from) }">
           <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
-          <message :message="message" :display-nick="isRoom" />
+          <div>
+            <message :message="message" :display-nick="isRoom" />
+            <reactions :message="message" :display-nick="isRoom" :class="{ 'is-pulled-right': isUser(message.from) }" />
+          </div>
         </div>
       </TransitionGroup>
     </div>
@@ -33,6 +36,7 @@ import InviteGuestButton from '../components/InviteGuestButton.vue'
 import BookmarkButton from '../components/BookmarkButton.vue'
 import RoomConfigurationButton from '../components/RoomConfigurationButton.vue'
 import RetrieveHistoryButton from '../components/RetrieveHistoryButton.vue'
+import Reactions from '../components/Reactions.vue'
 import RoomOccupants from '../components/RoomOccupants.vue'
 import RoomSubject from '../components/RoomSubject.vue'
 import Sendbox from '../components/Sendbox.vue'
@@ -48,6 +52,7 @@ export default {
     message,
     InviteGuestButton,
     BookmarkButton,
+    Reactions,
     RoomConfigurationButton,
     RetrieveHistoryButton,
     RoomOccupants,
