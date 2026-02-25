@@ -269,10 +269,11 @@ class XmppClient {
     const reaction = stanza.getChild('reactions')
     if (reaction) {
       const fromJid = xmppClient.parseJid(stanza.attrs.from)
+      const type = stanza.attrs.type
       const from = stanza.attrs.type === 'groupchat' ? fromJid.resource : fromJid.local
       const originalMessageId = reaction.attrs.id
       const reactions = reaction.getChildren('reaction').map((reaction) => reaction.text())
-      xmppClient.callbacks.reactions.forEach((callback) => callback(originalMessageId, from, reactions))
+      xmppClient.callbacks.reactions.forEach((callback) => callback(originalMessageId, type, from, reactions))
     }
 
     // check message error
@@ -457,7 +458,7 @@ class XmppClient {
     await this.xmpp.send(reactionMessage)
     if (type === 'chat') {
       // forward reaction to user
-      xmppClient.callbacks.reactions.forEach((callback) => callback(messageId, this.jid.local, reactions))
+      xmppClient.callbacks.reactions.forEach((callback) => callback(messageId, type, this.jid.local, reactions))
     }
   }
 

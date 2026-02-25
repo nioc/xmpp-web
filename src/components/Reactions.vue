@@ -1,6 +1,6 @@
 <template>
-  <div v-if="message.reactions.length" class="mx-3">
-    <button v-for="(users, reaction) in reactionsByValue" :key="reaction" :title="users.join('\n')" class="reaction button" :class="{ 'is-me': includeUser(users) }" @click="() => toggleReaction(reaction)">{{ reaction }} {{ users.length }}</button>
+  <div class="mx-3">
+    <button v-for="[reaction, users] in reactionsByValue" :key="reaction" :title="users.join('\n')" class="reaction button" :class="{ 'is-me': includeUser(users) }" @click="() => toggleReaction(reaction)">{{ reaction }} {{ users.length }}</button>
     <emoji-picker button-class="reaction button px-3" button-title="Add reaction" @emoji-picked="addReaction" />
   </div>
 </template>
@@ -27,34 +27,45 @@ export default {
     },
   },
   computed: {
+    reactions () {
+      return this.$store.getMessageReactions(this.isRoom, this.isRoom ? this.message.stanzaId : this.message.id)
+    },
+    userReactions () {
+      return this.reactions
+        .filter((userReaction) => userReaction.from === this.$xmpp.fullJid.local)
+        .reduce((acc, { reactions }) => {
+          reactions.forEach((reaction) => {
+            acc.push(reaction)
+          })
+          return acc
+        }, [])
+    },
     reactionsByValue () {
-      return this.message.reactions.reduce((acc, { reaction, from }) => {
-        if (!acc[reaction]) {
-          acc[reaction] = []
-        }
-        acc[reaction].push(from)
-        return acc
-      }, {})
+      const map = new Map()
+      this.reactions
+        .forEach(({ reactions, from }) => {
+          reactions.forEach((reaction) => {
+            if (!map.has(reaction)) {
+              map.set(reaction, [])
+            }
+            map.get(reaction).push(from)
+          })
+        })
+      return map
     },
   },
   methods: {
     includeUser (users) {
       return users.includes(this.$xmpp.fullJid.local)
     },
-    addReaction (emoji) {
-      const userReactions = this.message.reactions
-        .filter((userReaction) => userReaction.from === this.$xmpp.fullJid.local)
-        .map((userReaction) => userReaction.reaction)
-      if (userReactions.includes(emoji)) {
+    addReaction (reaction) {
+      if (this.userReactions.includes(reaction)) {
         return
       }
-      userReactions.push(emoji)
-      this.$xmpp.sendReactions(this.jid, this.isRoom, this.message, userReactions)
+      this.$xmpp.sendReactions(this.jid, this.isRoom, this.message, [...this.userReactions, reaction])
     },
     toggleReaction (reaction) {
-      const userReactions = this.message.reactions
-        .filter((userReaction) => userReaction.from === this.$xmpp.fullJid.local)
-        .map((userReaction) => userReaction.reaction)
+      const userReactions = this.userReactions.slice()
       const reactionIndex = userReactions
         .findIndex((userReaction) => userReaction === reaction)
       // update user reactions

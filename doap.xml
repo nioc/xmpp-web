@@ -158,8 +158,8 @@
         <implements>
             <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0444.html"/>
-                <xmpp:status>partial</xmpp:status>
-                <xmpp:note>reading only</xmpp:note>
+                <xmpp:status>complete</xmpp:status>
+                <xmpp:note></xmpp:note>
             </xmpp:SupportedXep>
         </implements>
 

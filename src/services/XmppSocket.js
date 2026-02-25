@@ -310,28 +310,13 @@ export default {
     })
 
     // listen for reactions messages (contains all reactions from a single user)
-    this.client.on('reactions', (originalMessageId, from, reactions) => {
-      let index = this.context.$store.messages.findIndex((message) => message.stanzaId === originalMessageId)
-      if (index === -1) {
-        index = this.context.$store.messages.findIndex((message) => message.id === originalMessageId)
-        if (index === -1) {
-          // original message is not found, ignore reaction
-          return
-        }
-      }
-      const otherUsersReactions = this.context.$store.messages[index]
-        .reactions
-        .filter((reaction) => reaction.from !== from)
-
-      this.context.$store.messages[index].reactions = [
-        ...otherUsersReactions,
-        ...reactions.map((reaction) => {
-          return {
-            from,
-            reaction,
-          }
-        }),
-      ]
+    this.client.on('reactions', (messageId, type, from, reactions) => {
+      this.context.$store.storeUserReactions({
+        messageId,
+        isMuc: type === 'groupchat',
+        from,
+        reactions,
+      })
     })
 
     // listen for room subject change
