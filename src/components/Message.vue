@@ -1,6 +1,6 @@
 <template>
   <div class="is-flex">
-    <span class="message-text has-background-shade-1" :class="{ 'is-msg-moderated': statusCode === 'moderated' }">
+    <span class="message-text has-background-shade-1" :class="{ 'is-msg-moderated': statusCode === 'moderated' }" :title="messageDump">
       <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-if="message.body" v-html="body" />
       <message-link v-for="link in message.links" :key="link.url" :url="link.url" class="is-clickable" />
@@ -129,6 +129,9 @@ export default {
     },
     statusCode () {
       return this.message.status ? this.message.status.code : null
+    },
+    messageDump () {
+      return import.meta.env.DEV ? JSON.stringify(this.message, null, 2) : null
     },
   },
 }

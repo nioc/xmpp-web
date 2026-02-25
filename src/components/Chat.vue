@@ -20,7 +20,7 @@
           <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
           <div>
             <message :message="message" :display-nick="isRoom" />
-            <reactions :message="message" :display-nick="isRoom" :class="{ 'is-pulled-right': isUser(message.from) }" />
+            <reactions :message="message" :jid="jid" :is-room="isRoom" :class="{ 'is-pulled-right': isUser(message.from) }" />
           </div>
         </div>
       </TransitionGroup>

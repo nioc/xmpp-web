@@ -374,6 +374,11 @@ export default {
     await this.client.sendChatState(to, isMuc ? 'groupchat' : 'chat', chatState)
   },
 
+  async sendReactions (to, isMuc, message, reactions) {
+    const messageId = isMuc ? message.stanzaId : message.id
+    await this.client.sendReactions(to, isMuc ? 'groupchat' : 'chat', messageId, [...new Set(reactions)])
+  },
+
   setRoomAttributes (jid, mucDiscoInfoResult, password = null) {
     const room = {
       jid: jid,

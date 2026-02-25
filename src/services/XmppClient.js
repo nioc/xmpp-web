@@ -46,6 +46,8 @@ const NS = {
   // XEP-425
   MESSAGE_MODERATION: 'urn:xmpp:message-moderate:0',
   MESSAGE_RETRACTED: 'urn:xmpp:message-retract:0',
+  // XEP-0444
+  REACTIONS: 'urn:xmpp:reactions:0',
 }
 
 let xmppClient = null
@@ -427,6 +429,31 @@ class XmppClient {
       console.debug('1-message sent', sentMessage)
     }
     xmppClient.callbacks.messageSent.forEach((callback) => callback(sentMessage))
+  }
+
+  // Send reaction (XEP-0444)
+  async sendReactions(to, type, messageId, reactions) {
+    const id = nanoid()
+    const reactionMessage = xml(
+      'message', {
+        from: this.jid.full,
+        to,
+        id,
+        type,
+      },
+      xml(
+        'reactions', {
+          id: messageId,
+          xmlns: NS.REACTIONS,
+        },
+        reactions.map((reaction) => xml('reaction', {}, reaction)),
+      ),
+    )
+    await this.xmpp.send(reactionMessage)
+    if (type === 'chat') {
+      // forward reaction to user
+      xmppClient.callbacks.reactions.forEach((callback) => callback(messageId, this.jid.local, reactions))
+    }
   }
 
   // enabling carbon (XEP-0280)

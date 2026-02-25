@@ -1,5 +1,5 @@
 <template>
-  <button v-if="!isOpen" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Choose an emoji" @click="isOpen = true"><i class="fa fa-smile-o" aria-hidden="true" /></button>
+  <button v-if="!isOpen" :class="buttonClass" :title="buttonTitle" @click="isOpen = true"><i class="fa fa-smile-o" aria-hidden="true" /></button>
   <aside v-else class="emojiPicker px-0">
     <o-tabs>
       <o-tab-item v-for="category in categories" :key="category" :label="category" class="is-full-height mb-5">
@@ -16,6 +16,16 @@ import { gemoji } from 'gemoji'
 
 export default {
   name: 'EmojiPicker',
+  props: {
+    buttonClass: {
+      type: String,
+      default: 'button is-size-4 is-primary-ghost has-no-border is-shadowless px-3',
+    },
+    buttonTitle: {
+      type: String,
+      default: 'Choose an emoji',
+    },
+  },
   emits: [
     'emoji-picked',
   ],

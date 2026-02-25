@@ -211,6 +211,20 @@ body,
 .is-msg-moderated {
 	opacity: 30%;
 }
+.reaction {
+	border-radius: 9px;
+	border: solid 1px #282e33;
+	padding: 0.3rem;
+	margin: 0.125rem;
+	font-size: 0.75em;
+	color: hsl(210, 10%, 57%);
+	&.is-me {
+		border-color: $primary;
+	}
+	&:hover, &:focus {
+		border-color: $primary-light;
+	}
+}
 .sendbox textarea {
 	resize: none;
 	border: none;
