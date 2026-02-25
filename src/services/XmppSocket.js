@@ -376,7 +376,7 @@ export default {
 
   async sendReactions (to, isMuc, message, reactions) {
     const messageId = isMuc ? message.stanzaId : message.id
-    await this.client.sendReactions(to, isMuc ? 'groupchat' : 'chat', messageId, [...new Set(reactions)])
+    await this.client.sendReactions(to, isMuc ? 'groupchat' : 'chat', messageId, [...new Set(reactions)], true)
   },
 
   setRoomAttributes (jid, mucDiscoInfoResult, password = null) {

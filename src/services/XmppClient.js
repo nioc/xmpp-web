@@ -37,6 +37,8 @@ const NS = {
   BOOKMARKS: 'storage:bookmarks',
   // XEP-0066
   OUT_OF_BAND_DATA: 'jabber:x:oob',
+  // XEP-0334
+  STORE: 'urn:xmpp:hints',
   // XEP-0359
   UNIQUE_ID: 'urn:xmpp:sid:0',
   // XEP-0156
@@ -432,7 +434,7 @@ class XmppClient {
   }
 
   // Send reaction (XEP-0444)
-  async sendReactions(to, type, messageId, reactions) {
+  async sendReactions(to, type, messageId, reactions, store) {
     const id = nanoid()
     const reactionMessage = xml(
       'message', {
@@ -448,6 +450,9 @@ class XmppClient {
         },
         reactions.map((reaction) => xml('reaction', {}, reaction)),
       ),
+      store ? xml(
+        'store', { xmlns: NS.STORE },
+      ) : null,
     )
     await this.xmpp.send(reactionMessage)
     if (type === 'chat') {
