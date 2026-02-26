@@ -310,11 +310,12 @@ export default {
     })
 
     // listen for reactions messages (contains all reactions from a single user)
-    this.client.on('reactions', (messageId, type, from, reactions) => {
+    this.client.on('reactions', (messageId, type, from, datetime, reactions) => {
       this.context.$store.storeUserReactions({
         messageId,
         isMuc: type === 'groupchat',
         from,
+        datetime,
         reactions,
       })
     })

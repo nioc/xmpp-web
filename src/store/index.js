@@ -289,12 +289,14 @@ export const useStore = defineStore('main', {
     },
 
     // reactions setter
-    storeUserReactions ({ messageId, isMuc, from, reactions }) {
+    storeUserReactions ({ messageId, isMuc, from, datetime, reactions }) {
       const index = this.reactions.findIndex((reaction) => reaction.messageId === messageId && reaction.from === from && reaction.isMuc === isMuc)
       if (index === -1) {
-        this.reactions.push({ messageId, isMuc, from, reactions })
+        this.reactions.push({ messageId, isMuc, from, datetime, reactions })
       } else {
-        this.reactions[index] = { messageId, isMuc, from, reactions }
+        if (this.reactions[index].datetime < datetime) {
+          this.reactions[index] = { messageId, isMuc, from, datetime, reactions }
+        }
       }
     },
 
