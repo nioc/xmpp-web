@@ -218,10 +218,12 @@ body,
 	margin: 0.125rem;
 	font-size: 0.75em;
 	color: hsl(210, 10%, 57%);
+	height: 1.75rem;
 	&.is-me {
 		border-color: $primary;
 	}
 	&:hover, &:focus {
+		color: $primary-light;
 		border-color: $primary-light;
 	}
 }
