@@ -20,7 +20,7 @@
     "configure-git-hook": "cp docs/git-hooks/commit-msg .git/hooks/",
     "cy:open-e2e": "cypress open --e2e --config baseUrl=https://localhost:3000/ --browser electron",
     "cy:run-e2e-dev": "cypress run --e2e --config baseUrl=https://localhost:3000/",
-    "cy:run-e2e-preview": "cypress run --e2e --config baseUrl=http://localhost:8080/",
+    "cy:run-e2e-preview": "cypress run --e2e --config baseUrl=http://localhost:3000/",
     "test:dev": "start-server-and-test dev https://localhost:3000 cy:run-e2e-dev",
     "test:preview": "start-server-and-test preview https://localhost:3000 cy:run-e2e-preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs  --ignore-path .gitignore --ignore-pattern 'docs/*'",

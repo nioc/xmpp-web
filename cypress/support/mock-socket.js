@@ -92,6 +92,15 @@ export function MockServer({ url, jidLocal, jidDomain } ) {
         socket.send(`<iq to='${jidLocal}@${jidDomain}/${resource}' id='${getIqId(data)}' xmlns='jabber:client' type='result'><fin xmlns='urn:xmpp:mam:2' complete='true'><set xmlns='http://jabber.org/protocol/rsm'><count>1</count><first>I1jO-udTYjV3Znis</first><last>I1jO-udTYjV3Znis</last></set></fin></iq>`)
         return
       }
+      // reactions in muc
+      if (data.startsWith('<message from="admin@localhost/Web XMPP') && data.endsWith(' type="groupchat" xmlns="jabber:client"><reactions id="PZBaESdTD4BUkPz2" xmlns="urn:xmpp:reactions:0"><reaction>👍</reaction></reactions><store xmlns="urn:xmpp:hints"/></message>')) {
+        socket.send(`<message type='groupchat' to='${jidLocal}@${jidDomain}' from="welcome@conference.${jidDomain}/${jidLocal}" id='dd67d774-b472-4f64-91b5-23e728a509b4' xml:lang='en' xmlns='jabber:client'><reactions id='PZBaESdTD4BUkPz2' xmlns='urn:xmpp:reactions:0'><reaction>👍</reaction></reactions><store xmlns='urn:xmpp:hints'/><stanza-id id='019c9a33-3076-7843-bc4e-285b3e602d4f' xmlns='urn:xmpp:sid:0' by='welcome@conference.${jidDomain}'/></message>`)
+        return
+      }
+      if (data.startsWith('<message from="admin@localhost/Web XMPP') && data.endsWith(' type="groupchat" xmlns="jabber:client"><reactions id="PZBaESdTD4BUkPz2" xmlns="urn:xmpp:reactions:0"/><store xmlns="urn:xmpp:hints"/></message>')) {
+        socket.send(`<message type='groupchat' to='${jidLocal}@${jidDomain}' from="welcome@conference.${jidDomain}/${jidLocal}" id='dd67d774-b472-4f64-91b5-23e728a509b4' xml:lang='en' xmlns='jabber:client'><reactions id='PZBaESdTD4BUkPz2' xmlns='urn:xmpp:reactions:0'></reactions><store xmlns='urn:xmpp:hints'/><stanza-id id='019c9a33-3076-7843-bc4e-285b3e602d4f' xmlns='urn:xmpp:sid:0' by='welcome@conference.${jidDomain}'/></message>`)
+        return
+      }
       console.warn('unhandled request', data)
     })
   })

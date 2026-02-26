@@ -1,6 +1,6 @@
 <template>
   <div class="mx-3">
-    <button v-for="[reaction, users] in reactionsByValue" :key="reaction" :title="users.join('\n')" class="reaction button" :class="{ 'is-me': includeUser(users) }" @click="() => toggleReaction(reaction)">{{ reaction }} {{ users.length }}</button>
+    <button v-for="[reaction, users] in reactionsByValue" :key="reaction" :title="users.join('\n')" class="reaction button" :class="{ 'is-me': includeUser(users) }" :data-emoji="reaction" @click="() => toggleReaction(reaction)">{{ reaction }} {{ users.length }}</button>
     <emoji-picker button-class="reaction button px-3" button-title="Add reaction" @emoji-picked="addReaction" />
   </div>
 </template>
