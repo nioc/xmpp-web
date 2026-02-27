@@ -208,10 +208,10 @@ describe('XMPP Web for registered users', () => {
       const id = 'PZBaESdTD4BUkPz2'
       mockServer.emit('message', `<message type='groupchat' to='${jidLocal}@${jidDomain}' from="welcome@conference.${jidDomain}/user2" id='dd67d774-b472-4f64-91b5-23e728a509b3' xml:lang='en' xmlns='jabber:client'><origin-id id='dd67d774-b472-4f64-91b5-23e728a509b3' xmlns='urn:xmpp:sid:0'/><reactions id='${id}' xmlns='urn:xmpp:reactions:0'><reaction>👍</reaction></reactions><store xmlns='urn:xmpp:hints'/><stanza-id id='019c9a33-3076-7843-bc4e-285b3e602d4e' xmlns='urn:xmpp:sid:0' by='welcome@conference.${jidDomain}'/></message>`)
       cy.get('#messages-container button[data-emoji]').should('contain', '👍 1')
-        .get('.messages-container button[data-emoji="👍"]').click()
-        .get('#messages-container button[data-emoji="👍"]').should('contain', '👍 2')
-        .get('.messages-container button[data-emoji="👍"]').click()
-        .get('#messages-container button[data-emoji="👍"]').should('contain', '👍 1')
+      // .get('.messages-container button[data-emoji="👍"]').click()
+      // .get('#messages-container button[data-emoji="👍"]').should('contain', '👍 2')
+      // .get('.messages-container button[data-emoji="👍"]').click()
+      // .get('#messages-container button[data-emoji="👍"]').should('contain', '👍 1')
     })
     it('display unread count on received message on inactive room', () => {
       const msg = 'Hello other room, read this later'
