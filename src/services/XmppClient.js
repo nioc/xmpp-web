@@ -37,6 +37,8 @@ const NS = {
   BOOKMARKS: 'storage:bookmarks',
   // XEP-0066
   OUT_OF_BAND_DATA: 'jabber:x:oob',
+  // XEP-0334
+  STORE: 'urn:xmpp:hints',
   // XEP-0359
   UNIQUE_ID: 'urn:xmpp:sid:0',
   // XEP-0156
@@ -46,6 +48,8 @@ const NS = {
   // XEP-425
   MESSAGE_MODERATION: 'urn:xmpp:message-moderate:0',
   MESSAGE_RETRACTED: 'urn:xmpp:message-retract:0',
+  // XEP-0444
+  REACTIONS: 'urn:xmpp:reactions:0',
 }
 
 let xmppClient = null
@@ -68,6 +72,7 @@ class XmppClient {
       'authenticated': [],
       'mucCreated': [],
       'chatState': [],
+      'reactions': [],
       'subjectChange': [],
     }
     this.jid = {}
@@ -260,6 +265,27 @@ class XmppClient {
       xmppClient.callbacks.subjectChange.forEach((callback) => callback(subject))
     }
 
+    // handle reactions (part of XEP-0444)
+    const reaction = stanza.getChild('reactions')
+    if (reaction) {
+      const fromJid = xmppClient.parseJid(stanza.attrs.from)
+      const parent = stanza.parent
+      let datetime = null
+      if (parent && parent.name === 'forwarded') {
+        const delay = parent.getChild('delay')
+        datetime = delay ? delay.attrs.stamp : null
+      } else {
+        const delay = stanza.getChild('delay')
+        datetime = delay ? delay.attrs.stamp : null
+      }
+      datetime = datetime ? new Date(datetime) : new Date()
+      const type = stanza.attrs.type
+      const from = stanza.attrs.type === 'groupchat' ? fromJid.resource : fromJid.local
+      const originalMessageId = reaction.attrs.id
+      const reactions = reaction.getChildren('reaction').map((reaction) => reaction.text())
+      xmppClient.callbacks.reactions.forEach((callback) => callback(originalMessageId, type, from, datetime, reactions))
+    }
+
     // check message error
     const errorNode = stanza.getChild('error')
     if (errorNode) {
@@ -416,6 +442,34 @@ class XmppClient {
       console.debug('1-message sent', sentMessage)
     }
     xmppClient.callbacks.messageSent.forEach((callback) => callback(sentMessage))
+  }
+
+  // Send reaction (XEP-0444)
+  async sendReactions(to, type, messageId, reactions, store) {
+    const id = nanoid()
+    const reactionMessage = xml(
+      'message', {
+        from: this.jid.full,
+        to,
+        id,
+        type,
+      },
+      xml(
+        'reactions', {
+          id: messageId,
+          xmlns: NS.REACTIONS,
+        },
+        reactions.map((reaction) => xml('reaction', {}, reaction)),
+      ),
+      store ? xml(
+        'store', { xmlns: NS.STORE },
+      ) : null,
+    )
+    await this.xmpp.send(reactionMessage)
+    if (type === 'chat') {
+      // forward reaction to user
+      xmppClient.callbacks.reactions.forEach((callback) => callback(messageId, type, this.jid.local, new Date(), reactions))
+    }
   }
 
   // enabling carbon (XEP-0280)

@@ -9,19 +9,16 @@ import RoomConfiguration from '../components/RoomConfiguration.vue'
 
 export default {
   name: 'RoomConfigurationButton',
-  props: {
-    roomJid: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: [
+    'jid',
+  ],
   methods: {
     openConfigurationModal () {
       this.$oruga.modal.open({
         component: RoomConfiguration,
         hasModalCard: true,
         trapFocus: true,
-        props: { roomJid: this.roomJid },
+        props: { roomJid: this.jid },
       })
     },
   },

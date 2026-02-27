@@ -4,6 +4,7 @@ module.exports = defineConfig({
   e2e: {
     testIsolation: false,
     specPattern: 'cypress/e2e/*.js',
+    allowCypressEnv: false,
     setupNodeEvents(on, config) {
       return require('@cypress/code-coverage/task')(on, config)
     },

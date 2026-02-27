@@ -309,6 +309,17 @@ export default {
       })
     })
 
+    // listen for reactions messages (contains all reactions from a single user)
+    this.client.on('reactions', (messageId, type, from, datetime, reactions) => {
+      this.context.$store.storeUserReactions({
+        messageId,
+        isMuc: type === 'groupchat',
+        from,
+        datetime,
+        reactions,
+      })
+    })
+
     // listen for room subject change
     this.client.on('subjectChange', (subjectChange) => {
       if (subjectChange.from && subjectChange.from.bare && subjectChange.subject) {
@@ -347,6 +358,11 @@ export default {
 
   async sendChatState (to, isMuc, chatState) {
     await this.client.sendChatState(to, isMuc ? 'groupchat' : 'chat', chatState)
+  },
+
+  async sendReactions (to, isMuc, message, reactions) {
+    const messageId = isMuc ? message.stanzaId : message.id
+    await this.client.sendReactions(to, isMuc ? 'groupchat' : 'chat', messageId, [...new Set(reactions)], true)
   },
 
   setRoomAttributes (jid, mucDiscoInfoResult, password = null) {

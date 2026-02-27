@@ -7,12 +7,9 @@
 
 export default {
   name: 'BookmarkButton',
-  props: {
-    jid: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: [
+    'jid',
+  ],
   computed: {
     isBookmarked () { return this.$store.isBookmarked(this.jid) },
   },

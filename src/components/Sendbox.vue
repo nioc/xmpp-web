@@ -39,12 +39,9 @@ export default {
   components: {
     EmojiPicker,
   },
-  props: {
-    isRoom: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  inject: [
+    'isRoom',
+  ],
   data () {
     return {
       composingMessage: '',

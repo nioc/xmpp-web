@@ -5,32 +5,28 @@
       <router-link v-else :to="{ name: 'guestRooms', state: { nick: userNick } }" class="button is-primary-ghost has-no-border is-shadowless" title="Leave this room and go back to rooms list"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
       <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
       <span class="is-flex is-align-items-center" style="min-width: 0;">
-        <room-occupants v-if="isRoom" :room-jid="jid" />
-        <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" :jid="jid" />
-        <room-configuration-button v-if="isRoom && !$xmpp.isAnonymous" :room-jid="jid" />
-        <invite-guest-button v-if="hasGuestInviteLink" :room-jid="jid" />
+        <room-occupants v-if="isRoom" />
+        <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" />
+        <room-configuration-button v-if="isRoom && !$xmpp.isAnonymous" />
+        <invite-guest-button v-if="hasGuestInviteLink" />
         <retrieve-history-button />
         <presence-controller v-if="$xmpp.isAnonymous" :is-navbar-item="false" :is-right="true" class="px-2 mx-2" />
       </span>
     </div>
     <div id="messages-container" class="messages-container">
-      <room-subject v-if="isRoom" :room-jid="jid" />
+      <room-subject v-if="isRoom" />
       <TransitionGroup name="messages-list">
-        <div v-for="message in messagesWithJid" :key="message.id" class="mx-4 my-2 is-flex" :class="{ 'is-flex-direction-row-reverse': isUser(message.from) }">
-          <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
-          <message :message="message" :display-nick="isRoom" />
-        </div>
+        <message-container v-for="message in messagesWithJid" :key="message.id" :message="message" />
       </TransitionGroup>
     </div>
-    <sendbox :is-room="isRoom" />
+    <sendbox />
   </main>
 </template>
 
 <script>
-import avatar from '../components/Avatar.vue'
-import message from '../components/Message.vue'
 import InviteGuestButton from '../components/InviteGuestButton.vue'
 import BookmarkButton from '../components/BookmarkButton.vue'
+import MessageContainer from '../components/MessageContainer.vue'
 import RoomConfigurationButton from '../components/RoomConfigurationButton.vue'
 import RetrieveHistoryButton from '../components/RetrieveHistoryButton.vue'
 import RoomOccupants from '../components/RoomOccupants.vue'
@@ -44,16 +40,21 @@ import { useStore } from '@/store'
 export default {
   name: 'Chat',
   components: {
-    avatar,
-    message,
     InviteGuestButton,
     BookmarkButton,
+    MessageContainer,
     RoomConfigurationButton,
     RetrieveHistoryButton,
     RoomOccupants,
     RoomSubject,
     Sendbox,
     PresenceController,
+  },
+  provide() {
+    return {
+      jid: this.jid,
+      isRoom: this.isRoom,
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -130,10 +131,6 @@ export default {
     }
   },
   methods: {
-    // check if a jid is current user (including MUC nick)
-    isUser (jid) {
-      return jid.bare === this.userJid.bare || jid.resource === this.userJid.local || jid.resource === this.userNick
-    },
     // handle route on mount (commit active chat, reset first message, join room if not already)
     async handleRoute () {
       if (!this.userJid) {

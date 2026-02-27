@@ -211,6 +211,42 @@ body,
 .is-msg-moderated {
 	opacity: 30%;
 }
+.add-reaction {
+  position: relative;
+  .button {
+    margin-block-start: -18px;
+    margin-inline-start: -18px;
+    position: absolute;
+  }
+}
+.add-reaction-enter-active {
+  transition: opacity 0.1s ease-out;
+}
+.add-reaction-enter-from {
+  opacity: 0;
+}
+.add-reaction-leave-active {
+  transition: opacity 0.1s ease-out;
+}
+.add-reaction-leave-to {
+  opacity: 0;
+}
+.reaction {
+	border-radius: 9px;
+	border: solid 1px #282e33;
+	padding: 0.3rem;
+	margin: 0.125rem;
+	font-size: 0.75em;
+	color: hsl(210, 10%, 57%);
+	height: 1.75rem;
+	&.is-me {
+		border-color: $primary;
+	}
+	&:hover, &:focus {
+		color: $primary-light;
+		border-color: $primary-light;
+	}
+}
 .sendbox textarea {
 	resize: none;
 	border: none;

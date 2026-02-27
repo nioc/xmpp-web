@@ -9,15 +9,12 @@ import Modal from './../components/Modal.vue'
 
 export default {
   name: 'InviteGuestButton',
-  props: {
-    roomJid: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: [
+    'jid',
+  ],
   methods: {
     getInviteLink () {
-      const link = window.location.origin + window.location.pathname + this.$router.resolve({ name: 'guest', query: { join: this.roomJid } }).href
+      const link = window.location.origin + window.location.pathname + this.$router.resolve({ name: 'guest', query: { join: this.jid } }).href
       this.$oruga.modal.open({
         component: Modal,
         trapFocus: true,

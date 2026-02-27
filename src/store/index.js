@@ -7,6 +7,7 @@ const getDefaultState = () => {
   return {
     activeChat: null,
     messages: [],
+    reactions: [],
     contacts: [],
     groups: [],
     joinedRooms: [],
@@ -79,6 +80,10 @@ export const useStore = defineStore('main', {
       }
       const contact = state.contacts.find((contact) => contact.jid === jid)
       return contact ? contact.chatState : 'inactive'
+    },
+    getMessageReactions: (state) => (isMuc, messageId) => {
+      return state.reactions
+        .filter((reaction) => reaction.isMuc === isMuc && reaction.messageId === messageId)
     },
   },
 
@@ -279,6 +284,18 @@ export const useStore = defineStore('main', {
       this.messages[index] = {
         ...this.messages[index],
         ...message,
+      }
+    },
+
+    // reactions setter
+    storeUserReactions ({ messageId, isMuc, from, datetime, reactions }) {
+      const index = this.reactions.findIndex((reaction) => reaction.messageId === messageId && reaction.from === from && reaction.isMuc === isMuc)
+      if (index === -1) {
+        this.reactions.push({ messageId, isMuc, from, datetime, reactions })
+      } else {
+        if (this.reactions[index].datetime < datetime) {
+          this.reactions[index] = { messageId, isMuc, from, datetime, reactions }
+        }
       }
     },
 
