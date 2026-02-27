@@ -2,14 +2,15 @@
   <div class="mx-4 my-2 is-flex" :class="{ 'is-flex-direction-row-reverse': isUser(message.from) }">
     <avatar :jid="(isRoom && message.from.bare !== userJid.bare) ? message.from.full : message.from.bare" :display-jid="false" />
     <div>
-      <message :display-nick="isRoom" />
-      <reactions :class="{ 'is-pulled-right': isUser(message.from) }" />
+      <message ref="messageHoverable" :display-nick="isRoom" />
+      <reactions :class="{ 'is-pulled-right': isUser(message.from) }" :display-add-button="isHovered" />
     </div>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useElementHover } from '@vueuse/core'
 import Avatar from '../components/Avatar.vue'
 import Message from '../components/Message.vue'
 import Reactions from '../components/Reactions.vue'
@@ -35,6 +36,11 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  setup() {
+    const messageHoverable = ref(null)
+    const isHovered = useElementHover(messageHoverable, { delayEnter: 500, delayLeave: 2000 })
+    return { messageHoverable, isHovered }
   },
   computed: {
     userJid () {

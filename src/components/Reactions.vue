@@ -1,11 +1,17 @@
 <template>
-  <div class="mx-3">
-    <button v-for="[reaction, users] in reactionsByValue" :key="reaction" :title="users.join('\n')" class="reaction button" :class="{ 'is-me': includeUser(users) }" :data-emoji="reaction" @click="() => toggleReaction(reaction)">{{ reaction }} {{ users.length }}</button>
-    <emoji-picker button-class="reaction button px-3" button-title="Add reaction" @emoji-picked="addReaction" />
-  </div>
+  <Transition name="add-reaction">
+    <div v-if="reactionsByValue.size > 0" class="mx-3">
+      <button v-for="[reaction, users] in reactionsByValue" :key="reaction" :title="users.join('\n')" class="reaction button" :class="{ 'is-me': includeUser(users) }" :data-emoji="reaction" @click="() => toggleReaction(reaction)">{{ reaction }} {{ users.length }}</button>
+      <emoji-picker button-class="reaction button px-3" button-title="Add reaction" @emoji-picked="addReaction" />
+    </div>
+    <span v-else v-show="displayAddButton || $refs.picker?.isOpen" :class="{ 'add-reaction': !$refs.picker?.isOpen }">
+      <emoji-picker ref="picker" button-class="reaction button px-3" button-title="Add reaction" @emoji-picked="addReaction" />
+    </span>
+  </Transition>
 </template>
 
 <script>
+import { ref } from 'vue'
 import EmojiPicker from '../components/EmojiPicker.vue'
 
 export default {
@@ -18,6 +24,16 @@ export default {
     'isRoom',
     'message',
   ],
+  props: {
+    displayAddButton: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup() {
+    const picker = ref(null)
+    return { picker }
+  },
   computed: {
     reactions () {
       return this.$store.getMessageReactions(this.isRoom, this.isRoom ? this.message.stanzaId : this.message.id)
