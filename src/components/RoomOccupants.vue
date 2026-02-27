@@ -5,20 +5,18 @@
 </template>
 
 <script>
-import avatar from '../components/Avatar.vue'
+import Avatar from '../components/Avatar.vue'
+
 export default {
   name: 'RoomOccupants',
   components: {
-    avatar,
+    Avatar,
   },
-  props: {
-    roomJid: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: [
+    'jid',
+  ],
   computed: {
-    occupants () { return this.$store.getRoomOccupants(this.roomJid) },
+    occupants () { return this.$store.getRoomOccupants(this.jid) },
   },
 }
 </script>

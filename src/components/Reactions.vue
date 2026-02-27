@@ -7,25 +7,17 @@
 
 <script>
 import EmojiPicker from '../components/EmojiPicker.vue'
+
 export default {
   name: 'Reactions',
   components: {
     EmojiPicker,
   },
-  props: {
-    message: {
-      type: Object,
-      required: true,
-    },
-    jid: {
-      type: String,
-      default: null,
-    },
-    isRoom: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  inject: [
+    'jid',
+    'isRoom',
+    'message',
+  ],
   computed: {
     reactions () {
       return this.$store.getMessageReactions(this.isRoom, this.isRoom ? this.message.stanzaId : this.message.id)

@@ -1,7 +1,7 @@
 <template>
   <div v-if="isDiplayed && roomSubject" class="message is-small is-shade-1 has-background-shade-2 m-3" title="Room subject">
     <div class="message-header">
-      <p>{{ roomJid }}</p>
+      <p>{{ jid }}</p>
       <button class="delete" aria-label="delete" title="Dismiss" @click="isDiplayed = false" />
     </div>
     <div class="message-body is-flex py-3 px-1">
@@ -19,14 +19,12 @@
 
 <script>
 import sanitizeHtml from 'sanitize-html'
+
 export default {
   name: 'RoomSubject',
-  props: {
-    roomJid: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: [
+    'jid',
+  ],
   data () {
     return {
       isDiplayed: true,
@@ -34,7 +32,7 @@ export default {
   },
   computed: {
     roomSubject () {
-      return this.$store.getRoomSubject(this.roomJid)
+      return this.$store.getRoomSubject(this.jid)
     },
     subject () {
       return sanitizeHtml(this.roomSubject.subject)

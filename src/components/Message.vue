@@ -23,11 +23,10 @@ export default {
   components: {
     MessageLink,
   },
+  inject: [
+    'message',
+  ],
   props: {
-    message: {
-      type: Object,
-      required: true,
-    },
     displayNick: {
       type: Boolean,
       default: false,
