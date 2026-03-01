@@ -34,7 +34,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,html}'],
+        globPatterns: ['**/*.{js,css,html,woff2}'],
         globIgnores: ['**/*local.js'],
         runtimeCaching: [
           {
