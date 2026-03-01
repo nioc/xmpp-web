@@ -223,6 +223,11 @@ export default {
         // no body in message (probably a chat state)
         return
       }
+      if (message.type === 'groupchat') {
+        message.status = {
+          code: 'waiting',
+        }
+      }
       storeMessage(this, message.type, message)
     })
 
@@ -331,6 +336,9 @@ export default {
     this.client.on('messageSentError', (error) => {
       switch (error.type) {
         case 'cancel':
+          this.context.$store.setMessageStatus(error.messageId, 'error', error.message)
+          break
+        case 'auth':
           this.context.$store.setMessageStatus(error.messageId, 'error', error.message)
           break
       }

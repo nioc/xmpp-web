@@ -9,6 +9,7 @@
         <time :datetime="$dayjs(message.delay).format()" :title="$dayjs(message.delay).format()">{{ $dayjs(message.delay).fromNow() }}</time>
         <i v-if="statusCode === 'error'" class="fa-solid fa-xmark has-text-danger ml-2" :title="message.status.message" />
         <i v-else-if="statusCode === 'moderated'" class="fa-solid fa-ban has-text-danger ml-2" :title="message.status.message" />
+        <i v-else-if="statusCode === 'waiting'" class="fa-solid fa-paper-plane fa-beat-fade has-text-primary ml-2" />
       </div>
     </span>
   </div>

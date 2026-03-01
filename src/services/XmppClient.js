@@ -292,8 +292,11 @@ class XmppClient {
       const error = {
         messageId: stanza.attrs.id,
         type: errorNode.attrs.type,
-        message: errorNode.getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.STANZA_ERROR)
-          .map(child => child.name)
+        message: errorNode
+          .getChildrenByFilter(child => child.attrs && child.attrs.xmlns === NS.STANZA_ERROR)
+          .map((child) => {
+            return child.name === 'text' ? child.text() : child.name
+          })
           .join(', '),
       }
       xmppClient.callbacks.messageSentError.forEach((callback) => callback(error))

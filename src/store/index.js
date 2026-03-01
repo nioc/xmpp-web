@@ -225,7 +225,7 @@ export const useStore = defineStore('main', {
         body: payload.message.body,
         delay: payload.message.delay || null,
         links: payload.message.links || null,
-        status: null,
+        status: payload.message.status || null,
       })
 
       // order messages by date
