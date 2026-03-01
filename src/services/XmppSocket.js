@@ -272,9 +272,11 @@ export default {
         if (presence.isSelf) {
           if (presence.type === 'unavailable') {
             this.context.$store.removeJoinedRoom(fullJid.bare)
+            this.context.$store.setMucRole(null)
           } else {
             this.context.$store.setJoinedRoom(fullJid.bare)
           }
+          this.context.$store.setMucRole(presence.mucRole)
         }
         if (presence.type === 'unavailable') {
           // occupant left room
@@ -738,6 +740,10 @@ export default {
 
   async setRoomConfig (roomJid, form) {
     return this.client.configureRoom(roomJid, form)
+  },
+
+  async requestVoice (roomJid) {
+    return this.client.requestVoice(roomJid)
   },
 
   // Set nickname

@@ -1022,6 +1022,42 @@ class XmppClient {
     await this.xmpp.iqCaller.request(setRoomConfigMessage)
   }
 
+  async requestVoice(roomJid) {
+    const id = nanoid()
+    const request = xml(
+      'message', {
+        from: this.jid.full,
+        id,
+        to: roomJid,
+      },
+      xml(
+        'x', {
+          xmlns: 'jabber:x:data',
+          type: 'submit',
+        },
+        xml(
+          'field',{
+            var: 'FORM_TYPE',
+          },
+          xml('value',{},
+            'http://jabber.org/protocol/muc#request',
+          ),
+        ),
+        xml(
+          'field',{
+            var: 'muc#role',
+            type: 'list-single',
+            label: 'Requested role',
+          },
+          xml('value',{},
+            'participant',
+          ),
+        ),
+      ),
+    )
+    await this.xmpp.send(request)
+  }
+
 }
 
 export { XmppClient, NS }
