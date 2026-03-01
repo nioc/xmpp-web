@@ -11,7 +11,7 @@
                 <div class="control has-icons-left">
                   <input v-model="credentials.jid" class="input is-medium" type="text" name="jid" :placeholder="jidPlaceholder">
                   <span class="icon is-small is-left">
-                    <i class="fa fa-user" />
+                    <i class="fa-solid fa-user" />
                   </span>
                 </div>
               </div>
@@ -19,7 +19,7 @@
                 <div class="control has-icons-left">
                   <input v-model="credentials.password" class="input is-medium" type="password" name="password" placeholder="Password">
                   <span class="icon is-small is-left">
-                    <i class="fa fa-lock" />
+                    <i class="fa-solid fa-lock" />
                   </span>
                 </div>
               </div>
@@ -31,9 +31,9 @@
               <o-collapse v-if="isTransportsUserAllowed" class="card has-background-shade-3 mb-3" :open="false" aria-id="connection-settings">
                 <template #trigger="props">
                   <div role="button" aria-controls="connection-settings" class="card-header">
-                    <p class="card-header-title has-text-grey-light"><span class="fa fa-cog fa-fw mr-3" aria-hidden="true" />Connection settings</p>
+                    <p class="card-header-title has-text-grey-light"><span class="fa-solid fa-cog fa-fw mr-3" aria-hidden="true" />Connection settings</p>
                     <a class="card-header-icon has-text-grey-light">
-                      <span class="fa fa-fw mr-3" :class="[props.open ? 'fa-caret-down': 'fa-caret-up']" aria-hidden="true" />
+                      <span class="fa-solid fa-fw mr-3" :class="[props.open ? 'fa-caret-down': 'fa-caret-up']" aria-hidden="true" />
                     </a>
                   </div>
                 </template>
@@ -46,7 +46,7 @@
                 </div>
               </o-collapse>
               <div class="field">
-                <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{ 'is-loading': isLoading }" :disabled="isDisabled"><span class="fa fa-sign-in fa-fw mr-3" aria-hidden="true" />Login</button>
+                <button type="submit" class="button is-block is-primary is-medium is-fullwidth" :class="{ 'is-loading': isLoading }" :disabled="isDisabled"><span class="fa-solid fa-right-to-bracket fa-fw mr-3" aria-hidden="true" />Login</button>
               </div>
               <div v-if="error" class="message is-danger">
                 <div class="message-body has-text-danger">{{ error }}</div>

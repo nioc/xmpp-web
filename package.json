@@ -36,6 +36,7 @@
   "packageManager": "pnpm@10.24.0",
   "dependencies": {
     "@creativebulma/bulma-divider": "^1.1.0",
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "@oruga-ui/oruga-next": "^0.5.10",
     "@oruga-ui/theme-bulma": "^0.2.11",
     "@vueuse/core": "^14.2.1",
@@ -46,7 +47,6 @@
     "bulma": "^0.9.4",
     "dayjs": "^1.11.19",
     "filesize": "^11.0.13",
-    "fork-awesome": "^1.2.0",
     "gemoji": "^8.1.0",
     "mime": "^4.1.0",
     "nanoid": "^5.1.6",

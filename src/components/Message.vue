@@ -7,8 +7,8 @@
       <div v-if="message.delay" class="content is-italic has-text-weight-light is-small">
         <b v-if="displayNick" class="pr-1">{{ nick }}</b>
         <time :datetime="$dayjs(message.delay).format()" :title="$dayjs(message.delay).format()">{{ $dayjs(message.delay).fromNow() }}</time>
-        <i v-if="statusCode === 'error'" class="fa fa-times has-text-danger ml-2" :title="message.status.message" />
-        <i v-else-if="statusCode === 'moderated'" class="fa fa-ban has-text-danger ml-2" :title="message.status.message" />
+        <i v-if="statusCode === 'error'" class="fa-solid fa-xmark has-text-danger ml-2" :title="message.status.message" />
+        <i v-else-if="statusCode === 'moderated'" class="fa-solid fa-ban has-text-danger ml-2" :title="message.status.message" />
       </div>
     </span>
   </div>

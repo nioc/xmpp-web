@@ -6,18 +6,18 @@
           <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
             <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
-            <i v-if="fileIcon" class="fa fa-2x" :class="fileIcon" />
+            <i v-if="fileIcon" class="fa-solid fa-2x" :class="fileIcon" />
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
         <emoji-picker @emoji-picked="addEmoji" />
-        <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+        <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true" /></button>
         <div v-else class="file has-no-border is-size-4" title="Send a file">
           <label class="file-label">
             <input class="file-input" type="file" name="resume" @change="onFileChange">
             <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
               <span class="file-icon mr-0">
-                <i class="fa fa-paperclip is-primary-ghost is-size-4" />
+                <i class="fa-solid fa-paperclip is-primary-ghost is-size-4" />
               </span>
             </span>
           </label>
@@ -137,13 +137,13 @@ export default {
         }
         reader.readAsDataURL(this.file)
       } else if (this.file.type.startsWith('audio/')) {
-        this.fileIcon = 'fa-file-audio-o'
+        this.fileIcon = 'fa-file-audio'
       } else if (this.file.type.startsWith('video/')) {
-        this.fileIcon = 'fa-file-video-o'
+        this.fileIcon = 'fa-file-video'
       } else if (this.file.type.includes('pdf')) {
-        this.fileIcon = 'fa-file-pdf-o'
+        this.fileIcon = 'fa-file-pdf'
       } else {
-        this.fileIcon = 'fa-file-o'
+        this.fileIcon = 'fa-file'
       }
     },
     async postFile (file) {

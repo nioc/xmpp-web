@@ -1,5 +1,5 @@
 <template>
-  <button v-if="!isOpen" :class="buttonClass" :title="buttonTitle" @click="isOpen = true"><i class="fa fa-smile-o" aria-hidden="true" /></button>
+  <button v-if="!isOpen" :class="buttonClass" :title="buttonTitle" @click="isOpen = true"><i class="fa-regular fa-smile" aria-hidden="true" /></button>
   <aside v-else class="emojiPicker px-0">
     <o-tabs>
       <o-tab-item v-for="category in categories" :key="category" :label="category" class="is-full-height mb-5">

@@ -1,6 +1,6 @@
 <template>
   <button class="button is-primary-ghost has-no-border is-shadowless" title="Configure room" @click="openConfigurationModal()">
-    <i class="fa fa-wrench" aria-hidden="true" />
+    <i class="fa-solid fa-screwdriver-wrench" aria-hidden="true" />
   </button>
 </template>
 

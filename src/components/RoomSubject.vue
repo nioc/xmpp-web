@@ -1,12 +1,12 @@
 <template>
-  <div v-if="isDiplayed && roomSubject" class="message is-small is-shade-1 has-background-shade-2 m-3" title="Room subject">
+  <div v-if="isDiplayed && roomSubject" class="message is-small is-shade-1 has-background-shade-2 m-3">
     <div class="message-header">
       <p>{{ jid }}</p>
       <button class="delete" aria-label="delete" title="Dismiss" @click="isDiplayed = false" />
     </div>
-    <div class="message-body is-flex py-3 px-1">
+    <div class="message-body is-flex py-3 px-1" title="Room subject">
       <div class="icon is-medium is-flex-shrink-0">
-        <i class="fa fa-2x fa-info-circle" />
+        <i class="fa-solid fa-2x fa-circle-info" />
       </div>
       <div class="is-flex is-flex-direction-column">
         <!-- eslint-disable-next-line vue/no-v-html -->

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a class="is-flex is-align-items-center is-justify-content-space-between" @click="isOpened = !isOpened"><span>{{ group }}</span><i class="fa fa-fw" :class="isOpened ? 'fa-caret-down' : 'fa-caret-up'" /></a>
+    <a class="is-flex is-align-items-center is-justify-content-space-between" @click="isOpened = !isOpened"><span>{{ group }}</span><i class="fa-solid fa-fw" :class="isOpened ? 'fa-caret-down' : 'fa-caret-up'" /></a>
     <ul v-if="isOpened">
       <li v-for="contact in contactsInGroup" :key="contact.jid">
         <contact :jid="contact.jid" :is-room="false" :name="contact.name" :presence="contact.presence" :status="contact.status" :unread-count="contact.unreadCount" />

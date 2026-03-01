@@ -4,13 +4,13 @@
       <div class="control has-icons-left is-flex-grow-1">
         <input v-model="roomJid" autofocus class="input" type="text" :placeholder="roomPlaceholder" title="Enter room Jid">
         <span class="icon is-small is-left">
-          <i class="fa fa-tag" />
+          <i class="fa-solid fa-tag" />
         </span>
       </div>
       <div class="control">
         <button type="submit" class="button is-primary" :class="{ 'is-loading': isLoading }" :disabled="!hasValidJid">
           <span class="icon">
-            <i class="fa fa-plus-square" /></span>
+            <i class="fa-solid fa-square-plus" /></span>
           <span>Create</span>
         </button>
       </div>

@@ -5,7 +5,7 @@
     <video v-else-if="isVideo" :src="url" controls width="300" />
     <a v-else class="button is-light is-small" :href="url" target="_blank">
       <span class="icon is-small">
-        <i class="fa fa-download" />
+        <i class="fa-solid fa-file-arrow-down" />
       </span>
       <span>Download file ({{ contentType }})</span>
     </a>

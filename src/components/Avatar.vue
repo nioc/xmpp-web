@@ -2,7 +2,7 @@
   <span :class="{ 'has-jid': displayJid }">
     <figure :class="'image is-'+size+'x'+size">
       <img class="is-rounded" :style="style" :src="uri" :title="title">
-      <i v-if="presence" class="fa fa-circle presence-icon" :class="presenceClass" />
+      <i v-if="presence" class="fa-solid fa-circle presence-icon" :class="presenceClass" />
     </figure>
     <span v-if="displayJid" class="ml-3">{{ name ? name : jid }}</span>
   </span>

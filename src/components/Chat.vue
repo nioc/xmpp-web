@@ -1,9 +1,9 @@
 <template>
   <main class="is-flex is-flex-direction-column is-justify-content-space-between is-full-height has-background-shade-4 is-relative">
     <div class="toolbar has-border-bottom-shade-3">
-      <router-link v-if="!$xmpp.isAnonymous" :to="{ name: 'home' }" class="button is-primary-ghost has-no-border is-shadowless" :class="{ 'is-hidden-tablet': jid }" title="Back to contacts"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
-      <router-link v-else :to="{ name: 'guestRooms', state: { nick: userNick } }" class="button is-primary-ghost has-no-border is-shadowless" title="Leave this room and go back to rooms list"><i class="fa fa-arrow-circle-left" aria-hidden="true" /></router-link>
-      <i class="fa fa-lg fa-pencil-square-o" :class="chatStateClass" aria-hidden="true" />
+      <router-link v-if="!$xmpp.isAnonymous" :to="{ name: 'home' }" class="button is-primary-ghost has-no-border is-shadowless" :class="{ 'is-hidden-tablet': jid }" title="Back to contacts"><i class="fa-solid fa-circle-chevron-left" aria-hidden="true" /></router-link>
+      <router-link v-else :to="{ name: 'guestRooms', state: { nick: userNick } }" class="button is-primary-ghost has-no-border is-shadowless" title="Leave this room and go back to rooms list"><i class="fa-solid fa-circle-chevron-left" aria-hidden="true" /></router-link>
+      <i class="fa-solid fa-lg fa-pen-to-square" :class="chatStateClass" aria-hidden="true" />
       <span class="is-flex is-align-items-center" style="min-width: 0;">
         <room-occupants v-if="isRoom" />
         <bookmark-button v-if="isRoom && !$xmpp.isAnonymous" />
@@ -175,7 +175,7 @@ export default {
               onCancel: () => resolve(false),
               props: {
                 title: 'Room protected',
-                message: '<span class="icon mr-2"><i class="fa fa-key-modern" /></i></span><span>Please enter password</span>',
+                message: '<span class="icon mr-2"><i class="fa-solid fa-key" /></i></span><span>Please enter password</span>',
                 prompt: {
                   placeholder: 'Password',
                   type: 'password',

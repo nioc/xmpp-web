@@ -1,6 +1,6 @@
 <template>
   <button class="button is-warning-ghost has-no-border is-shadowless" :title="isBookmarked ? 'Unbookmark room' : 'Bookmark room'" @click="bookmarkRoom()">
-    <i class="fa" :class="isBookmarked ? 'fa-star' : 'fa-star-o' " aria-hidden="true" />
+    <i class="fa-star" :class="isBookmarked ? 'fa-solid' : 'fa-regular' " aria-hidden="true" />
   </button>
 </template>
 <script>

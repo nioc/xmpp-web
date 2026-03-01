@@ -4,13 +4,13 @@
     <span v-if="isRoom" class="is-flex is-align-items-center">
       <avatar v-if="room.hasVCard" class="mr-3" :jid="jid" :display-jid="false" :size="24" />
       <span v-show="isExpanded" :class="{ 'is-italic has-text-grey': !isJoined }">{{ roomName }}</span>
-      <i v-if="room.isBookmarked" v-show="isExpanded" class="fa fa-star has-text-warning ml-3" />
+      <i v-if="room.isBookmarked" v-show="isExpanded" class="fa-solid fa-star has-text-warning ml-3" />
       <span v-show="isExpanded" class="ml-3 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
-        <i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" />
-        <i v-if="room.isModerated" class="fa fa-shield fa-fw" title="Is moderated" />
-        <i v-if="room.isAnonymous" class="fa fa-user-secret fa-fw" title="Allow anonymous (nick)" />
-        <i v-if="room.isMembersOnly" class="fa fa-users fa-fw" title="Restricted to members" />
-        <i v-if="room.isPublic" class="fa fa-globe fa-fw" title="Public room" />
+        <i v-if="room.isPasswordProtected" class="fa-solid fa-key fa-fw" title="Password protected" />
+        <i v-if="room.isModerated" class="fa-solid fa-microphone-lines-slash fa-fw" title="Is moderated" />
+        <i v-if="room.isAnonymous" class="fa-solid fa-user-secret fa-fw" title="Allow anonymous (nick)" />
+        <i v-if="room.isMembersOnly" class="fa-solid fa-user-lock fa-fw" title="Restricted to members" />
+        <i v-if="room.isPublic" class="fa-solid fa-compass fa-fw" title="Public room" />
       </span>
     </span>
     <!-- chat -->

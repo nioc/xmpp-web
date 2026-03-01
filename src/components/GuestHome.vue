@@ -17,14 +17,14 @@
               <div class="control has-icons-left">
                 <input v-model="nick" autofocus class="input is-medium" type="text" name="nick" placeholder="Nickname">
                 <span class="icon is-small is-left">
-                  <i class="fa fa-user" />
+                  <i class="fa-solid fa-user" />
                 </span>
               </div>
             </div>
             <div class="field">
               <button type="submit" class="button is-medium is-block is-primary is-fullwidth" :disabled="!hasValidNick">
                 <span class="icon" aria-hidden="true">
-                  <i class="fa fa-sign-in" /></span>
+                  <i class="fa-solid fa-right-to-bracket" /></span>
                 <span>Join</span>
               </button>
             </div>

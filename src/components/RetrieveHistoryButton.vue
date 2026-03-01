@@ -1,6 +1,6 @@
 <template>
   <button class="button is-primary-ghost has-no-border is-shadowless" title="Get history" :class="{ 'is-loading': isLoadingPreviousMessages }" :disabled="isDisabled" @click="getPreviousMessages()">
-    <i class="fa fa-history" aria-hidden="true" />
+    <i class="fa-solid fa-clock-rotate-left" aria-hidden="true" />
   </button>
 </template>
 

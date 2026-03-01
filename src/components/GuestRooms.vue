@@ -6,7 +6,7 @@
           <div class="control is-expanded has-icons-left">
             <input v-model="search.text" class="input" type="text" name="room" placeholder="Search a room" title="Filter rooms by name or description">
             <span class="icon is-small is-left">
-              <i class="fa fa-search" />
+              <i class="fa-solid fa-magnifying-glass" />
             </span>
           </div>
           <div class="control has-icons-left">
@@ -16,7 +16,7 @@
                 <option v-for="language in roomsLanguages" :key="language">{{ language }}</option>
               </select>
               <span class="icon is-small is-left">
-                <i class="fa fa-globe-e" />
+                <i class="fa-solid fa-language" />
               </span>
             </span>
           </div>
@@ -28,17 +28,17 @@
                 <header class="card-header">
                   <span class="card-header-title">
                     <span v-if="room.isPinned" class="icon has-text-danger mr-2" title="Pinned room">
-                      <i class="fa fa-map-pin" />
+                      <i class="fa-solid fa-map-pin" />
                     </span>
                     <span v-if="room.lang" class="has-text-weight-light" title="Language">[{{ room.lang }}]</span>
                   </span>
                   <span class="px-4 py-3">
                     <span v-if="room.isPasswordProtected" class="icon" title="This room is password protected">
-                      <i class="fa fa-key-modern" />
+                      <i class="fa-solid fa-key" />
                     </span>
                     <span v-if="room.occupantsCount" title="Occupants">
                       <span class="icon mr-1 ml-2">
-                        <i class="fa fa-users" />
+                        <i class="fa-solid fa-users" />
                       </span>
                       <span>{{ room.occupantsCount }}</span>
                     </span>
@@ -57,7 +57,7 @@
                 <footer class="card-footer">
                   <router-link :to="{ name: 'guestInRoom', params: { jid: room.jid } }" class="card-footer-item" title="Join the room">
                     <span class="icon">
-                      <i class="fa fa-sign-in" /></span>
+                      <i class="fa-solid fa-right-to-bracket" /></span>
                     <span>Join</span>
                   </router-link>
                 </footer>

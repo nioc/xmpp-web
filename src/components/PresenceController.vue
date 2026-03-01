@@ -9,14 +9,14 @@
         <a v-for="presenceOption in ['chat', 'away', 'dnd']" :key="presenceOption" :class="[{ 'is-active': presenceOption === presence }, isNavbarItem ? 'navbar-item' : 'dropdown-item']" @click="setPresence(presenceOption)"><presence :presence="presenceOption" /></a>
         <hr :class="[isNavbarItem ? 'navbar-divider' : 'dropdown-divider']">
         <div :class="[isNavbarItem ? 'navbar-item' : 'dropdown-item']">
-          <o-switch v-model="isAutoPresence" title="You will be seen away when the browser is not active" class="has-no-wrap" @change="setAutoPresence"><span class="icon mr-1"><i class="fa fa-moon-o fa-fw" aria-hidden="true" /></span>Set away when inactive</o-switch>
+          <o-switch v-model="isAutoPresence" title="You will be seen away when the browser is not active" class="has-no-wrap" @change="setAutoPresence"><span class="icon mr-1"><i class="fa-regular fa-moon fa-fw" aria-hidden="true" /></span>Set away when inactive</o-switch>
         </div>
         <notifications-switch :class="[isNavbarItem ? 'navbar-item' : 'dropdown-item']" />
         <div :class="[isNavbarItem ? 'navbar-item' : 'dropdown-item']">
-          <o-switch v-model="isSendingTypingChatStatesSwitch" title="Notify your partner(s) that you are typing or paused" class="has-no-wrap"><span class="icon mr-1"><i class="fa fa-pencil-square-o fa-fw" aria-hidden="true" /></span>Send typing states</o-switch>
+          <o-switch v-model="isSendingTypingChatStatesSwitch" title="Notify your partner(s) that you are typing or paused" class="has-no-wrap"><span class="icon mr-1"><i class="fa-regular fa-pen-to-square fa-fw" aria-hidden="true" /></span>Send typing states</o-switch>
         </div>
         <div :class="[isNavbarItem ? 'navbar-item' : 'dropdown-item']">
-          <o-switch v-model="isSendingInactiveChatStatesSwitch" title="Notify your partner(s) that you are not looking the conversation" class="has-no-wrap"><span class="icon mr-1"><i class="fa fa-eye-slash fa-fw" aria-hidden="true" /></span>Send inactive chat states</o-switch>
+          <o-switch v-model="isSendingInactiveChatStatesSwitch" title="Notify your partner(s) that you are not looking the conversation" class="has-no-wrap"><span class="icon mr-1"><i class="fa-regular fa-eye-slash fa-fw" aria-hidden="true" /></span>Send inactive chat states</o-switch>
         </div>
       </div>
     </div>

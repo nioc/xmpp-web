@@ -11,6 +11,9 @@ importers:
       '@creativebulma/bulma-divider':
         specifier: ^1.1.0
         version: 1.1.0
+      '@fortawesome/fontawesome-free':
+        specifier: ^7.2.0
+        version: 7.2.0
       '@oruga-ui/oruga-next':
         specifier: ^0.5.10
         version: 0.5.10(vue@3.5.29)
@@ -41,9 +44,6 @@ importers:
       filesize:
         specifier: ^11.0.13
         version: 11.0.13
-      fork-awesome:
-        specifier: ^1.2.0
-        version: 1.2.0
       gemoji:
         specifier: ^8.1.0
         version: 8.1.0
@@ -816,6 +816,10 @@ packages:
   '@eslint/js@8.57.1':
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  '@fortawesome/fontawesome-free@7.2.0':
+    resolution: {integrity: sha512-3DguDv/oUE+7vjMeTSOjCSG+KeawgVQOHrKRnvUuqYh1mfArrh7s+s8hXW3e4RerBA1+Wh+hBqf8sJNpqNrBWg==}
+    engines: {node: '>=6'}
 
   '@hapi/address@5.1.1':
     resolution: {integrity: sha512-A+po2d/dVoY7cYajycYI43ZbYMXukuopIsqCjh5QzsBCipDtdofHntljDlpccMjIfTy6UOkg+5KPriwYch2bXA==}
@@ -2230,11 +2234,6 @@ packages:
 
   forever-agent@0.6.1:
     resolution: {integrity: sha512-j0KLYPhm6zeac4lz3oJ3o65qvgQCcPubiyotZrXqEaG4hNagNYO8qdlUrX5vwqv9ohqeT/Z3j6+yW067yWWdUw==}
-
-  fork-awesome@1.2.0:
-    resolution: {integrity: sha512-MNwTBnnudMIweHfDtTY8TeR5fxIAZ2w9o8ITn5XDySqdxa4k5AH8IuAMa89RVxDxgPNlosZxqkFKN5UmHXuYSw==}
-    engines: {node: '>=0.10.3'}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   form-data@4.0.5:
     resolution: {integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==}
@@ -4804,6 +4803,8 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
+  '@fortawesome/fontawesome-free@7.2.0': {}
+
   '@hapi/address@5.1.1':
     dependencies:
       '@hapi/hoek': 11.0.7
@@ -6376,8 +6377,6 @@ snapshots:
       signal-exit: 4.1.0
 
   forever-agent@0.6.1: {}
-
-  fork-awesome@1.2.0: {}
 
   form-data@4.0.5:
     dependencies:

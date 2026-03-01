@@ -19,11 +19,11 @@
           <td><avatar v-if="room.hasVCard" :jid="room.jid" :size="32" /></td>
           <td class="has-text-centered" :title="getRoomTitle(room)">{{ room.name }}</td>
           <td class="has-text-centered">{{ room.occupantsCount }}</td>
-          <td class="has-text-centered"><i v-if="room.isPasswordProtected" class="fa fa-key-modern fa-fw" title="Password protected" /></td>
-          <td class="has-text-centered"><i v-if="room.isModerated" class="fa fa-shield fa-fw" title="Is moderated" /></td>
-          <td class="has-text-centered"><i v-if="room.isAnonymous" class="fa fa-user-secret fa-fw" title="Allow anonymous (nick)" /></td>
-          <td class="has-text-centered"><i v-if="room.isMembersOnly" class="fa fa-users fa-fw" title="Restricted to members" /></td>
-          <td class="has-text-centered"><i v-if="room.isPublic" class="fa fa-globe fa-fw" title="Public room" /></td>
+          <td class="has-text-centered"><i v-if="room.isPasswordProtected" class="fa-solid fa-key fa-fw" title="Password protected" /></td>
+          <td class="has-text-centered"><i v-if="room.isModerated" class="fa-solid fa-microphone-lines-slash fa-fw" title="Is moderated" /></td>
+          <td class="has-text-centered"><i v-if="room.isAnonymous" class="fa-solid fa-user-secret fa-fw" title="Allow anonymous (nick)" /></td>
+          <td class="has-text-centered"><i v-if="room.isMembersOnly" class="fa-solid fa-user-lock fa-fw" title="Restricted to members" /></td>
+          <td class="has-text-centered"><i v-if="room.isPublic" class="fa-solid fa-compass fa-fw" title="Public room" /></td>
         </tr>
       </tbody>
     </table>

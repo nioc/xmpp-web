@@ -18,7 +18,7 @@
     <div class="field">
       <div class="control">
         <button class="button is-primary" :disabled="isProcessing" @click="save">
-          <span class="icon"><i class="fa fa-save" /></span><span>Save</span>
+          <span class="icon"><i class="fa-solid fa-save" /></span><span>Save</span>
         </button>
       </div>
       <p class="help is-danger">{{ error }}</p>

@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar is-shade-2 is-fixed-top">
     <div class="navbar-brand">
-      <router-link class="navbar-item" :to="{ name: 'home' }"><h1 class="has-text-weight-bold"><i class="fa fa-xmpp fa-fw" /><span class="ml-3 is-hidden-mobile">Home</span></h1></router-link>
+      <router-link class="navbar-item" :to="{ name: 'home' }"><h1 class="has-text-weight-bold"><i class="fa-brands fa-xmpp fa-fw" /><span class="ml-3 is-hidden-mobile">Home</span></h1></router-link>
       <span class="navbar-item is-hidden-tablet">{{ activeChat }}</span>
       <a id="navbar-burger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click="toggleMenu">
         <span aria-hidden="true" class="is-primary" />
@@ -15,11 +15,11 @@
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link is-arrowless"><avatar :jid="userJid" :display-jid="true" :size="32" /></a>
           <div class="navbar-dropdown is-right">
-            <router-link class="navbar-item" :to="{ name: 'about' }" active-class="is-active"><i class="fa fa-info-circle fa-fw mr-3" />About</router-link>
-            <router-link class="navbar-item" :to="{ name: 'profile' }" active-class="is-active"><i class="fa fa-user fa-fw mr-3" />Profile</router-link>
-            <a class="navbar-item" :href="bugUrl" target="_blank" rel="noreferrer"><i class="fa fa-bug fa-fw mr-3" />Bug</a>
+            <router-link class="navbar-item" :to="{ name: 'about' }" active-class="is-active"><i class="fa-solid fa-info-circle fa-fw mr-3" />About</router-link>
+            <router-link class="navbar-item" :to="{ name: 'profile' }" active-class="is-active"><i class="fa-solid fa-user fa-fw mr-3" />Profile</router-link>
+            <a class="navbar-item" :href="bugUrl" target="_blank" rel="noreferrer"><i class="fa-solid fa-bug fa-fw mr-3" />Bug</a>
             <hr class="navbar-divider">
-            <a id="logout" class="navbar-item" @click="logout()"><i class="fa fa-sign-out fa-fw mr-3" />Logout</a>
+            <a id="logout" class="navbar-item" @click="logout()"><i class="fa-solid fa-right-from-bracket fa-fw mr-3" />Logout</a>
           </div>
         </div>
       </div>

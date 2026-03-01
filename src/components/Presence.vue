@@ -1,8 +1,8 @@
 <template>
   <span>
     <span class="fa-stack">
-      <i class="fa fa-circle fa-stack-2x" :class="backgroundClass" />
-      <i class="fa fa-stack-1x fa-inverse fa-fw" :class="iconClass" />
+      <i class="fa-solid fa-circle fa-stack-2x" :class="backgroundClass" />
+      <i class="fa-solid fa-stack-1x fa-inverse fa-fw" :class="iconClass" />
     </span>
     <span v-if="displayLabel" class="ml-3">{{ text }}</span>
   </span>
@@ -43,9 +43,9 @@ export default {
         case 'xa':
           return 'fa-moon'
         case 'off':
-          return 'fa-exclamation'
+          return 'fa-triangle-exclamation'
         default:
-          return 'fa-comments-o'
+          return 'fa-comments'
       }
     },
     text () {

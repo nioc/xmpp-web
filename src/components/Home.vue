@@ -4,7 +4,7 @@
       <span style="position: absolute; top: 4px; right: 0px;" class="is-clipped is-hidden-mobile">
         <span style="position: relative; right: -20px;">
           <button class="button is-rounded is-dark has-text-grey px-4 py-3" :title="isExpanded ? 'Collapse' : 'Expand'" @click="isExpanded = !isExpanded">
-            <span class="icon pr-3"><i class="fa" :class="isExpanded ? 'fa-angle-double-left' : 'fa-angle-double-right'" /></span>
+            <span class="icon pr-3"><i class="fa-solid" :class="isExpanded ? 'fa-angles-left' : 'fa-angles-right'" /></span>
           </button>
         </span>
       </span>
