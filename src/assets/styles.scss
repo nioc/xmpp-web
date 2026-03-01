@@ -141,8 +141,15 @@ body,
 	vertical-align: middle;
 }
 
-.is-width-min-400 {
+.card.guest-room-item {
 	min-width: 400px;
+	height: 350px;
+	display: flex;
+	flex-direction: column;
+	.card-content {
+		overflow-y: auto;
+		flex: 1 1 auto;
+	}
 }
 
 .is-primary-ghost {

@@ -24,7 +24,7 @@
         <div class="is-flex is-justify-content-center is-flex-grow-1">
           <ul class="is-align-self-center columns is-multiline">
             <li v-for="room in filteredPublicRooms" :key="room.jid" class="column">
-              <div class="card is-width-min-400">
+              <div class="card guest-room-item">
                 <header class="card-header">
                   <span class="card-header-title">
                     <span v-if="room.isPinned" class="icon has-text-danger mr-2" title="Pinned room">
@@ -36,7 +36,13 @@
                     <span v-if="room.isPasswordProtected" class="icon" title="This room is password protected">
                       <i class="fa-solid fa-key" />
                     </span>
-                    <span v-if="room.occupantsCount" title="Occupants">
+                    <span v-if="room.isMembersOnly" class="icon" title="This room is reserved for members only">
+                      <i class="fa-solid fa-user-lock" />
+                    </span>
+                    <span v-if="room.isModerated" class="icon" title="This room is moderated">
+                      <i class="fa-solid fa-microphone-lines-slash" />
+                    </span>
+                    <span v-if="room.occupantsCount" :title="room.occupantsCount + ' people in the chat room'">
                       <span class="icon mr-1 ml-2">
                         <i class="fa-solid fa-users" />
                       </span>
@@ -55,7 +61,7 @@
                   <small class="content">{{ room.description }}</small>
                 </div>
                 <footer class="card-footer">
-                  <router-link :to="{ name: 'guestInRoom', params: { jid: room.jid } }" class="card-footer-item" title="Join the room">
+                  <router-link :to="{ name: 'guestInRoom', params: { jid: room.jid } }" class="card-footer-item" title="Enter this chat room">
                     <span class="icon">
                       <i class="fa-solid fa-right-to-bracket" /></span>
                     <span>Join</span>

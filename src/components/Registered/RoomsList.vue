@@ -29,7 +29,7 @@
           <td class="has-text-centered"><i v-if="room.isPasswordProtected" class="fa-solid fa-key fa-fw" title="Password protected" /></td>
           <td class="has-text-centered"><i v-if="room.isModerated" class="fa-solid fa-microphone-lines-slash fa-fw" title="Is moderated" /></td>
           <td class="has-text-centered"><i v-if="room.isAnonymous" class="fa-solid fa-user-secret fa-fw" title="Allow anonymous (nick)" /></td>
-          <td class="has-text-centered"><i v-if="room.isMembersOnly" class="fa-solid fa-user-lock fa-fw" title="Restricted to members" /></td>
+          <td class="has-text-centered"><i v-if="room.isMembersOnly" class="fa-solid fa-user-lock fa-fw" title="Reserved for members only" /></td>
         </tr>
       </tbody>
     </table>
