@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Avatar from '../components/Avatar.vue'
+import Avatar from './Avatar.vue'
 
 export default {
   name: 'RoomOccupants',

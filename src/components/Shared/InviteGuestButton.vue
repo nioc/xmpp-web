@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Modal from './../components/Modal.vue'
+import Modal from './Modal.vue'
 
 export default {
   name: 'InviteGuestButton',

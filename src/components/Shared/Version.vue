@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { version, license, homepage } from '../../package.json'
+import { version, license, homepage } from '../../../package.json'
 
 export default {
   name: 'Version',

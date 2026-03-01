@@ -21,12 +21,12 @@
 </template>
 
 <script>
-import avatar from '../components/Avatar.vue'
+import Avatar from '../Shared/Avatar.vue'
 
 export default {
   name: 'Contact',
   components: {
-    avatar,
+    Avatar,
   },
   props: {
     jid: {

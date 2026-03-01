@@ -41,7 +41,7 @@
 
 <script>
 import sanitizeHtml from 'sanitize-html'
-import Version from '../components/Version.vue'
+import Version from '../Shared/Version.vue'
 
 export default {
   name: 'GuestHome',

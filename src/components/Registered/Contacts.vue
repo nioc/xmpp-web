@@ -49,16 +49,16 @@
 </template>
 
 <script>
-import contact from '../components/Contact.vue'
-import group from '../components/Group.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
+import Contact from './Contact.vue'
+import Group from './Group.vue'
 
 export default {
   name: 'Contacts',
   components: {
-    contact,
-    group,
+    Contact,
+    Group,
   },
   props: {
     isExpanded: {

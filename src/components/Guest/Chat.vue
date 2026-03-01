@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import Chat from '../components/Chat.vue'
+import Chat from '../Shared/Chat.vue'
+
 export default {
   name: 'Guest',
   components: {

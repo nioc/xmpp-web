@@ -16,13 +16,13 @@
 </template>
 
 <script>
-import contacts from '../components/Contacts.vue'
-import Version from '../components/Version.vue'
+import Contacts from './Contacts.vue'
+import Version from '../Shared/Version.vue'
 
 export default {
   name: 'Home',
   components: {
-    contacts,
+    Contacts,
     Version,
   },
   props: {

@@ -28,11 +28,11 @@
 </template>
 
 <script>
-import EmojiPicker from '../components/EmojiPicker.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 import axios from 'axios'
 import { filesize } from 'filesize'
+import EmojiPicker from './EmojiPicker.vue'
 
 export default {
   name: 'Sendbox',

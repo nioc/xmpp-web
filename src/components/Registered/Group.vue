@@ -10,14 +10,14 @@
 </template>
 
 <script>
-import contact from '../components/Contact.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
+import Contact from './Contact.vue'
 
 export default {
   name: 'Group',
   components: {
-    contact,
+    Contact,
   },
   props: {
     group: {

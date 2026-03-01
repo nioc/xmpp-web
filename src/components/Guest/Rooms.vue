@@ -72,16 +72,16 @@
 </template>
 
 <script>
-import avatar from '../components/Avatar.vue'
-import Modal from '../components/Modal.vue'
-import Version from '../components/Version.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
+import Avatar from '../Shared/Avatar.vue'
+import Modal from '../Shared/Modal.vue'
+import Version from '../Shared/Version.vue'
 
 export default {
   name: 'GuestRooms',
   components: {
-    avatar,
+    Avatar,
     Version,
   },
   data () {

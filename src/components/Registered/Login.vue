@@ -64,7 +64,7 @@
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
 import axios from 'axios'
-import Version from '../components/Version.vue'
+import Version from '../Shared/Version.vue'
 
 export default {
   name: 'Login',

@@ -39,12 +39,12 @@
 <script>
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
-import avatar from '../components/Avatar.vue'
+import Avatar from '../Shared/Avatar.vue'
 
 export default {
   name: 'RoomsList',
   components: {
-    avatar,
+    Avatar,
   },
   data () {
     return {

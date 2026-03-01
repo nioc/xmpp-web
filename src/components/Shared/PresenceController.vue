@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import presence from '../components/Presence.vue'
-import NotificationsSwitch from '../components/NotificationsSwitch.vue'
 import { mapState, mapWritableState } from 'pinia'
 import { useStore } from '@/store'
+import NotificationsSwitch from './NotificationsSwitch.vue'
+import Presence from './Presence.vue'
 
 const lsNotTypingChatStatesKey = 'isNotSendingTypingChatStates'
 const lsInactiveChatStatesKey = 'isSendingInactiveChatStates'
@@ -35,8 +35,8 @@ const lsInactiveChatStatesKey = 'isSendingInactiveChatStates'
 export default {
   name: 'PresenceController',
   components: {
-    presence,
     NotificationsSwitch,
+    Presence,
   },
   props: {
     isNavbarItem: {

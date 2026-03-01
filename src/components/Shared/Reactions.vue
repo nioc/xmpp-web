@@ -12,7 +12,7 @@
 
 <script>
 import { ref } from 'vue'
-import EmojiPicker from '../components/EmojiPicker.vue'
+import EmojiPicker from './EmojiPicker.vue'
 
 export default {
   name: 'Reactions',

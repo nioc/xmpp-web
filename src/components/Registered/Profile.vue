@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import defaultAvatar from '../assets/defaultAvatar'
+import defaultAvatar from '../../assets/defaultAvatar'
 
 export default {
   name: 'Profile',

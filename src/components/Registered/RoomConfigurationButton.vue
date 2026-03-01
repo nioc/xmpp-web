@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import RoomConfiguration from '../components/RoomConfiguration.vue'
+import RoomConfiguration from './RoomConfiguration.vue'
 
 export default {
   name: 'RoomConfigurationButton',

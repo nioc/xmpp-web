@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import MessageLink from '../components/MessageLink.vue'
 import sanitizeHtml from 'sanitize-html'
+import MessageLink from './MessageLink.vue'
 
 export default {
   name: 'Message',

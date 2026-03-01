@@ -28,16 +28,16 @@
 </template>
 
 <script>
-import avatar from '../components/Avatar.vue'
-import PresenceController from '../components/PresenceController.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
-import { bugs } from '../../package.json'
+import Avatar from '../Shared/Avatar.vue'
+import PresenceController from '../Shared/PresenceController.vue'
+import { bugs } from '../../../package.json'
 
 export default {
   name: 'Navbar',
   components: {
-    avatar,
+    Avatar,
     PresenceController,
   },
   data () {

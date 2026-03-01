@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { version, description, license, homepage, xmppWeb } from '../../package.json'
+import { version, description, license, homepage, xmppWeb } from '../../../package.json'
 import axios from 'axios'
 import spdxLicenseList from 'spdx-license-list'
 

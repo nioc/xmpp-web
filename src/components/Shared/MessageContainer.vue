@@ -11,9 +11,9 @@
 <script>
 import { computed, ref } from 'vue'
 import { useElementHover } from '@vueuse/core'
-import Avatar from '../components/Avatar.vue'
-import Message from '../components/Message.vue'
-import Reactions from '../components/Reactions.vue'
+import Avatar from './Avatar.vue'
+import Message from './Message.vue'
+import Reactions from './Reactions.vue'
 
 export default {
   name: 'Chat',

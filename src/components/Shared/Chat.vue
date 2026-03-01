@@ -24,18 +24,18 @@
 </template>
 
 <script>
-import InviteGuestButton from '../components/InviteGuestButton.vue'
-import BookmarkButton from '../components/BookmarkButton.vue'
-import MessageContainer from '../components/MessageContainer.vue'
-import RoomConfigurationButton from '../components/RoomConfigurationButton.vue'
-import RetrieveHistoryButton from '../components/RetrieveHistoryButton.vue'
-import RoomOccupants from '../components/RoomOccupants.vue'
-import RoomSubject from '../components/RoomSubject.vue'
-import Sendbox from '../components/Sendbox.vue'
-import Modal from '../components/Modal.vue'
-import PresenceController from '../components/PresenceController.vue'
 import { mapState } from 'pinia'
 import { useStore } from '@/store'
+import BookmarkButton from '../Registered/BookmarkButton.vue'
+import InviteGuestButton from './InviteGuestButton.vue'
+import MessageContainer from './MessageContainer.vue'
+import Modal from './Modal.vue'
+import PresenceController from './PresenceController.vue'
+import RoomConfigurationButton from '../Registered/RoomConfigurationButton.vue'
+import RetrieveHistoryButton from './RetrieveHistoryButton.vue'
+import RoomOccupants from './RoomOccupants.vue'
+import RoomSubject from './RoomSubject.vue'
+import Sendbox from './Sendbox.vue'
 
 export default {
   name: 'Chat',
