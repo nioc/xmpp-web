@@ -18,6 +18,14 @@
 <script>
 import sanitizeHtml from 'sanitize-html'
 import MessageLink from './MessageLink.vue'
+import { copyToClipboard } from '../../utils/copyToClipboard.js'
+
+const copyButton = '<button class="button copy-button is-primary-ghost has-no-border is-shadowless" title="Copy to clipboard"><i class="fa-solid fa-copy"></i></button>'
+const copyToClipboardListener = async function() {
+  await copyToClipboard(this.nextSibling.innerHTML)
+  this.firstChild.classList.replace('fa-copy', 'fa-check')
+  setTimeout(() => this.firstChild.classList.replace('fa-check', 'fa-copy'), 2000)
+}
 
 export default {
   name: 'Message',
@@ -58,14 +66,14 @@ export default {
             if (index === codeBlockStartLine) {
               if (index === codeBlockEndLine - 1) {
                 // start and end code block
-                return '<pre><code>' + line + '</code></pre>'
+                return `<pre>${copyButton}<code>${line}</code></pre>`
               }
               // start code block
-              return '<pre><code>' + line
+              return `<pre>${copyButton}<code>${line}`
             }
             if (index === codeBlockEndLine - 1) {
               // end code block
-              return line + '</code></pre>'
+              return `${line}</code></pre>`
             }
             if (index === codeBlockEndLine) {
               // clear code block vars
@@ -133,6 +141,23 @@ export default {
     messageDump () {
       return import.meta.env.DEV ? JSON.stringify(this.message, null, 2) : null
     },
+  },
+  watch: {
+    body: {
+      handler () {
+        this.$nextTick(() => {
+          document.querySelectorAll('.message-text button.copy-button').forEach(el => {
+            el.addEventListener('click', copyToClipboardListener)
+          })
+        })
+      },
+      immediate: true,
+    },
+  },
+  beforeUnmount () {
+    document.querySelectorAll('.message-text button.copy-button').forEach(el => {
+      el.removeEventListener('click', copyToClipboardListener)
+    })
   },
 }
 </script>
