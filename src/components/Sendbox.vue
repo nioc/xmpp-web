@@ -140,6 +140,10 @@ export default {
         this.fileIcon = 'fa-file-audio'
       } else if (this.file.type.startsWith('video/')) {
         this.fileIcon = 'fa-file-video'
+      } else if (this.file.type === 'text/csv') {
+        this.fileIcon = 'fa-file-csv'
+      } else if (['application/json', 'text/xml'].includes(this.file.type)) {
+        this.fileIcon = 'fa-file-code'
       } else if (this.file.type.includes('pdf')) {
         this.fileIcon = 'fa-file-pdf'
       } else {

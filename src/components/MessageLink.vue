@@ -49,6 +49,8 @@ export default {
       case 'image/gif':
       case 'image/png':
       case 'image/tiff':
+      case 'image/svg+xml':
+      case 'image/webp':
         this.isImage = true
         break
       case 'audio/mpeg':
