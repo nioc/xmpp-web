@@ -16,6 +16,7 @@ const getDefaultState = () => {
     httpFileUploadMaxSize: null,
     isOnline: false,
     presence: 'chat',
+    mucRole: null,
     hasNotificationsEnabled: false,
     isSendingTypingChatStates: true,
     isSendingInactiveChatStates: false,
@@ -102,6 +103,11 @@ export const useStore = defineStore('main', {
     // user presence setter
     setPresence (presence) {
       this.presence = presence
+    },
+
+    // user mucRole setter
+    setMucRole (role) {
+      this.mucRole = role
     },
 
     // active chat setter

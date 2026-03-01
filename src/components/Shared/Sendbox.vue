@@ -3,16 +3,17 @@
     <form @submit.prevent="sendMessage">
       <div class="field is-flex is-align-items-center mr-3">
         <div class="control is-flex-grow-1">
-          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
+          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="placeholderText" rows="2" :disabled="fileThumbnail || fileIcon || !hasVoice" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
             <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
             <i v-if="fileIcon" class="fa-solid fa-2x" :class="fileIcon" />
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
-        <emoji-picker @emoji-picked="addEmoji" />
-        <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true" /></button>
-        <div v-else class="file has-no-border is-size-4" title="Send a file">
+        <button v-if="!hasVoice" type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request Voice" @click="requestVoice"><i class="fa fa-commenting-o" aria-hidden="true" /></button>
+        <emoji-picker v-if="hasVoice" @emoji-picked="addEmoji" />
+        <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
+        <div v-else-if="hasVoice" class="file has-no-border is-size-4" title="Send a file">
           <label class="file-label">
             <input class="file-input" type="file" name="resume" @change="onFileChange">
             <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
@@ -56,10 +57,24 @@ export default {
     userJid () {
       return this.$xmpp.fullJid
     },
+    hasVoice () {
+      //this isn't a room, or we don't have a role of visitor
+      return !this.isRoom || this.mucRole !== 'visitor'
+    },
+    placeholderText () {
+      if(!this.hasVoice) {
+        return 'Room is moderated and you do not have voice'
+      }
+      if(!this.file) {
+        return 'Send message'
+      }
+      return ''
+    },
     ...mapState(useStore, [
       'activeChat',
       'httpFileUploadMaxSize',
       'isSendingTypingChatStates',
+      'mucRole',
     ]),
   },
   methods: {
@@ -181,6 +196,9 @@ export default {
     },
     addEmoji (emoji) {
       this.composingMessage += emoji
+    },
+    async requestVoice () {
+      await this.$xmpp.requestVoice(this.activeChat)
     },
   },
 }
