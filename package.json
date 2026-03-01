@@ -1,6 +1,6 @@
 {
   "name": "xmpp-web",
-  "version": "0.12.0",
+  "version": "0.11.0",
   "private": true,
   "description": "Lightweight web chat client for XMPP server",
   "homepage": "https://github.com/nioc/xmpp-web",
@@ -43,7 +43,7 @@
     "@xmpp/client": "^0.14.0",
     "@xmpp/debug": "^0.14.0",
     "@xmpp/error": "^0.14.0",
-    "axios": "^1.13.6",
+    "axios": "^1.13.5",
     "bulma": "^0.9.4",
     "dayjs": "^1.11.19",
     "filesize": "^11.0.13",
@@ -57,11 +57,10 @@
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^4.0.1",
+    "@cypress/code-coverage": "^4.0.0",
     "@types/sanitize-html": "^2.16.0",
     "@vitejs/plugin-vue": "^6.0.4",
     "cypress": "^15.11.0",
-    "cypress-real-events": "^1.15.0",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.33.0",
     "mock-socket": "^9.3.1",
