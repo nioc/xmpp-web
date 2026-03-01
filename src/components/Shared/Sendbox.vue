@@ -10,7 +10,7 @@
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
-        <button v-if="!hasVoice" type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request Voice" @click="requestVoice"><i class="fa fa-commenting-o" aria-hidden="true" /></button>
+        <button v-if="!hasVoice" type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request Voice" @click="requestVoice"><i class="fa fa-solid fa-hand" aria-hidden="true" /></button>
         <emoji-picker v-if="hasVoice" @emoji-picked="addEmoji" />
         <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
         <div v-else-if="hasVoice" class="file has-no-border is-size-4" title="Send a file">
