@@ -3,15 +3,15 @@
     <form @submit.prevent="sendMessage">
       <div class="field is-flex is-align-items-center mr-3">
         <div class="control is-flex-grow-1">
-          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="placeholderText" rows="2" :disabled="fileThumbnail || fileIcon || !hasVoice" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
+          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder rows="2" :disabled="fileThumbnail || fileIcon || !hasVoice" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
             <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
             <i v-if="fileIcon" class="fa-solid fa-2x" :class="fileIcon" />
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
-        <button v-if="!hasVoice" type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request Voice" @click="requestVoice"><i class="fa fa-solid fa-hand" aria-hidden="true" /></button>
-        <emoji-picker v-if="hasVoice" @emoji-picked="addEmoji" />
+        <button v-if="!hasVoice" type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request Voice" @click="requestVoice"><i class="fa-solid fa-hand" aria-hidden="true" /></button>
+        <emoji-picker v-else @emoji-picked="addEmoji" />
         <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
         <div v-else-if="hasVoice" class="file has-no-border is-size-4" title="Send a file">
           <label class="file-label">
@@ -58,10 +58,11 @@ export default {
       return this.$xmpp.fullJid
     },
     hasVoice () {
+      const roomId = this.joinedRooms.indexOf(this.activeChat)
       //this isn't a room, or we don't have a role of visitor
-      return !this.isRoom || this.mucRole !== 'visitor'
+      return !this.isRoom || this.rolesInRooms[roomId] !== 'visitor'
     },
-    placeholderText () {
+    placeholder () {
       if(!this.hasVoice) {
         return 'Room is moderated and you do not have voice'
       }
@@ -74,7 +75,7 @@ export default {
       'activeChat',
       'httpFileUploadMaxSize',
       'isSendingTypingChatStates',
-      'mucRole',
+      'rolesInRooms',
     ]),
   },
   methods: {

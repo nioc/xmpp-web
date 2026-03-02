@@ -11,12 +11,12 @@ const getDefaultState = () => {
     contacts: [],
     groups: [],
     joinedRooms: [],
+    rolesInRooms: [],
     knownRooms: [],
     roomsOccupants: [],
     httpFileUploadMaxSize: null,
     isOnline: false,
     presence: 'chat',
-    mucRole: null,
     hasNotificationsEnabled: false,
     isSendingTypingChatStates: true,
     isSendingInactiveChatStates: false,
@@ -105,9 +105,17 @@ export const useStore = defineStore('main', {
       this.presence = presence
     },
 
-    // user mucRole setter
-    setMucRole (role) {
-      this.mucRole = role
+    // user role in room setter
+    setRoleInRoom (roomId, role) {
+      const index = this.joinedRooms.indexOf(roomId)
+      if (index >= 0) {
+        this.rolesInRooms[index] = role
+      }
+    },
+
+    // remove room when leaving
+    removeRoleInRoom (roomId) {
+      this.rolesInRooms = this.rolesInRooms.filter((joinedRoomId) => joinedRoomId !== roomId )
     },
 
     // active chat setter

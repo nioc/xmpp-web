@@ -14,6 +14,7 @@ const NS = {
   MUC: 'http://jabber.org/protocol/muc',
   MUC_USER: 'http://jabber.org/protocol/muc#user',
   MUC_OWNER: 'http://jabber.org/protocol/muc#owner',
+  MUC_REQUEST: 'http://jabber.org/protocol/muc#request',
   // XEP-0030
   DISCO_INFO: 'http://jabber.org/protocol/disco#info',
   DISCO_ITEMS: 'http://jabber.org/protocol/disco#items',
@@ -1032,7 +1033,7 @@ class XmppClient {
       },
       xml(
         'x', {
-          xmlns: 'jabber:x:data',
+          xmlns: NS.FORM,
           type: 'submit',
         },
         xml(
@@ -1040,7 +1041,7 @@ class XmppClient {
             var: 'FORM_TYPE',
           },
           xml('value',{},
-            'http://jabber.org/protocol/muc#request',
+            NS.MUC_REQUEST,
           ),
         ),
         xml(

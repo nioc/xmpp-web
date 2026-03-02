@@ -272,11 +272,11 @@ export default {
         if (presence.isSelf) {
           if (presence.type === 'unavailable') {
             this.context.$store.removeJoinedRoom(fullJid.bare)
-            this.context.$store.setMucRole(null)
+            this.context.$store.removeRoleInRoom(fullJid.bare)
           } else {
             this.context.$store.setJoinedRoom(fullJid.bare)
           }
-          this.context.$store.setMucRole(presence.mucRole)
+          this.context.$store.setRoleInRoom(fullJid.bare, presence.mucRole)
         }
         if (presence.type === 'unavailable') {
           // occupant left room
