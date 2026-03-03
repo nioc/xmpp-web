@@ -11,6 +11,7 @@ const getDefaultState = () => {
     contacts: [],
     groups: [],
     joinedRooms: [],
+    rolesInRooms: [],
     knownRooms: [],
     roomsOccupants: [],
     httpFileUploadMaxSize: null,
@@ -102,6 +103,26 @@ export const useStore = defineStore('main', {
     // user presence setter
     setPresence (presence) {
       this.presence = presence
+    },
+
+    // user role in room setter
+    setRoleInRoom (roomId, role) {
+      const roleInRoom = { roomId, role }
+      const index = this.rolesInRooms.findIndex((roleInRoom) => roleInRoom.roomId === roomId)
+      if (index === -1) {
+        // add role in room
+        this.rolesInRooms.push(roleInRoom)
+        return
+      }
+      // update room
+      const rolesInRooms = this.rolesInRooms.slice(0)
+      rolesInRooms[index] = roleInRoom
+      this.rolesInRooms = rolesInRooms
+    },
+
+    // remove room when leaving
+    removeRoleInRoom (roomId) {
+      this.rolesInRooms = this.rolesInRooms.filter((roleInRoom) => roleInRoom.roomId !== roomId )
     },
 
     // active chat setter

@@ -3,24 +3,29 @@
     <form @submit.prevent="sendMessage">
       <div class="field is-flex is-align-items-center mr-3">
         <div class="control is-flex-grow-1">
-          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder="!file? 'Send message' : ''" rows="2" :disabled="fileThumbnail || fileIcon" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
+          <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder rows="2" :disabled="fileThumbnail || fileIcon || !hasVoice" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">
             <img v-if="fileThumbnail" :src="fileThumbnail" class="thumbnail">
             <i v-if="fileIcon" class="fa-solid fa-2x" :class="fileIcon" />
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
-        <emoji-picker @emoji-picked="addEmoji" />
-        <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa-solid fa-paper-plane" aria-hidden="true" /></button>
-        <div v-else class="file has-no-border is-size-4" title="Send a file">
-          <label class="file-label">
-            <input class="file-input" type="file" name="resume" @change="onFileChange">
-            <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
-              <span class="file-icon mr-0">
-                <i class="fa-solid fa-paperclip is-primary-ghost is-size-4" />
+        <div v-if="!hasVoice">
+          <button type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request voice" @click="requestVoice"><i class="fa-solid fa-hand-point-up fa-fw" aria-hidden="true" /></button>
+        </div>
+        <div v-else class="is-flex">
+          <emoji-picker @emoji-picked="addEmoji" />
+          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa-solid fa-paper-plane fa-fw" aria-hidden="true" /></button>
+          <div v-else class="file has-no-border is-size-4" title="Send a file">
+            <label class="file-label">
+              <input class="file-input" type="file" name="resume" @change="onFileChange">
+              <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
+                <span class="file-icon mr-0">
+                  <i class="fa-solid fa-paperclip fa-fw is-primary-ghost is-size-4" />
+                </span>
               </span>
-            </span>
-          </label>
+            </label>
+          </div>
         </div>
       </div>
     </form>
@@ -56,10 +61,30 @@ export default {
     userJid () {
       return this.$xmpp.fullJid
     },
+    hasVoice () {
+      // if any of these conditions are true, we have voice:
+      // - the active chat is not a room
+      return !this.isRoom ||
+      // - the user does not have the visitor role in this room
+      !this.rolesInRooms
+        .filter((roleInRoom) => roleInRoom.roomId === this.activeChat)
+        .every((roleInRoom) => roleInRoom.role === 'visitor')
+    },
+    placeholder () {
+      if(!this.hasVoice) {
+        return 'This chat is moderated, in order to write messages, you need to request voice first'
+      }
+      if(!this.file) {
+        return 'Send message'
+      }
+      return ''
+    },
     ...mapState(useStore, [
       'activeChat',
       'httpFileUploadMaxSize',
       'isSendingTypingChatStates',
+      'rolesInRooms',
+      'knownRooms',
     ]),
   },
   methods: {
@@ -181,6 +206,9 @@ export default {
     },
     addEmoji (emoji) {
       this.composingMessage += emoji
+    },
+    async requestVoice () {
+      await this.$xmpp.requestVoice(this.activeChat)
     },
   },
 }
