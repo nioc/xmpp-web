@@ -107,15 +107,22 @@ export const useStore = defineStore('main', {
 
     // user role in room setter
     setRoleInRoom (roomId, role) {
-      const index = this.joinedRooms.indexOf(roomId)
-      if (index >= 0) {
-        this.rolesInRooms[index] = role
+      const roleInRoom = { roomId, role }
+      const index = this.rolesInRooms.findIndex((knownRoom) => knownRoom.roomId === roomId)
+      if (index === -1) {
+        // add role in room
+        this.rolesInRooms.push(roleInRoom)
+        return
       }
+      // update room
+      const rolesInRooms = this.rolesInRooms.slice(0)
+      rolesInRooms[index] = roleInRoom
+      this.rolesInRooms = rolesInRooms
     },
 
     // remove room when leaving
     removeRoleInRoom (roomId) {
-      this.rolesInRooms = this.rolesInRooms.filter((joinedRoomId) => joinedRoomId !== roomId )
+      this.rolesInRooms = this.rolesInRooms.filter((roleInRoom) => roleInRoom.roomId !== roomId )
     },
 
     // active chat setter
