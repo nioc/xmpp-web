@@ -34,6 +34,9 @@ code,
 pre {
 	border-radius: 6px;
 }
+pre {
+	position: relative;
+}
 
 $link-focus: $black;
 $link-hover: $primary-light;
@@ -253,6 +256,19 @@ body,
 		color: $primary-light;
 		border-color: $primary-light;
 	}
+}
+.copy-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0.5rem;
+	color: $text-strong;
+  font-size: 0.8rem;
+  opacity: 30%;
+	transition: 0.25s;
+  &:hover {
+		opacity: 90%;
+  }
 }
 .sendbox textarea {
 	resize: none;
