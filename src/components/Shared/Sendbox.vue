@@ -58,9 +58,17 @@ export default {
       return this.$xmpp.fullJid
     },
     hasVoice () {
-      const roomId = this.joinedRooms.indexOf(this.activeChat)
-      //this isn't a room, or we don't have a role of visitor
-      return !this.isRoom || this.rolesInRooms[roomId] !== 'visitor'
+      // if any of these conditions are true, we have voice:
+      // - The activeChat isn't a room
+      return !this.isRoom ||
+      // - The activeChat isn't moderated
+      !this.knownRooms
+        .filter( (knownRoom) => knownRoom.jid === this.activeChat)
+        .every( (knownRoom) => knownRoom.isModerated === true) ||
+      // - We are any role other than visitor
+      !this.rolesInRooms
+        .filter((roleInRoom) => roleInRoom.roomId === this.activeChat)
+        .every((roleInRoom) => roleInRoom.role === 'visitor')
     },
     placeholder () {
       if(!this.hasVoice) {
@@ -76,6 +84,7 @@ export default {
       'httpFileUploadMaxSize',
       'isSendingTypingChatStates',
       'rolesInRooms',
+      'knownRooms',
     ]),
   },
   methods: {
