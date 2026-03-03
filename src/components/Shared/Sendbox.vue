@@ -10,18 +10,22 @@
             <button class="delete has-background-grey-light" title="Remove file" @click="removeFile" />
           </div>
         </div>
-        <button v-if="!hasVoice" type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request Voice" @click="requestVoice"><i class="fa-solid fa-hand" aria-hidden="true" /></button>
-        <emoji-picker v-else @emoji-picked="addEmoji" />
-        <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa fa-paper-plane" aria-hidden="true" /></button>
-        <div v-else-if="hasVoice" class="file has-no-border is-size-4" title="Send a file">
-          <label class="file-label">
-            <input class="file-input" type="file" name="resume" @change="onFileChange">
-            <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
-              <span class="file-icon mr-0">
-                <i class="fa-solid fa-paperclip is-primary-ghost is-size-4" />
+        <div v-if="!hasVoice">
+          <button type="button" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Request voice" @click="requestVoice"><i class="fa-solid fa-hand-point-up fa-fw" aria-hidden="true" /></button>
+        </div>
+        <div v-else class="is-flex">
+          <emoji-picker @emoji-picked="addEmoji" />
+          <button v-if="composingMessage || file || !httpFileUploadMaxSize" type="submit" class="button is-size-4 is-primary-ghost has-no-border is-shadowless px-3" title="Send message"><i class="fa-solid fa-paper-plane fa-fw" aria-hidden="true" /></button>
+          <div v-else class="file has-no-border is-size-4" title="Send a file">
+            <label class="file-label">
+              <input class="file-input" type="file" name="resume" @change="onFileChange">
+              <span class="file-cta is-primary-ghost has-no-border is-size-4 px-3">
+                <span class="file-icon mr-0">
+                  <i class="fa-solid fa-paperclip fa-fw is-primary-ghost is-size-4" />
+                </span>
               </span>
-            </span>
-          </label>
+            </label>
+          </div>
         </div>
       </div>
     </form>
@@ -59,20 +63,16 @@ export default {
     },
     hasVoice () {
       // if any of these conditions are true, we have voice:
-      // - The activeChat isn't a room
+      // - the active chat is not a room
       return !this.isRoom ||
-      // - The activeChat isn't moderated
-      !this.knownRooms
-        .filter( (knownRoom) => knownRoom.jid === this.activeChat)
-        .every( (knownRoom) => knownRoom.isModerated === true) ||
-      // - We are any role other than visitor
+      // - the user does not have the visitor role in this room
       !this.rolesInRooms
         .filter((roleInRoom) => roleInRoom.roomId === this.activeChat)
         .every((roleInRoom) => roleInRoom.role === 'visitor')
     },
     placeholder () {
       if(!this.hasVoice) {
-        return 'Room is moderated and you do not have voice'
+        return 'This chat is moderated, in order to write messages, you need to request voice first'
       }
       if(!this.file) {
         return 'Send message'

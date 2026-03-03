@@ -108,7 +108,7 @@ export const useStore = defineStore('main', {
     // user role in room setter
     setRoleInRoom (roomId, role) {
       const roleInRoom = { roomId, role }
-      const index = this.rolesInRooms.findIndex((knownRoom) => knownRoom.roomId === roomId)
+      const index = this.rolesInRooms.findIndex((roleInRoom) => roleInRoom.roomId === roomId)
       if (index === -1) {
         // add role in room
         this.rolesInRooms.push(roleInRoom)

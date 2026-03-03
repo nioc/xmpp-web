@@ -1037,20 +1037,20 @@ class XmppClient {
           type: 'submit',
         },
         xml(
-          'field',{
+          'field', {
             var: 'FORM_TYPE',
           },
-          xml('value',{},
+          xml('value', {},
             NS.MUC_REQUEST,
           ),
         ),
         xml(
-          'field',{
+          'field', {
             var: 'muc#role',
             type: 'list-single',
             label: 'Requested role',
           },
-          xml('value',{},
+          xml('value', {},
             'participant',
           ),
         ),
