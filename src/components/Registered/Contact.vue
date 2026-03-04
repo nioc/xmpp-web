@@ -2,9 +2,8 @@
   <router-link :to="{ name: isRoom ? 'groupchat' : 'chat', params: { jid } }" class="has-unread is-relative" :title="title" exact exact-active-class="is-active">
     <!-- groupchat (room) -->
     <span v-if="isRoom" class="is-flex is-align-items-center">
-      <avatar v-if="room.hasVCard" class="mr-3" :jid="jid" :display-jid="false" :size="24" />
+      <avatar v-if="room.hasVCard" class="mr-3" :jid="jid" :display-jid="false" :is-bookmarked="room.isBookmarked" :size="24" />
       <span v-show="isExpanded" :class="{ 'is-italic has-text-grey': !isJoined }">{{ roomName }}</span>
-      <i v-if="room.isBookmarked" v-show="isExpanded" class="fa-solid fa-star has-text-warning ml-3" />
       <span v-show="isExpanded" class="ml-3 room-attributes" :class="isJoined ? 'has-text-grey-light': 'has-text-grey'">
         <i v-if="room.isPasswordProtected" class="fa-solid fa-key fa-fw" title="Password protected" />
         <i v-if="room.isModerated" class="fa-solid fa-microphone-lines-slash fa-fw" title="Is moderated" />

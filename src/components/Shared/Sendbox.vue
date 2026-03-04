@@ -1,7 +1,7 @@
 <template>
   <div class="sendbox has-border-top-shade-3">
     <form @submit.prevent="sendMessage">
-      <div class="field is-flex is-align-items-center mr-3">
+      <div class="field is-flex is-align-items-center mr-2">
         <div class="control is-flex-grow-1">
           <textarea v-model="composingMessage" class="textarea has-background-shade-4 is-shadowless has-placeholder-shade-1" :placeholder rows="2" :disabled="fileThumbnail || fileIcon || !hasVoice" @keydown.ctrl.enter="sendMessage" @keydown.exact.enter="handleEnterKey" @input="onInput" />
           <div v-if="fileThumbnail || fileIcon" class="thumbnail-container">

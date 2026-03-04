@@ -23,7 +23,7 @@
       </thead>
       <tbody>
         <tr v-for="room in filteredPublicRooms" :key="room.jid" class="is-clickable" :title="getRoomTitle(room)" @click="openRoom(room.jid)">
-          <td><avatar v-if="room.hasVCard" :jid="room.jid" :size="32" /></td>
+          <td><avatar v-if="room.hasVCard" :jid="room.jid" :size="32" :is-bookmarked="room.isBookmarked" /></td>
           <td class="has-text-centered">{{ room.name }}</td>
           <td class="has-text-centered">{{ room.occupantsCount }}</td>
           <td class="has-text-centered"><i v-if="room.isPasswordProtected" class="fa-solid fa-key fa-fw" title="Password protected" /></td>

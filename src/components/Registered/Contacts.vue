@@ -1,19 +1,21 @@
 <template>
   <aside class="section pb-2" :class="isExpanded ? 'p-5' : 'py-5 px-1'">
-    <div class="menu">
-      <p v-if="groups.length > 0" class="menu-label"><i class="fa-solid fa-user mr-3" :class="isExpanded ? 'fa-lg' : 'fa-2x fa-fw pl-4'" /><span v-show="isExpanded">Contacts</span></p>
+    <div class="menu" :class="!isExpanded ? 'pt-5' : ''">
+      <p v-show="isExpanded" class="menu-label"><i class="fa-solid fa-user mr-3 fa-lg" /><span>Contacts</span></p>
       <ul id="contactsList" class="menu-list">
         <li v-for="contact in contacts" :key="contact.jid">
           <contact :jid="contact.jid" :is-room="false" :name="contact.name" :is-expanded="isExpanded" :presence="contact.presence" :status="contact.status" :unread-count="contact.unreadCount" />
         </li>
       </ul>
-      <p v-if="groups.length > 0" v-show="isExpanded" class="menu-label"><i class="fa-solid fa-address-book mr-3" :class="isExpanded ? 'fa-lg' : 'fa-2x fa-fw pl-4'" /><span>Groups</span></p>
+      <hr v-show="groups.length > 0 && isExpanded">
+      <p v-if="groups.length > 0" v-show="isExpanded" class="menu-label"><i class="fa-solid fa-address-book mr-3 fa-lg" /><span>Groups</span></p>
       <ul v-show="isExpanded" id="groupsList" class="menu-list">
         <li v-for="group in groups" :key="group">
           <group :group="group" />
         </li>
       </ul>
-      <p class="menu-label"><i class="fa-solid fa-users mr-3" :class="isExpanded ? 'fa-lg' : 'fa-2x fa-fw pl-3'" /><span v-show="isExpanded">Rooms</span></p>
+      <hr>
+      <p v-show="isExpanded" class="menu-label"><i class="fa-solid fa-users mr-3 fa-lg" /><span>Rooms</span></p>
       <ul id="roomsList" class="menu-list">
         <li v-for="room in displayedRooms" :key="room.jid">
           <contact :jid="room.jid" :is-room="true" :unread-count="room.unreadCount" :is-expanded="isExpanded" />

@@ -3,6 +3,7 @@
     <figure :class="'image is-'+size+'x'+size">
       <img class="is-rounded" :style="style" :src="uri" :title="title">
       <i v-if="presence" class="fa-solid fa-circle presence-icon" :class="presenceClass" />
+      <i v-else-if="isBookmarked" class="fa-solid presence-icon fa-star has-text-warning" />
     </figure>
     <span v-if="displayJid" class="ml-3">{{ name ? name : jid }}</span>
   </span>
@@ -31,6 +32,10 @@ export default {
     status: {
       type: String,
       default: null,
+    },
+    isBookmarked: {
+      type: Boolean,
+      default: false,
     },
     size: {
       type: Number,
