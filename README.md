@@ -36,12 +36,12 @@ Lightweight web chat client for XMPP server.
 - Handle password protected room,
 - Display and send chat state notifications: is composing, is paused (XEP-0085),
 - Format messages: bold, italic, striked, link and code inline/block (XEP-0393),
-- Pick emoji,
+- Pick emoji in message and reactions (XEP-0444),
 - Room creation and configuration,
 - Apply message moderation (XEP-0425),
 - Display and edit vCard information (in particular the user avatar, XEP-0054),
 - PWA (Progressive Web App) creating user experiences similar to native applications on desktop and mobile devices,
-- Lightweight (600 KB gzipped at the first loading and then less than 10 KB)
+- Lightweight (800 KB gzipped at the first loading and then less than 10 KB)
 - Guest access `/guest?join={jid}` (joining a MUC anonymously as described in RFC 4505)
 
 ![Screenshot desktop](/docs/screenshot-desktop-main.png)
@@ -163,6 +163,8 @@ Use `docker pull nioc/xmpp-web:latest` and check if there is some new environmen
 If you have a suggestion for a feature you think would enhance this product, please submit a [feature request](https://github.com/nioc/xmpp-web/issues/new?labels=enhancement&template=feature_request.yml).
 Pull requests are welcomed (please create feature request for discussing it before), see [contributing](CONTRIBUTING.md).
 
+You can also help by [taking surveys](https://github.com/nioc/xmpp-web/discussions/categories/polls) and answering [user questions](https://github.com/nioc/xmpp-web/discussions/categories/q-a) in discussions.
+
 ## Credits
 
 - **[Nioc](https://github.com/nioc/)** - _Initial work_
@@ -178,7 +180,7 @@ This project is powered by the following components:
 - [Day.js](https://day.js.org/) (MIT)
 - [Bulma](https://bulma.io/) (MIT)
 - [Oruga](https://oruga.io/) (MIT)
-- [Fork Awesome](https://forkaweso.me) (SIL OFL 1.1)
+- [Font Awesome](https://fontawesome.com/) (MIT & SIL OFL 1.1)
 
 ## License
 

@@ -12,7 +12,10 @@ Before writing code / submitting pull request, please [create a feature request]
 
 #### Code style
 
-When writing some code, lint it with [provided rules](.eslintrc.cjs): `pnpm run lint` (your pull request will not be merged until checks succeed).
+When writing some code, lint it with [provided rules](.eslintrc.cjs): `pnpm run lint`.
+
+> [!IMPORTANT]
+> your pull request will not be merged until checks succeed.
 
 #### Commits message
 
@@ -26,7 +29,15 @@ Application is build around 4 components:
 - [XmppClient.js](src/services/XmppClient.js) which is responsible for low-level XMPP logic (connect, parse stanza, ...) it relies on [xmpp.js](https://github.com/xmppjs/xmpp.js),
 - [XmppSocket.js](src/services/XmppSocket.js) which is responsible for application level XMPP logic,
 - [Pinia store](src/store/index.js) which, as its name implies, store the data (contacts, rooms, messages, ...) for the entire application (Vue components read data through it),
-- Vue components which include display and interaction logic of their own.
+- Vue components which include display and interaction logic of their own. These are divided into three folders:
+  - `src/components/Registered/` for components dedicated to logged-in users,
+  - `src/components/Guest/` for components dedicated to anonymous users,
+  - `src/components/Shared/` for components used on the two types of access above.
+
+#### Tests
+
+Before packaging, the application's functionality is validated by a set of [Cypress tests](cypress/e2e/app.js).
+It is strongly recommended that you include tests for your new features or update existing tests affected by your changes.
 
 ### Edit frontend code (VueJS)
 
