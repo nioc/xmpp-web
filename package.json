@@ -44,7 +44,7 @@
     "@xmpp/client": "^0.14.0",
     "@xmpp/debug": "^0.14.0",
     "@xmpp/error": "^0.14.0",
-    "axios": "^1.13.6",
+    "axios": "^1.15.0",
     "bulma": "^0.9.4",
     "dayjs": "^1.11.19",
     "filesize": "^11.0.13",
